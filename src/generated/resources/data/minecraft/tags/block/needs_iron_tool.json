@@ -1,0 +1,14 @@
+{
+  "values": [
+    "extrautils2:spike_diamond",
+    "extrautils2:generator_solar",
+    "extrautils2:generator_lunar",
+    "extrautils2:generator_lava",
+    "extrautils2:generator_water",
+    "extrautils2:generator_wind",
+    "extrautils2:generator_fire",
+    "extrautils2:generator_player_wind_up",
+    "extrautils2:generator_dragon_egg",
+    "extrautils2:quarry"
+  ]
+}

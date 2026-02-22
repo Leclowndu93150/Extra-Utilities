@@ -1,0 +1,136 @@
+{
+  "sources": [
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/cobblestone",
+      "level": 1,
+      "max_level": 8
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/cobblestone",
+      "level": 2,
+      "max_level": 8
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/cobblestone",
+      "level": 3,
+      "max_level": 8
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/cobblestone",
+      "level": 4,
+      "max_level": 8
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/cobblestone",
+      "level": 5,
+      "max_level": 8
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/cobblestone",
+      "level": 6,
+      "max_level": 8
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/cobblestone",
+      "level": 7,
+      "max_level": 8
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/cobblestone",
+      "level": 8,
+      "max_level": 8
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/dirt",
+      "level": 1,
+      "max_level": 4
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/dirt",
+      "level": 2,
+      "max_level": 4
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/dirt",
+      "level": 3,
+      "max_level": 4
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/dirt",
+      "level": 4,
+      "max_level": 4
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/sand",
+      "level": 1,
+      "max_level": 2
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/sand",
+      "level": 2,
+      "max_level": 2
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/gravel",
+      "level": 1,
+      "max_level": 2
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/gravel",
+      "level": 2,
+      "max_level": 2
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/netherrack",
+      "level": 1,
+      "max_level": 6
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/netherrack",
+      "level": 2,
+      "max_level": 6
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/netherrack",
+      "level": 3,
+      "max_level": 6
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/netherrack",
+      "level": 4,
+      "max_level": 6
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/netherrack",
+      "level": 5,
+      "max_level": 6
+    },
+    {
+      "type": "extrautils2:compressed",
+      "base": "minecraft:block/netherrack",
+      "level": 6,
+      "max_level": 6
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "extrautils2:block/transfernodes/transmitter_bottom",
+    "side": "extrautils2:block/transfernodes/transmitter_side",
+    "top": "extrautils2:block/transfernodes/transmitter_top"
+  }
+}

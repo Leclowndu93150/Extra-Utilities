@@ -1,0 +1,7 @@
+{
+  "parent": "extrautils2:block/spike",
+  "textures": {
+    "base": "extrautils2:block/spikes/spike_diamond_base",
+    "side": "extrautils2:block/spikes/spike_diamond_side"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "minecraft:cobblestone"
+    },
+    "I": {
+      "item": "minecraft:cobblestone"
+    },
+    "S": {
+      "item": "minecraft:stone_sword"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SIS",
+    "IBI"
+  ],
+  "result": {
+    "count": 4,
+    "id": "extrautils2:spike_stone"
+  }
+}

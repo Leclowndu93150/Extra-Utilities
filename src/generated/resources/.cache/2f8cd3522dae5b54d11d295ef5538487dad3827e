@@ -1,0 +1,6 @@
+// 1.21.1	2026-02-22T21:09:36.2546347	Tags for minecraft:block mod id extrautils2
+afa64d5b64465bd40cb1a0e49e54c24b5d566b87 data/minecraft/tags/block/mineable/axe.json
+d2f290b0399bd7c65a1c6003d8d20244ee4ae3f8 data/minecraft/tags/block/mineable/pickaxe.json
+08f33d627e0828e57d829a1594806c2c2e2be2ca data/minecraft/tags/block/mineable/shovel.json
+09dd3a94b8b6a3a8dd73fef71738e64239e269eb data/minecraft/tags/block/needs_iron_tool.json
+962bde6fec08202b94cc1e8865fe3417a706850f data/minecraft/tags/block/needs_stone_tool.json

@@ -1,0 +1,64 @@
+package com.leclowndu93150.extrautils2.block.generator;
+
+import com.leclowndu93150.extrautils2.block.XUEntityBlock;
+import com.leclowndu93150.extrautils2.blockentity.generator.GeneratorTile;
+import com.leclowndu93150.extrautils2.blockentity.generator.HandCrankTile;
+import com.leclowndu93150.extrautils2.data.power.GpAttachments;
+import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+
+public class GeneratorBlock extends XUEntityBlock {
+    public final GeneratorType generatorType;
+
+    public GeneratorBlock(GeneratorType type, BlockBehaviour.Properties props) {
+        super(props);
+        this.generatorType = type;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        if (generatorType == GeneratorType.PLAYER_WIND_UP) {
+            return new HandCrankTile(ModBlockEntities.HAND_CRANK.get(), pos, state);
+        }
+        return new GeneratorTile(ModBlockEntities.GENERATOR.get(), pos, state);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (generatorType == GeneratorType.PLAYER_WIND_UP) {
+            return (BlockEntityTicker<T>) createTicker(type, ModBlockEntities.HAND_CRANK.get(), HandCrankTile::tick);
+        }
+        return (BlockEntityTicker<T>) createTicker(type, ModBlockEntities.GENERATOR.get(), GeneratorTile::tick);
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (placer instanceof ServerPlayer sp && level.getBlockEntity(pos) instanceof GeneratorTile tile) {
+            int freq = sp.getData(GpAttachments.GP_DATA.get()).frequency;
+            if (freq != 0) tile.setOwnerFrequency(freq);
+        }
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (generatorType == GeneratorType.PLAYER_WIND_UP) {
+            if (level.getBlockEntity(pos) instanceof HandCrankTile crank) {
+                return crank.onUse(player);
+            }
+        }
+        return super.useWithoutItem(state, level, pos, player, hit);
+    }
+}

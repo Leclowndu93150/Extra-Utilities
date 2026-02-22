@@ -1,0 +1,112 @@
+package com.leclowndu93150.extrautils2.client;
+
+import com.leclowndu93150.extrautils2.ExtraUtilities;
+import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
+import com.leclowndu93150.extrautils2.block.generator.GeneratorType;
+import com.leclowndu93150.extrautils2.client.power.ClientGpData;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+
+import java.util.List;
+
+@EventBusSubscriber(modid = ExtraUtilities.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+public class GpHudOverlay {
+
+    @SubscribeEvent
+    public static void onRenderGui(RenderGuiEvent.Post event) {
+        if (ClientGpData.hasNoPower()) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.options.hideGui) return;
+
+        GuiGraphics graphics = event.getGuiGraphics();
+        Font font = mc.font;
+        int screenWidth = graphics.guiWidth();
+
+        float created = ClientGpData.gpCreated;
+        float drained = ClientGpData.gpDrained;
+        boolean powered = ClientGpData.isPowered();
+
+        String label = String.format("GP: %.1f / %.1f", drained, created);
+        int color = powered ? 0xFFFFFF00 : 0xFFFF4444;
+
+        int x = screenWidth - font.width(label) - 4;
+        int y = 4;
+        graphics.drawString(font, label, x, y, color);
+    }
+
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        Block block = Block.byItem(event.getItemStack().getItem());
+        if (!(block instanceof GeneratorBlock gen)) return;
+        addGeneratorTooltip(event.getToolTip(), gen.generatorType);
+    }
+
+    private static void addGeneratorTooltip(List<Component> tooltip, GeneratorType type) {
+        float base = type.baseGp;
+
+        switch (type) {
+            case SOLAR -> {
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.solar.1").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.solar.2").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.solar.3").withStyle(ChatFormatting.GRAY));
+            }
+            case LUNAR -> {
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.lunar.1").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.lunar.2").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.lunar.3").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.lunar.4").withStyle(ChatFormatting.GRAY));
+            }
+            case LAVA ->
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.lava").withStyle(ChatFormatting.GRAY));
+            case WATER -> {
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.water.1").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.water.2").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.water.3").withStyle(ChatFormatting.GRAY));
+            }
+            case WIND -> {
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.wind.1").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.wind.2").withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.wind.3").withStyle(ChatFormatting.GRAY));
+            }
+            case FIRE ->
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.fire").withStyle(ChatFormatting.GRAY));
+            case PLAYER_WIND_UP ->
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.manual").withStyle(ChatFormatting.GRAY));
+            case DRAGON_EGG ->
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.dragon_egg").withStyle(ChatFormatting.GRAY));
+            case CREATIVE ->
+                tooltip.add(Component.translatable("tooltip.extrautils2.generator.creative").withStyle(ChatFormatting.GRAY));
+        }
+
+        tooltip.add(Component.literal(ChatFormatting.YELLOW + "Base Power: " + ChatFormatting.WHITE + base + " GP"));
+
+        if (type.hasEfficiencyLoss()) {
+            boolean shiftHeld = Screen.hasShiftDown();
+            if (!shiftHeld) {
+                tooltip.add(Component.literal(ChatFormatting.DARK_GRAY + "Progressive Efficiency Loss:"));
+                tooltip.add(Component.literal(ChatFormatting.DARK_GRAY + "" + ChatFormatting.ITALIC + "   <Press Shift for details>"));
+            } else {
+                tooltip.add(Component.literal(ChatFormatting.GRAY + "Progressive Efficiency Loss:"));
+                for (var entry : type.getCaps().entrySet()) {
+                    float threshold = entry.getKey();
+                    float loss = (1f - entry.getValue()) * 100f;
+                    Float next = type.getCaps().higherKey(threshold);
+                    String range = next == null
+                            ? String.format("Above %.0f GP", threshold)
+                            : String.format("%.0f to %.0f GP", threshold, next);
+                    tooltip.add(Component.literal(ChatFormatting.GRAY + "   " + range + ": " + String.format("%.0f%%", loss) + " loss"));
+                }
+            }
+        }
+    }
+}

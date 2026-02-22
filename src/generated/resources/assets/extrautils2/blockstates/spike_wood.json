@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "extrautils2:block/spike_wood",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "extrautils2:block/spike_wood",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "extrautils2:block/spike_wood",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "extrautils2:block/spike_wood",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "extrautils2:block/spike_wood"
+    },
+    "facing=west": {
+      "model": "extrautils2:block/spike_wood",
+      "x": 90,
+      "y": 270
+    }
+  }
+}
