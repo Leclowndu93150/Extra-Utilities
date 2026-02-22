@@ -90,5 +90,8 @@ public class DrumBlockEntity extends XUBlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         super.loadAdditional(tag, lookupProvider);
         tank.readFromNBT(lookupProvider, tag);
+        if (level != null && level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
     }
 }

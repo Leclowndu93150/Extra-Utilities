@@ -148,7 +148,13 @@ public class ModBlocks {
     // --- Helpers ---
     private static DeferredBlock<GeneratorBlock> registerGenerator(GeneratorType type) {
         String name = "generator_" + type.name().toLowerCase();
-        return ModRegistries.registerBlock(name, () -> new GeneratorBlock(type, XUBlock.defaultProps()));
+        BlockBehaviour.Properties props = XUBlock.defaultProps();
+        if (type == GeneratorType.FIRE || type == GeneratorType.WIND || type == GeneratorType.WATER
+                || type == GeneratorType.SOLAR || type == GeneratorType.LUNAR) {
+            props = props.noOcclusion();
+        }
+        final BlockBehaviour.Properties finalProps = props;
+        return ModRegistries.registerBlock(name, () -> new GeneratorBlock(type, finalProps));
     }
 
     private static DeferredBlock<CompressedBlock> registerCompressed(String name, int level, Block base) {

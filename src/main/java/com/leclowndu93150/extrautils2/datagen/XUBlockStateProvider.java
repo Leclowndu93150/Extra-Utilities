@@ -116,19 +116,19 @@ public class XUBlockStateProvider extends BlockStateProvider {
     }
 
     private void generators() {
-        generatorBlock(ModBlocks.GENERATOR_SOLAR.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
-        generatorBlock(ModBlocks.GENERATOR_LUNAR.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
-        generatorBlock(ModBlocks.GENERATOR_LAVA.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
-        generatorBlock(ModBlocks.GENERATOR_WATER.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
-        generatorBlock(ModBlocks.GENERATOR_WIND.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
-        generatorBlock(ModBlocks.GENERATOR_FIRE.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
-        generatorBlock(ModBlocks.GENERATOR_PLAYER_WIND_UP.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
-        generatorBlock(ModBlocks.GENERATOR_DRAGON_EGG.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
-        generatorBlock(ModBlocks.GENERATOR_CREATIVE.get(), "machine/generator_off", "machine/generator_on", "machine/generator_off");
+        simpleBlock(ModBlocks.GENERATOR_SOLAR.get(), models().getExistingFile(modLoc("block/generator_solar")));
+        simpleBlock(ModBlocks.GENERATOR_LUNAR.get(), models().getExistingFile(modLoc("block/generator_lunar")));
+        simpleBlock(ModBlocks.GENERATOR_LAVA.get(), models().getExistingFile(modLoc("block/generator_lava")));
+        simpleBlock(ModBlocks.GENERATOR_WATER.get(), models().getExistingFile(modLoc("block/generator_water")));
+        simpleBlock(ModBlocks.GENERATOR_WIND.get(), models().getExistingFile(modLoc("block/generator_wind")));
+        simpleBlock(ModBlocks.GENERATOR_FIRE.get(), models().getExistingFile(modLoc("block/generator_fire")));
+        cubeBottomTopGenerator(ModBlocks.GENERATOR_PLAYER_WIND_UP.get(), "panel_stone_side", "panel_stone_base");
+        cubeBottomTopGenerator(ModBlocks.GENERATOR_DRAGON_EGG.get(), "panel_egg_side", "panel_egg");
+        cubeBottomTopGenerator(ModBlocks.GENERATOR_CREATIVE.get(), "panel_creative", "panel_creative_top");
     }
 
-    private void generatorBlock(Block block, String side, String front, String top) {
-        ModelFile model = models().orientable(name(block), tex(side), tex(front), tex(top));
+    private void cubeBottomTopGenerator(Block block, String side, String topBottom) {
+        ModelFile model = models().cubeBottomTop(name(block), tex(side), tex(topBottom), tex(topBottom));
         simpleBlock(block, model);
     }
 

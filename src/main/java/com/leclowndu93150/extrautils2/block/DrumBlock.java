@@ -90,6 +90,10 @@ public class DrumBlock extends Block implements EntityBlock {
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
         if (FluidUtil.interactWithFluidHandler(player, hand, drum.getTank())) {
+            if (!level.isClientSide) {
+                drum.setChanged();
+                level.sendBlockUpdated(pos, state, state, 3);
+            }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

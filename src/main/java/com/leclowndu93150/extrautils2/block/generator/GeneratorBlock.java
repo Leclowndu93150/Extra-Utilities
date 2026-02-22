@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -18,14 +19,28 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class GeneratorBlock extends XUEntityBlock {
+    private static final VoxelShape PANEL_SHAPE = Shapes.box(0, 0, 0, 1, 0.25, 1);
+
     public final GeneratorType generatorType;
 
     public GeneratorBlock(GeneratorType type, BlockBehaviour.Properties props) {
         super(props);
         this.generatorType = type;
     }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
+        if (generatorType == GeneratorType.SOLAR || generatorType == GeneratorType.LUNAR) {
+            return PANEL_SHAPE;
+        }
+        return Shapes.block();
+    }
+
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

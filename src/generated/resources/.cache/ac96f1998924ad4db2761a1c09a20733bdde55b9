@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-22T21:43:51.3842412	Block States: extrautils2
+// 1.21.1	2026-02-22T23:24:32.0976428	Block States: extrautils2
 7c9f6f624904c77c949059942e3c69c941a7e581 assets/extrautils2/blockstates/analog_crafter.json
 c4a28fcc01ade153ba7cf34e4b2a924ada0e7a3a assets/extrautils2/blockstates/angel_block.json
 119daecbd5c48e144a787cb24c9d166f5eda7e07 assets/extrautils2/blockstates/compressed_cobblestone_1.json
@@ -106,15 +106,9 @@ aa9d23c961681d0feb9e98f02b992f8b4e0bce55 assets/extrautils2/models/block/cursed_
 79a3b95a7fb86a9c992a9261c396d2deddc3a338 assets/extrautils2/models/block/decorative_bedrock.json
 984e5936e4b15690a17f3494db29538cddc7057e assets/extrautils2/models/block/decorative_solid.json
 92733eaf07b7227a990a75a16c2dbffd7990f3f1 assets/extrautils2/models/block/decorative_solid_wood.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_creative.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_dragon_egg.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_fire.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_lava.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_lunar.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_player_wind_up.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_solar.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_water.json
-c568ec2bfcf9357a699fb4f0ac266632764c1461 assets/extrautils2/models/block/generator_wind.json
+ec82c2d04893b12a81312cc314ba29fe939f1019 assets/extrautils2/models/block/generator_creative.json
+019f97c0c2072d6dffa5ee71d56de32a12ad8238 assets/extrautils2/models/block/generator_dragon_egg.json
+9cf7441c3fb72a1b0f8934303cc98e1428d6ba20 assets/extrautils2/models/block/generator_player_wind_up.json
 eba39cc888546f9394d300dfac7d60c958806f8d assets/extrautils2/models/block/indexer.json
 57fb54139f89a3cabdc5dc70a4550ea0058a6b0b assets/extrautils2/models/block/miner.json
 22d57939022126f0963b4ec857779d06436b0ee2 assets/extrautils2/models/block/mob_spawner.json

@@ -1,6 +1,7 @@
 package com.leclowndu93150.extrautils2.client;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
+import com.leclowndu93150.extrautils2.api.power.IGpSource;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorType;
 import com.leclowndu93150.extrautils2.client.power.ClientGpData;
@@ -11,9 +12,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.bus.api.SubscribeEvent;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
@@ -22,26 +26,38 @@ import java.util.List;
 @EventBusSubscriber(modid = ExtraUtilities.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class GpHudOverlay {
 
+    private static boolean lookingAtGpBlock = false;
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null) {
+            lookingAtGpBlock = false;
+            return;
+        }
+        HitResult hit = mc.hitResult;
+        if (hit instanceof BlockHitResult blockHit) {
+            lookingAtGpBlock = mc.level.getBlockEntity(blockHit.getBlockPos()) instanceof IGpSource;
+        } else {
+            lookingAtGpBlock = false;
+        }
+    }
+
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
+        if (!lookingAtGpBlock) return;
         if (ClientGpData.hasNoPower()) return;
+
         Minecraft mc = Minecraft.getInstance();
         if (mc.options.hideGui) return;
 
         GuiGraphics graphics = event.getGuiGraphics();
         Font font = mc.font;
-        int screenWidth = graphics.guiWidth();
 
-        float created = ClientGpData.gpCreated;
-        float drained = ClientGpData.gpDrained;
-        boolean powered = ClientGpData.isPowered();
-
-        String label = String.format("GP: %.1f / %.1f", drained, created);
-        int color = powered ? 0xFFFFFF00 : 0xFFFF4444;
-
-        int x = screenWidth - font.width(label) - 4;
-        int y = 4;
-        graphics.drawString(font, label, x, y, color);
+        String label = String.format("GP: %.1f / %.1f", ClientGpData.gpDrained, ClientGpData.gpCreated);
+        int x = (graphics.guiWidth() - font.width(label)) / 2;
+        int y = graphics.guiHeight() - 68;
+        graphics.drawString(font, label, x, y, 0xFFFFFF);
     }
 
     @SubscribeEvent

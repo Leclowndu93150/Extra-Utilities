@@ -1,8 +1,8 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "front": "extrautils2:block/machine/generator_on",
-    "side": "extrautils2:block/machine/generator_off",
-    "top": "extrautils2:block/machine/generator_off"
+    "bottom": "extrautils2:block/panel_stone_base",
+    "side": "extrautils2:block/panel_stone_side",
+    "top": "extrautils2:block/panel_stone_base"
   }
 }
