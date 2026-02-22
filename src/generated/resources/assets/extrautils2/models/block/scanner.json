@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "extrautils2:block/interact_scanner",
-    "side": "extrautils2:block/interact_side",
-    "top": "extrautils2:block/interact_side"
-  }
-}

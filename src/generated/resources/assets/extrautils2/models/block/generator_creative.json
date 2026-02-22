@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "extrautils2:block/panel_creative_top",
-    "side": "extrautils2:block/panel_creative",
-    "top": "extrautils2:block/panel_creative_top"
-  }
-}
