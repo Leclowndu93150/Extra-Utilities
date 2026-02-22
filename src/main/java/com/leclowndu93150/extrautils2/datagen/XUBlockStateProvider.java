@@ -11,6 +11,7 @@ import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
+import net.neoforged.neoforge.client.model.generators.loaders.ObjModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class XUBlockStateProvider extends BlockStateProvider {
@@ -57,9 +58,15 @@ public class XUBlockStateProvider extends BlockStateProvider {
 
     private void spikeBlock(Block block, String type) {
         String blockName = name(block);
-        ModelFile model = models().withExistingParent(blockName, modLoc("block/spike"))
-                .texture("base", tex("spikes/spike_" + type + "_base"))
-                .texture("side", tex("spikes/spike_" + type + "_side"));
+        ModelFile model = models().getBuilder(blockName)
+                .customLoader(ObjModelBuilder::begin)
+                .modelLocation(modLoc("models/block/spike.obj"))
+                .overrideMaterialLibrary(modLoc("models/block/spike_" + type + ".mtl"))
+                .automaticCulling(false)
+                .shadeQuads(true)
+                .flipV(true)
+                .end()
+                .renderType("solid");
 
         getVariantBuilder(block).forAllStates(state -> {
             Direction facing = state.getValue(SpikeBlock.FACING);

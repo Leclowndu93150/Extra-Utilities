@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-22T21:09:36.2559881	Block States: extrautils2
+// 1.21.1	2026-02-22T21:43:51.3842412	Block States: extrautils2
 7c9f6f624904c77c949059942e3c69c941a7e581 assets/extrautils2/blockstates/analog_crafter.json
 c4a28fcc01ade153ba7cf34e4b2a924ada0e7a3a assets/extrautils2/blockstates/angel_block.json
 119daecbd5c48e144a787cb24c9d166f5eda7e07 assets/extrautils2/blockstates/compressed_cobblestone_1.json
@@ -132,12 +132,12 @@ ca7a907f8ed1138b2bd326451925b0ee6b35a8cf assets/extrautils2/models/block/redston
 073fc09c62d17ea2fc6615d20ebbdafb8e9e732a assets/extrautils2/models/block/scanner.json
 4c6e9f7ac03dacc55b4413ab2cdfe6ff7305ed0a assets/extrautils2/models/block/screen.json
 7b63059ff2ca4de4b483eb0548562e56ebe8af0b assets/extrautils2/models/block/sound_muffler.json
-3d8e7945ec6256e53346e41c5d2351f7dcf47c6f assets/extrautils2/models/block/spike_creative.json
-dc991a6e1eefeec8981214b598c0f3adad179588 assets/extrautils2/models/block/spike_diamond.json
-fb8b2c90961ea34d37e83acf469b06c685ce6627 assets/extrautils2/models/block/spike_gold.json
-14774d9ce41cbf67a8084f9527cc56d6690d8281 assets/extrautils2/models/block/spike_iron.json
-763906ca86eba3396a259b05a242457ecd6eb7f1 assets/extrautils2/models/block/spike_stone.json
-cfd1802201a0058a94b5ef3096c53dc443bab6de assets/extrautils2/models/block/spike_wood.json
+a9d0d7d0c86abbeb78ad6b0cc5834086086d8cc4 assets/extrautils2/models/block/spike_creative.json
+53ad93b292c90e6cf7b1584342f7bd6f6df93c37 assets/extrautils2/models/block/spike_diamond.json
+c9ec88a2ebd212de22fbf381368687e11b48ef4d assets/extrautils2/models/block/spike_gold.json
+477be4916d5ec9b57255ef415e899573aada5a00 assets/extrautils2/models/block/spike_iron.json
+cb3d0735ee6854b7afdedacbe287dacffa99fe1e assets/extrautils2/models/block/spike_stone.json
+792bd706d61cd0baecf269bbf0063f3b07bae3f3 assets/extrautils2/models/block/spike_wood.json
 f7ccdefe90c7599f5b305b11ef0e1aba3dd91a7e assets/extrautils2/models/block/spotlight.json
 b4afead81d62723be71fa815167608349460c547 assets/extrautils2/models/block/synergy_unit.json
 0ba19be0e0ca720d24fe64eedd701d471ccbba88 assets/extrautils2/models/block/teleporter.json

@@ -44,33 +44,42 @@ public class SpikeBlock extends XUBlock {
             this.damage = damage;
         }
 
-        public void hurt(Level level, BlockPos pos, BlockState state, LivingEntity living) {
+        public boolean hurt(Level level, BlockPos pos, BlockState state, LivingEntity living) {
             switch (this) {
                 case WOOD -> {
-                    if (living.getHealth() <= damage) return;
-                    living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), Math.min(damage, living.getHealth() - 0.5f));
+                    if (living.getHealth() <= damage) return false;
+                    return living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), Math.min(damage, living.getHealth() - 0.5f));
                 }
                 case GOLD -> {
-                    living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), damage);
-                    living.getPersistentData().putBoolean("xu2_spike_gold", true);
+                    boolean did = living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), damage);
+                    if (did) {
+                        living.getPersistentData().putBoolean("xu2_spike_gold", true);
+                    }
+                    return did;
                 }
                 case DIAMOND -> {
                     float min = Math.min(damage, living.getHealth() - 1.0e-4f);
-                    living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), min);
+                    boolean did = living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), min);
                     if (living.getHealth() <= 0.001f && level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
                         var fake = FakePlayerFactory.getMinecraft(serverLevel);
                         living.skipDropExperience();
-                        living.hurt(level.damageSources().playerAttack(fake), damage * 1000.0f);
+                        did |= living.hurt(level.damageSources().playerAttack(fake), damage * 1000.0f);
                     }
+                    return did;
                 }
                 case CREATIVE -> {
                     living.skipDropExperience();
                     int i = 0;
+                    boolean did = false;
                     while (i < 100 && living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE_CREATIVE), damage)) {
                         i++;
+                        did = true;
                     }
+                    return did;
                 }
-                default -> living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), damage);
+                default -> {
+                    return living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), damage);
+                }
             }
         }
 
@@ -133,7 +142,22 @@ public class SpikeBlock extends XUBlock {
         if (level.isClientSide) return;
         if (isIgnored(entity)) return;
         if (!(entity instanceof LivingEntity living)) return;
-        spikeType.hurt(level, pos, state, living);
+        hurtEntity(level, pos, state, living);
+    }
+
+    @Override
+    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+        if (!level.isClientSide && state.getValue(FACING) == Direction.UP && entity instanceof LivingEntity living && !isIgnored(entity)) {
+            hurtEntity(level, pos, state, living);
+        }
+        super.stepOn(level, pos, state, entity);
+    }
+
+    private void hurtEntity(Level level, BlockPos pos, BlockState state, LivingEntity living) {
+        if (spikeType.hurt(level, pos, state, living)) {
+            living.setDeltaMovement(0.0, living.getDeltaMovement().y, 0.0);
+            living.hurtMarked = true;
+        }
     }
 
     private boolean isIgnored(Entity entity) {

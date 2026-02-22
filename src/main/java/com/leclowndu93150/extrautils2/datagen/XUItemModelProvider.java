@@ -32,13 +32,6 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.SOUND_MUFFLER.get());
         blockItem(ModBlocks.REDSTONE_CLOCK.get());
 
-        blockItem(ModBlocks.SPIKE_WOOD.get());
-        blockItem(ModBlocks.SPIKE_STONE.get());
-        blockItem(ModBlocks.SPIKE_IRON.get());
-        blockItem(ModBlocks.SPIKE_GOLD.get());
-        blockItem(ModBlocks.SPIKE_DIAMOND.get());
-        blockItem(ModBlocks.SPIKE_CREATIVE.get());
-
         blockItem(ModBlocks.COMPRESSED_COBBLESTONE_1.get());
         blockItem(ModBlocks.COMPRESSED_COBBLESTONE_2.get());
         blockItem(ModBlocks.COMPRESSED_COBBLESTONE_3.get());

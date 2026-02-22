@@ -1,7 +1,9 @@
 {
-  "parent": "extrautils2:block/spike",
-  "textures": {
-    "base": "extrautils2:block/spikes/spike_wood_base",
-    "side": "extrautils2:block/spikes/spike_wood_side"
-  }
+  "automatic_culling": false,
+  "flip_v": true,
+  "loader": "neoforge:obj",
+  "model": "extrautils2:models/block/spike.obj",
+  "mtl_override": "extrautils2:models/block/spike_wood.mtl",
+  "render_type": "minecraft:solid",
+  "shade_quads": true
 }

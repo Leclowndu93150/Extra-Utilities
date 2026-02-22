@@ -1,0 +1,5 @@
+newmtl base
+map_Kd extrautils2:block/spikes/spike_creative_base
+
+newmtl side
+map_Kd extrautils2:block/spikes/spike_creative_side

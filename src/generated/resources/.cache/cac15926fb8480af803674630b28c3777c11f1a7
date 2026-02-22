@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-22T21:14:32.4849466	Item Models: extrautils2
+// 1.21.1	2026-02-22T21:54:17.9987517	Item Models: extrautils2
 c2c2c66eb3a16dfdc07b58e1e878bafbcbb9dbf6 assets/extrautils2/models/item/analog_crafter.json
 3e7a2d3b7ce0ed46e8a1c7ac0b10694bb5e8151a assets/extrautils2/models/item/angel_block.json
 fbfbf20b8bc334ef17bc2f55644b08260ba6005e assets/extrautils2/models/item/compressed_cobblestone_1.json
@@ -57,12 +57,6 @@ d2e28b0b97bcb4bab32547d461297cf91fb01c99 assets/extrautils2/models/item/quarry.j
 b216887e4a3911cb13c970ff00ebd2f0dd79321b assets/extrautils2/models/item/scanner.json
 d6740a0dfa0442631144388505ac95c32b4a0f89 assets/extrautils2/models/item/screen.json
 f31a2665bc62f6d4bb9b4f1db89a541db5f9ceed assets/extrautils2/models/item/sound_muffler.json
-0863992ab1f3ff569ddea4ef33a95a6a10084871 assets/extrautils2/models/item/spike_creative.json
-2823688726c17d21fc16420cdfcfbcf526a62014 assets/extrautils2/models/item/spike_diamond.json
-d6517518f6f3669d344de55975a5b209a523e7da assets/extrautils2/models/item/spike_gold.json
-8c2c57201c715e61f63fa3c40fc853337886a3b4 assets/extrautils2/models/item/spike_iron.json
-25d123c351e30c2d7928c628a36d62eb5d09523a assets/extrautils2/models/item/spike_stone.json
-4a74ed3fe255ecb43bf1cf1ecea030e7fde90232 assets/extrautils2/models/item/spike_wood.json
 9c0c7d2de1047da3f8e39b4a76041538ff8994a4 assets/extrautils2/models/item/spotlight.json
 b7b424ec173c84275b1fe602e426d67ada426716 assets/extrautils2/models/item/synergy_unit.json
 8ad63aca125b90c1389b3e1f616859c826979200 assets/extrautils2/models/item/teleporter.json
