@@ -1,6 +1,7 @@
 package com.leclowndu93150.extrautils2.datagen;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
+import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import net.minecraft.core.Direction;
@@ -39,7 +40,15 @@ public class XUBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.OPINIUM_BLOCK.get(), cubeAll(ModBlocks.OPINIUM_BLOCK.get(), "demon_block"));
         simpleBlock(ModBlocks.REDSTONE_LANTERN.get(), cubeAll(ModBlocks.REDSTONE_LANTERN.get(), "redstone_lantern"));
         simpleBlock(ModBlocks.SOUND_MUFFLER.get(), cubeAll(ModBlocks.SOUND_MUFFLER.get(), "sound_muffler"));
-        simpleBlock(ModBlocks.REDSTONE_CLOCK.get(), cubeAll(ModBlocks.REDSTONE_CLOCK.get(), "redstone_clock_off"));
+        ModelFile clockOff = models().cubeAll("redstone_clock_off_model", tex("redstone_clock_off"));
+        ModelFile clockOn = models().cubeAll("redstone_clock_on_model", tex("redstone_clock_on"));
+        getVariantBuilder(ModBlocks.REDSTONE_CLOCK.get())
+                .partialState().with(RedstoneClockBlock.POWER_STATE, RedstoneClockBlock.PowerState.DISABLED)
+                .modelForState().modelFile(clockOff).addModel()
+                .partialState().with(RedstoneClockBlock.POWER_STATE, RedstoneClockBlock.PowerState.ENABLED_NOT_POWERED)
+                .modelForState().modelFile(clockOff).addModel()
+                .partialState().with(RedstoneClockBlock.POWER_STATE, RedstoneClockBlock.PowerState.ENABLED_POWERED)
+                .modelForState().modelFile(clockOn).addModel();
 
         spikes();
         compressedBlocks();

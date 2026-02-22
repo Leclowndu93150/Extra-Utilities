@@ -5,11 +5,13 @@ import com.leclowndu93150.extrautils2.api.power.IGpSource;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorType;
 import com.leclowndu93150.extrautils2.client.power.ClientGpData;
+import com.leclowndu93150.extrautils2.network.power.GpBlockInfoRequestPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
@@ -20,6 +22,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -27,19 +30,33 @@ import java.util.List;
 public class GpHudOverlay {
 
     private static boolean lookingAtGpBlock = false;
+    private static BlockPos lookedAtPos = null;
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) {
             lookingAtGpBlock = false;
+            lookedAtPos = null;
+            ClientGpData.blockRawGp = Float.NaN;
+            ClientGpData.blockEffectiveGp = Float.NaN;
             return;
         }
         HitResult hit = mc.hitResult;
-        if (hit instanceof BlockHitResult blockHit) {
-            lookingAtGpBlock = mc.level.getBlockEntity(blockHit.getBlockPos()) instanceof IGpSource;
+        if (hit instanceof BlockHitResult blockHit && mc.level.getBlockEntity(blockHit.getBlockPos()) instanceof IGpSource) {
+            lookingAtGpBlock = true;
+            BlockPos pos = blockHit.getBlockPos();
+            if (!pos.equals(lookedAtPos)) {
+                ClientGpData.blockRawGp = Float.NaN;
+                ClientGpData.blockEffectiveGp = Float.NaN;
+                lookedAtPos = pos;
+            }
+            PacketDistributor.sendToServer(new GpBlockInfoRequestPacket(pos));
         } else {
             lookingAtGpBlock = false;
+            lookedAtPos = null;
+            ClientGpData.blockRawGp = Float.NaN;
+            ClientGpData.blockEffectiveGp = Float.NaN;
         }
     }
 
@@ -56,8 +73,25 @@ public class GpHudOverlay {
 
         String label = String.format("GP: %.1f / %.1f", ClientGpData.gpDrained, ClientGpData.gpCreated);
         int x = (graphics.guiWidth() - font.width(label)) / 2;
-        int y = graphics.guiHeight() - 68;
+        int y = graphics.guiHeight() - 68 - (int)(graphics.guiHeight() * 0.05f);
         graphics.drawString(font, label, x, y, 0xFFFFFF);
+
+        float raw = ClientGpData.blockRawGp;
+        float eff = ClientGpData.blockEffectiveGp;
+        if (!Float.isNaN(raw) && raw != 0f) {
+            y += font.lineHeight + 1;
+            String genLine = raw < 0f
+                    ? String.format("Power Drain: %.2f GP", -raw)
+                    : String.format("Power Generating: %.2f GP", raw);
+            graphics.drawString(font, genLine, (graphics.guiWidth() - font.width(genLine)) / 2, y, 0xFFFFFF);
+
+            if (!Float.isNaN(eff) && Math.abs(eff - raw) > 0.001f) {
+                y += font.lineHeight + 1;
+                float lossPct = (1f - eff / raw) * 100f;
+                String effLine = String.format("Effective Rate: %.2f GP (%.0f%% Power Loss)", eff, lossPct);
+                graphics.drawString(font, effLine, (graphics.guiWidth() - font.width(effLine)) / 2, y, 0xFFFFFF);
+            }
+        }
     }
 
     @SubscribeEvent

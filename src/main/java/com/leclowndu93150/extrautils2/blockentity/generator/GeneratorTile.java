@@ -92,6 +92,11 @@ public class GeneratorTile extends XUBlockEntity implements IGpSource, IPassiveG
         return worldPosition;
     }
 
+    public GeneratorType getGeneratorType() {
+        if (getBlockState().getBlock() instanceof GeneratorBlock gen) return gen.generatorType;
+        return null;
+    }
+
     @Override
     public String getSourceName() {
         return ((GeneratorBlock) getBlockState().getBlock()).generatorType.name();

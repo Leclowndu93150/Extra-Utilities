@@ -2,6 +2,7 @@ package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.block.CompressedBlock;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
+import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
 import com.leclowndu93150.extrautils2.block.XUBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
@@ -126,8 +127,8 @@ public class ModBlocks {
             "spotlight", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> SOUND_MUFFLER = ModRegistries.registerBlock(
             "sound_muffler", () -> new XUBlock(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> REDSTONE_CLOCK = ModRegistries.registerBlock(
-            "redstone_clock", () -> new XUBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<RedstoneClockBlock> REDSTONE_CLOCK = ModRegistries.registerBlock(
+            "redstone_clock", () -> new RedstoneClockBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> REDSTONE_LANTERN = ModRegistries.registerBlock(
             "redstone_lantern", () -> new XUBlock(BlockBehaviour.Properties.of().strength(0.3f).lightLevel(s -> 15)));
     public static final DeferredBlock<Block> SUPER_MOB_SPAWNER = ModRegistries.registerBlock(

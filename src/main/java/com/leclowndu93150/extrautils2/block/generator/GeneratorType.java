@@ -17,7 +17,7 @@ public enum GeneratorType {
         @Override
         public float computeGp(GeneratorTile tile, Level level) {
             BlockPos pos = tile.getBlockPos();
-            if (!level.canSeeSky(pos.above())) return 0f;
+            if (!level.canSeeSky(pos)) return 0f;
             float mult = isDaytime(level) ? 1f : 0f;
             if (level.isRaining()) mult *= 0.95f;
             return baseGp * mult;
@@ -28,10 +28,9 @@ public enum GeneratorType {
         @Override
         public float computeGp(GeneratorTile tile, Level level) {
             BlockPos pos = tile.getBlockPos();
-            if (!level.canSeeSky(pos.above())) return 0f;
+            if (!level.canSeeSky(pos)) return 0f;
             if (isDaytime(level)) return 0f;
             float moonBoost = 1f + level.getMoonBrightness() * 0.25f;
-            if (level.isRaining()) moonBoost *= 0.95f;
             return baseGp * moonBoost;
         }
     },
@@ -64,7 +63,7 @@ public enum GeneratorType {
                     BlockState above = level.getBlockState(offset.above());
                     if (isWater(above)) continue;
                     int lvl = state.getValue(LiquidBlock.LEVEL);
-                    if (lvl < 8) v += (lvl + 1) / 2f;
+                    if (lvl > 0 && lvl < 8) v += (8 - lvl) / 4f;
                 }
             }
             return baseGp * v;
@@ -109,7 +108,7 @@ public enum GeneratorType {
         @Override
         public float computeGp(GeneratorTile tile, Level level) {
             if (!(tile instanceof HandCrankTile crank)) return 0f;
-            return baseGp * Math.min(crank.getCrankTime(), 0.5f) * 2f;
+            return baseGp * Math.min(crank.getCrankTime(), 0.5f) * 30f;
         }
     },
 
@@ -168,7 +167,8 @@ public enum GeneratorType {
     }
 
     private static boolean isDaytime(Level level) {
-        return Mth.cos(level.getSunAngle(1f) * (float)(Math.PI * 2)) >= 0f;
+        float angle = (float)(Mth.frac(level.dayTime() / 24000.0 - 0.25));
+        return Mth.cos(angle * (float)(Math.PI * 2)) >= 0f;
     }
 
     public boolean hasEfficiencyLoss() {

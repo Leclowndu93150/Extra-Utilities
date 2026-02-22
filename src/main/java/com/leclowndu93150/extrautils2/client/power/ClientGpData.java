@@ -7,6 +7,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 public class ClientGpData {
     public static float gpCreated;
     public static float gpDrained;
+    public static float blockRawGp = Float.NaN;
+    public static float blockEffectiveGp = Float.NaN;
 
     public static boolean isPowered() {
         return gpDrained <= gpCreated;

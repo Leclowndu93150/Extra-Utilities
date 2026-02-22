@@ -3,7 +3,7 @@ package com.leclowndu93150.extrautils2.block.generator;
 import com.leclowndu93150.extrautils2.block.XUEntityBlock;
 import com.leclowndu93150.extrautils2.blockentity.generator.GeneratorTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.HandCrankTile;
-import com.leclowndu93150.extrautils2.data.power.GpAttachments;
+import com.leclowndu93150.extrautils2.power.GpManager;
 import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,8 +62,8 @@ public class GeneratorBlock extends XUEntityBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         if (placer instanceof ServerPlayer sp && level.getBlockEntity(pos) instanceof GeneratorTile tile) {
-            int freq = sp.getData(GpAttachments.GP_DATA.get()).frequency;
-            if (freq != 0) tile.setOwnerFrequency(freq);
+            int freq = GpManager.INSTANCE.assignFrequency(sp);
+            tile.setOwnerFrequency(freq);
         }
     }
 
