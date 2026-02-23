@@ -5,9 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,6 +27,9 @@ public class RedstoneClockBlock extends Block {
 
     public static final EnumProperty<PowerState> POWER_STATE = EnumProperty.create("power_state", PowerState.class);
 
+    private boolean canProvidePower = true;
+    private boolean changing = false;
+
     public RedstoneClockBlock(BlockBehaviour.Properties props) {
         super(props);
         registerDefaultState(stateDefinition.any().setValue(POWER_STATE, PowerState.DISABLED));
@@ -38,71 +41,90 @@ public class RedstoneClockBlock extends Block {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-        return defaultBlockState().setValue(POWER_STATE, PowerState.DISABLED);
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        if (!level.isClientSide) scheduleCycle(level, pos, state);
     }
 
     @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        level.scheduleTick(pos, this, 1);
-    }
-
-    @Override
-    public boolean isSignalSource(BlockState state) {
+    protected boolean isSignalSource(BlockState state) {
         return true;
     }
 
     @Override
-    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return state.getValue(POWER_STATE) == PowerState.ENABLED_POWERED ? 15 : 0;
+    public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
+        return false;
     }
 
     @Override
-    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+    protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        return canProvidePower && state.getValue(POWER_STATE) == PowerState.ENABLED_POWERED ? 15 : 0;
+    }
+
+    @Override
+    protected int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         return 0;
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        if (level.isClientSide) return;
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        if (changing || level.isClientSide) return;
         PowerState ps = state.getValue(POWER_STATE);
-        boolean externallyPowered = isExternallyPowered(level, pos);
-
-        if (externallyPowered && ps != PowerState.DISABLED) {
+        boolean powered = isExternallyPowered(level, pos);
+        changing = true;
+        if (powered && ps != PowerState.DISABLED) {
             level.setBlock(pos, state.setValue(POWER_STATE, PowerState.DISABLED), 3);
-        } else if (!externallyPowered && ps == PowerState.DISABLED) {
+            level.updateNeighborsAt(pos, this);
+        } else if (!powered && ps == PowerState.DISABLED) {
             scheduleCycle(level, pos, state);
         }
+        changing = false;
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource rand) {
         if (state.getValue(POWER_STATE) == PowerState.DISABLED) return;
-        if (isExternallyPowered(level, pos)) {
-            level.setBlock(pos, state.setValue(POWER_STATE, PowerState.DISABLED), 3);
-            return;
+        int l = (int)(level.getGameTime() % 20L);
+        changing = true;
+        if (l < 2) {
+            level.setBlock(pos, state.setValue(POWER_STATE, PowerState.ENABLED_POWERED), 3);
+            level.updateNeighborsAt(pos, this);
+            level.scheduleTick(pos, this, 2 - l);
+        } else {
+            level.setBlock(pos, state.setValue(POWER_STATE, PowerState.ENABLED_NOT_POWERED), 3);
+            level.updateNeighborsAt(pos, this);
+            if (isExternallyPowered(level, pos)) {
+                level.setBlock(pos, state.setValue(POWER_STATE, PowerState.DISABLED), 3);
+                level.updateNeighborsAt(pos, this);
+            } else {
+                level.scheduleTick(pos, this, 20 - l);
+            }
         }
-        scheduleCycle(level, pos, state);
+        changing = false;
     }
 
     private void scheduleCycle(Level level, BlockPos pos, BlockState state) {
         int l = (int)(level.getGameTime() % 20L);
         if (l < 2) {
-            level.setBlock(pos, state.setValue(POWER_STATE, PowerState.ENABLED_POWERED), 2);
+            level.setBlock(pos, state.setValue(POWER_STATE, PowerState.ENABLED_POWERED), 3);
+            level.updateNeighborsAt(pos, this);
             level.scheduleTick(pos, this, 2 - l);
         } else {
-            level.setBlock(pos, state.setValue(POWER_STATE, PowerState.ENABLED_NOT_POWERED), 2);
+            level.setBlock(pos, state.setValue(POWER_STATE, PowerState.ENABLED_NOT_POWERED), 3);
+            level.updateNeighborsAt(pos, this);
             level.scheduleTick(pos, this, 20 - l);
         }
     }
 
     private boolean isExternallyPowered(Level level, BlockPos pos) {
+        canProvidePower = false;
+        boolean powered = false;
         for (Direction dir : Direction.values()) {
-            BlockPos neighbor = pos.relative(dir);
-            if (level.getBlockState(neighbor).getSignal(level, neighbor, dir.getOpposite()) > 0) {
-                return true;
+            if (level.getDirectSignal(pos.relative(dir), dir) > 0) {
+                powered = true;
+                break;
             }
         }
-        return false;
+        canProvidePower = true;
+        return powered;
     }
 }

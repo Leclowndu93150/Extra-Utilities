@@ -40,13 +40,13 @@ public class XUBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.OPINIUM_BLOCK.get(), cubeAll(ModBlocks.OPINIUM_BLOCK.get(), "demon_block"));
         simpleBlock(ModBlocks.REDSTONE_LANTERN.get(), cubeAll(ModBlocks.REDSTONE_LANTERN.get(), "redstone_lantern"));
         simpleBlock(ModBlocks.SOUND_MUFFLER.get(), cubeAll(ModBlocks.SOUND_MUFFLER.get(), "sound_muffler"));
-        ModelFile clockOff = models().cubeAll("redstone_clock_off_model", tex("redstone_clock_off"));
-        ModelFile clockOn = models().cubeAll("redstone_clock_on_model", tex("redstone_clock_on"));
+        ModelFile clockOff = models().cubeAll("redstone_clock", tex("redstone_clock_off"));
+        ModelFile clockOn = models().cubeAll("redstone_clock_on", tex("redstone_clock_on"));
         getVariantBuilder(ModBlocks.REDSTONE_CLOCK.get())
                 .partialState().with(RedstoneClockBlock.POWER_STATE, RedstoneClockBlock.PowerState.DISABLED)
                 .modelForState().modelFile(clockOff).addModel()
                 .partialState().with(RedstoneClockBlock.POWER_STATE, RedstoneClockBlock.PowerState.ENABLED_NOT_POWERED)
-                .modelForState().modelFile(clockOff).addModel()
+                .modelForState().modelFile(clockOn).addModel()
                 .partialState().with(RedstoneClockBlock.POWER_STATE, RedstoneClockBlock.PowerState.ENABLED_POWERED)
                 .modelForState().modelFile(clockOn).addModel();
 
