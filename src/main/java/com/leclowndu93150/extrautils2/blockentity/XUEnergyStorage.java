@@ -1,4 +1,4 @@
-package com.leclowndu93150.extrautils2.util;
+package com.leclowndu93150.extrautils2.blockentity;
 
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.energy.EnergyStorage;

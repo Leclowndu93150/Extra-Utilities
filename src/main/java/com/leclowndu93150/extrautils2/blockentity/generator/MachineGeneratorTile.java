@@ -10,7 +10,8 @@ import com.leclowndu93150.extrautils2.data.power.GpFrequency;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeStackHandler;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeType;
 import com.leclowndu93150.extrautils2.util.RedstoneState;
-import com.leclowndu93150.extrautils2.util.XUEnergyStorage;
+import com.leclowndu93150.extrautils2.blockentity.XUEnergyStorage;
+import com.leclowndu93150.extrautils2.blockentity.XUFluidTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -28,14 +29,13 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider, IGpSource {
 
     private final ItemStackHandler inventory;
-    private final @Nullable FluidTank fluidTank;
+    private final @Nullable XUFluidTank fluidTank;
     private final UpgradeStackHandler upgrades;
 
     private final XUEnergyStorage energyStorage;
@@ -62,12 +62,7 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
             }
         };
         this.fluidTank = (genType != null && genType.usesFluid())
-                ? new FluidTank(4000) {
-                    @Override
-                    protected void onContentsChanged() {
-                        setChanged();
-                    }
-                }
+                ? new XUFluidTank(4000).setListener(this::setChanged)
                 : null;
         this.upgrades = new UpgradeStackHandler(java.util.EnumSet.of(UpgradeType.SPEED), () -> {
             setChanged();
@@ -241,7 +236,7 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         return upgrades;
     }
 
-    public @Nullable FluidTank getFluidTank() {
+    public @Nullable XUFluidTank getFluidTank() {
         return fluidTank;
     }
 
