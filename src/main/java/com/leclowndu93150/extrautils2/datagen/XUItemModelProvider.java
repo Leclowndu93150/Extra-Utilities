@@ -1,9 +1,11 @@
 package com.leclowndu93150.extrautils2.datagen;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
+import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
+import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.item.AngelRingItem;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
-import com.leclowndu93150.extrautils2.registry.ModItems;
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -56,6 +58,23 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.COMPRESSED_NETHERRACK_5.get());
         blockItem(ModBlocks.COMPRESSED_NETHERRACK_6.get());
 
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_FURNACE.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_SURVIVALIST.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_CULINARY.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_POTION.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_TNT.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_LAVA.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_PINK.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_NETHERSTAR.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_ENDER.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_REDSTONE.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_OVERCLOCK.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_DRAGON.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_ICE.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_DEATH.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_ENCHANT.get());
+        machineGeneratorItem(ModBlocks.MACHINE_GENERATOR_SLIME.get());
+
         blockItem(ModBlocks.GENERATOR_SOLAR.get());
         blockItem(ModBlocks.GENERATOR_LUNAR.get());
         blockItem(ModBlocks.GENERATOR_LAVA.get());
@@ -72,7 +91,6 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.RESONATOR.get());
         blockItem(ModBlocks.CRAFTER.get());
         blockItem(ModBlocks.ANALOG_CRAFTER.get());
-        // drums use manual item models for display transforms
         blockItem(ModBlocks.SCREEN.get());
         blockItem(ModBlocks.SPOTLIGHT.get());
         blockItem(ModBlocks.POWER_TRANSMITTER.get());
@@ -102,6 +120,46 @@ public class XUItemModelProvider extends ItemModelProvider {
     private void blockItem(Block block) {
         String path = block.builtInRegistryHolder().key().location().getPath();
         withExistingParent(path, ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "block/" + path));
+    }
+
+    private void machineGeneratorItem(Block block) {
+        MachineGeneratorType type = ((MachineGeneratorBlock) block).generatorType;
+        String path = block.builtInRegistryHolder().key().location().getPath();
+        String side   = type.sideTex   != null ? type.sideTex   : "machine/machine_base_white_side";
+        String bottom = type.bottomTex != null ? type.bottomTex : "machine/machine_base_white_bottom";
+
+        var builder = getBuilder(path)
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .texture("bottom", tex(bottom))
+                .texture("side", tex(side))
+                .texture("front", tex("machine/generator_off"))
+                .renderType("minecraft:cutout");
+
+        builder.element()
+                .from(0, 0, 0).to(16, 16, 16)
+                .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(1).end()
+                .face(Direction.UP).texture("#bottom").cullface(Direction.UP).tintindex(1).end()
+                .face(Direction.NORTH).texture("#bottom").cullface(Direction.NORTH).tintindex(1).end()
+                .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).tintindex(1).end()
+                .face(Direction.WEST).texture("#side").cullface(Direction.WEST).tintindex(1).end()
+                .face(Direction.EAST).texture("#side").cullface(Direction.EAST).tintindex(1).end()
+                .end();
+
+        // Slightly in front of the north face to avoid z-fighting in item renders.
+        builder.element()
+                .from(0, 0, -0.01f).to(16, 16, 0)
+                .face(Direction.NORTH).texture("#front").end()
+                .end();
+
+        if (type.overlayTexture == null) {
+            return;
+        }
+
+        builder.texture("overlay", tex(type.overlayTexture));
+        builder.element()
+                .from(0, 16, 0).to(16, 16.01f, 16)
+                .face(Direction.UP).texture("#overlay").end()
+                .end();
     }
 
     private void handheld(String name, ResourceLocation texture) {

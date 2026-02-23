@@ -56,6 +56,23 @@ public class XULanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.COMPRESSED_NETHERRACK_5, "Quintuple Compressed Netherrack");
         addBlock(ModBlocks.COMPRESSED_NETHERRACK_6, "Sextuple Compressed Netherrack");
 
+        addBlock(ModBlocks.MACHINE_GENERATOR_FURNACE, "Furnace Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_SURVIVALIST, "Survivalist Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_CULINARY, "Culinary Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_POTION, "Potion Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_TNT, "TNT Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_LAVA, "Lava Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_PINK, "Pink Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_NETHERSTAR, "Nether Star Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_ENDER, "Ender Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_REDSTONE, "Redstone Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_OVERCLOCK, "Overclock Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_DRAGON, "Dragon's Breath Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_ICE, "Ice Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_DEATH, "Death Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_ENCHANT, "Enchantment Generator");
+        addBlock(ModBlocks.MACHINE_GENERATOR_SLIME, "Slime Generator");
+
         addBlock(ModBlocks.GENERATOR_SOLAR, "Solar Panel");
         addBlock(ModBlocks.GENERATOR_LUNAR, "Lunar Panel");
         addBlock(ModBlocks.GENERATOR_LAVA, "Lava Mill");

@@ -95,9 +95,16 @@ public class AngelRingItem extends XUItem implements ICurioItem {
             this.player = player;
         }
 
+        private boolean wasFlying = false;
+
         @Override
         public float getGp() {
-            return player.getAbilities().flying ? 32f : 1f;
+            boolean flying = player.getAbilities().flying;
+            if (flying != wasFlying) {
+                wasFlying = flying;
+                GpManager.INSTANCE.markSourceDirty(this);
+            }
+            return flying ? 32f : 1f;
         }
 
         @Override

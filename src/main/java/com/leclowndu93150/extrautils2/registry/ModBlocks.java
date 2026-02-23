@@ -7,12 +7,32 @@ import com.leclowndu93150.extrautils2.block.SpikeBlock;
 import com.leclowndu93150.extrautils2.block.XUBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorType;
+import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
+import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 public class ModBlocks {
+
+    // --- Machine Generators ---
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_FURNACE = registerMachineGenerator(MachineGeneratorType.FURNACE);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_SURVIVALIST = registerMachineGenerator(MachineGeneratorType.SURVIVALIST);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_CULINARY = registerMachineGenerator(MachineGeneratorType.CULINARY);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_POTION = registerMachineGenerator(MachineGeneratorType.POTION);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_TNT = registerMachineGenerator(MachineGeneratorType.TNT);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_LAVA = registerMachineGenerator(MachineGeneratorType.LAVA);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_PINK = registerMachineGenerator(MachineGeneratorType.PINK);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_NETHERSTAR = registerMachineGenerator(MachineGeneratorType.NETHERSTAR);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_ENDER = registerMachineGenerator(MachineGeneratorType.ENDER);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_REDSTONE = registerMachineGenerator(MachineGeneratorType.REDSTONE);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_OVERCLOCK = registerMachineGenerator(MachineGeneratorType.OVERCLOCK);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_DRAGON = registerMachineGenerator(MachineGeneratorType.DRAGON);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_ICE = registerMachineGenerator(MachineGeneratorType.ICE);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_DEATH = registerMachineGenerator(MachineGeneratorType.DEATH);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_ENCHANT = registerMachineGenerator(MachineGeneratorType.ENCHANT);
+    public static final DeferredBlock<MachineGeneratorBlock> MACHINE_GENERATOR_SLIME = registerMachineGenerator(MachineGeneratorType.SLIME);
 
     // --- Generators ---
     public static final DeferredBlock<GeneratorBlock> GENERATOR_SOLAR = registerGenerator(GeneratorType.SOLAR);
@@ -147,6 +167,11 @@ public class ModBlocks {
             "creative_harvest", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
 
     // --- Helpers ---
+    private static DeferredBlock<MachineGeneratorBlock> registerMachineGenerator(MachineGeneratorType type) {
+        String name = "machine_generator_" + type.name().toLowerCase();
+        return ModRegistries.registerBlock(name, () -> new MachineGeneratorBlock(type, XUBlock.defaultProps()));
+    }
+
     private static DeferredBlock<GeneratorBlock> registerGenerator(GeneratorType type) {
         String name = "generator_" + type.name().toLowerCase();
         BlockBehaviour.Properties props = XUBlock.defaultProps();

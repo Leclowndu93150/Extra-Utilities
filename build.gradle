@@ -100,6 +100,8 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     implementation "curse.maven:curios-309927:6529130"
+    implementation "curse.maven:jade-324717:7545219"
+    implementation "curse.maven:jei-238222:7420587"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

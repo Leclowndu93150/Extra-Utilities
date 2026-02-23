@@ -12,7 +12,7 @@ public abstract class XUEntityBlock extends XUBlock implements EntityBlock {
     }
 
     @SuppressWarnings("unchecked")
-    protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(
+    public static <T extends BlockEntity> BlockEntityTicker<T> createTicker(
             BlockEntityType<?> given,
             BlockEntityType<T> expected,
             BlockEntityTicker<? super T> ticker) {

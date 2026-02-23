@@ -3,15 +3,20 @@ package com.leclowndu93150.extrautils2.datagen;
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
+import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
+import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
+import net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.neoforged.neoforge.client.model.generators.loaders.ObjModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -125,6 +130,23 @@ public class XUBlockStateProvider extends BlockStateProvider {
     }
 
     private void generators() {
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_FURNACE.get(), MachineGeneratorType.FURNACE);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_SURVIVALIST.get(), MachineGeneratorType.SURVIVALIST);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_CULINARY.get(), MachineGeneratorType.CULINARY);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_POTION.get(), MachineGeneratorType.POTION);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_TNT.get(), MachineGeneratorType.TNT);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_LAVA.get(), MachineGeneratorType.LAVA);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_PINK.get(), MachineGeneratorType.PINK);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_NETHERSTAR.get(), MachineGeneratorType.NETHERSTAR);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_ENDER.get(), MachineGeneratorType.ENDER);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_REDSTONE.get(), MachineGeneratorType.REDSTONE);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_OVERCLOCK.get(), MachineGeneratorType.OVERCLOCK);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_DRAGON.get(), MachineGeneratorType.DRAGON);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_ICE.get(), MachineGeneratorType.ICE);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_DEATH.get(), MachineGeneratorType.DEATH);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_ENCHANT.get(), MachineGeneratorType.ENCHANT);
+        machineGenerator(ModBlocks.MACHINE_GENERATOR_SLIME.get(), MachineGeneratorType.SLIME);
+
         simpleBlock(ModBlocks.GENERATOR_SOLAR.get(), models().getExistingFile(modLoc("block/generator_solar")));
         simpleBlock(ModBlocks.GENERATOR_LUNAR.get(), models().getExistingFile(modLoc("block/generator_lunar")));
         simpleBlock(ModBlocks.GENERATOR_LAVA.get(), models().getExistingFile(modLoc("block/generator_lava")));
@@ -182,6 +204,85 @@ public class XUBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.POWER_OVERLOAD.get(), cubeAll(ModBlocks.POWER_OVERLOAD.get(), "enchanted_block"));
         simpleBlock(ModBlocks.RAINBOW_GENERATOR.get(), cubeAll(ModBlocks.RAINBOW_GENERATOR.get(), "connected/rainbow"));
         simpleBlock(ModBlocks.SYNERGY_UNIT.get(), cubeAll(ModBlocks.SYNERGY_UNIT.get(), "synergy/synergy_side"));
+    }
+
+    private void machineGenerator(MachineGeneratorBlock block, MachineGeneratorType type) {
+        String n = name(block);
+        ModelFile modelOff = machineGeneratorModel(n + "_off", type, false);
+        ModelFile modelOn  = machineGeneratorModel(n + "_on",  type, true);
+        getVariantBuilder(block).forAllStates(state -> {
+            ModelFile model = state.getValue(MachineGeneratorBlock.POWERED) ? modelOn : modelOff;
+            int yRot = switch (state.getValue(MachineGeneratorBlock.FACING)) {
+                case SOUTH -> 180;
+                case WEST  -> 270;
+                case EAST  -> 90;
+                default    -> 0;
+            };
+            int xRot = switch (state.getValue(MachineGeneratorBlock.FACING)) {
+                case DOWN -> 90;
+                case UP   -> 270;
+                default   -> 0;
+            };
+            boolean uvLock = state.getValue(MachineGeneratorBlock.FACING).getAxis().isHorizontal();
+            return ConfiguredModel.builder().modelFile(model).rotationX(xRot).rotationY(yRot).uvLock(uvLock).build();
+        });
+    }
+
+    private ModelFile machineGeneratorModel(String name, MachineGeneratorType type, boolean on) {
+        String side   = type.sideTex   != null ? type.sideTex   : "machine/machine_base_white_side";
+        String bottom = type.bottomTex != null ? type.bottomTex : "machine/machine_base_white_bottom";
+        String front  = on ? "machine/generator_on" : "machine/generator_off";
+
+        BlockModelBuilder base = models().getBuilder(name)
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .element()
+                    .from(0, 0, 0).to(16, 16, 16)
+                    .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(1).end()
+                    .face(Direction.UP).texture("#bottom").cullface(Direction.UP).tintindex(1).end()
+                    .face(Direction.NORTH).texture("#bottom").cullface(Direction.NORTH).tintindex(1).end()
+                    .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).tintindex(1).end()
+                    .face(Direction.WEST).texture("#side").cullface(Direction.WEST).tintindex(1).end()
+                    .face(Direction.EAST).texture("#side").cullface(Direction.EAST).tintindex(1).end()
+                .end()
+                .texture("bottom", tex(bottom))
+                .texture("side", tex(side));
+
+        BlockModelBuilder frontOverlay = models().getBuilder(name + "_front")
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .element()
+                    .from(0, 0, 0).to(16, 16, 16)
+                    .face(Direction.NORTH).texture("#front").cullface(Direction.NORTH).end()
+                .end()
+                .texture("front", tex(front))
+                .renderType("minecraft:cutout");
+
+        if (type.overlayTexture == null) {
+            return models().getBuilder(name + "_composite")
+                    .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                    .customLoader(CompositeModelBuilder::begin)
+                        .child("base", base)
+                        .child("front", frontOverlay)
+                        .itemRenderOrder("base", "front")
+                    .end();
+        }
+
+        BlockModelBuilder typeOverlay = models().getBuilder(name + "_overlay")
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .element()
+                    .from(0, 16, 0).to(16, 16.01f, 16)
+                    .face(Direction.UP).texture("#overlay").end()
+                .end()
+                .texture("overlay", tex(type.overlayTexture))
+                .renderType("minecraft:cutout");
+
+        return models().getBuilder(name + "_composite")
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .customLoader(CompositeModelBuilder::begin)
+                    .child("base", base)
+                    .child("front", frontOverlay)
+                    .child("overlay", typeOverlay)
+                    .itemRenderOrder("base", "front", "overlay")
+                .end();
     }
 
     private ModelFile cubeAll(Block block, String texture) {

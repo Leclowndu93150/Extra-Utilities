@@ -71,6 +71,23 @@ public class XULootTableProvider extends LootTableProvider {
             dropSelf(ModBlocks.COMPRESSED_NETHERRACK_5.get());
             dropSelf(ModBlocks.COMPRESSED_NETHERRACK_6.get());
 
+            dropSelf(ModBlocks.MACHINE_GENERATOR_FURNACE.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_SURVIVALIST.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_CULINARY.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_POTION.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_TNT.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_LAVA.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_PINK.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_NETHERSTAR.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_ENDER.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_REDSTONE.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_OVERCLOCK.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_DRAGON.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_ICE.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_DEATH.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_ENCHANT.get());
+            dropSelf(ModBlocks.MACHINE_GENERATOR_SLIME.get());
+
             dropSelf(ModBlocks.GENERATOR_SOLAR.get());
             dropSelf(ModBlocks.GENERATOR_LUNAR.get());
             dropSelf(ModBlocks.GENERATOR_LAVA.get());
