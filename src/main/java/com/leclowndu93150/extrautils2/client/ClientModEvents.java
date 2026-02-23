@@ -71,7 +71,7 @@ public final class ClientModEvents {
             ModBlocks.MACHINE_GENERATOR_ENCHANT.get(), ModBlocks.MACHINE_GENERATOR_SLIME.get()
         };
         event.register((state, level, pos, tintIndex) -> {
-            if (tintIndex != 1) return -1;
+            if (tintIndex != 0 && tintIndex != 1) return -1;
             if (!(state.getBlock() instanceof MachineGeneratorBlock mgb)) return -1;
             return mgb.generatorType.color | 0xFF000000;
         }, machineGenerators);

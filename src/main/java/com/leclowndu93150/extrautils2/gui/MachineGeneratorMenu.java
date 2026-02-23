@@ -116,6 +116,7 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
     public int getFluidBarY() { return FLUID_Y; }
     public int getFluidBarButtonId() { return BUTTON_FLUID; }
     public IFluidHandler getFluidHandler() { return tile.getFluidTank(); }
+    public void onFluidChanged() { tile.setChanged(); tile.sync(); }
     public int getArrowX() { return layout.arrowX; }
     public int getArrowY() { return SLOT_Y; }
     public int getSlotStartX() { return layout.slotStartX; }

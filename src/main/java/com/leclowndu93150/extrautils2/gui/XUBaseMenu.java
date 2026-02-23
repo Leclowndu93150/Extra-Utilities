@@ -77,6 +77,7 @@ public abstract class XUBaseMenu extends AbstractContainerMenu {
             }
             if (!transferred.isEmpty()) {
                 setCarried(itemHandler.getContainer());
+                fluid.onFluidChanged();
                 SoundEvent sound = transferred.getFluidType().getSound(transferred,
                         filledTank ? SoundActions.BUCKET_EMPTY : SoundActions.BUCKET_FILL);
                 if (sound != null) {

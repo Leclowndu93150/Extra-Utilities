@@ -12,4 +12,5 @@ public interface HasFluidBar {
     FluidStack getFluidStack();
     int getFluidBarButtonId();
     @Nullable IFluidHandler getFluidHandler();
+    void onFluidChanged();
 }
