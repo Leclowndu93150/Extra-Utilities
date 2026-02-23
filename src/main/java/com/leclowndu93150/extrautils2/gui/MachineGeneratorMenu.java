@@ -2,7 +2,11 @@ package com.leclowndu93150.extrautils2.gui;
 
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.blockentity.generator.MachineGeneratorTile;
+import com.leclowndu93150.extrautils2.util.RedstoneState;
+import com.leclowndu93150.extrautils2.util.StringHelper;
 import com.leclowndu93150.extrautils2.registry.ModMenus;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -13,8 +17,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
 
-public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
+public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, HasProgressArrow, HasRedstoneControl {
 
     public final MachineGeneratorTile tile;
     private final ContainerData data;
@@ -41,7 +48,12 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
     public static final int DATA_FLUID_AMOUNT        = 4;
     public static final int DATA_FLUID_CAPACITY      = 5;
     public static final int DATA_GP_POWERED          = 6;
-    public static final int DATA_COUNT               = 7;
+    public static final int DATA_REDSTONE_STATE      = 7;
+    public static final int DATA_COUNT               = 8;
+
+    private static final int REDSTONE_X = UPGRADE_X;
+    private static final int REDSTONE_Y = UPGRADE_Y + 19;
+    private static final int BUTTON_REDSTONE = 1;
 
     public MachineGeneratorMenu(int id, Inventory playerInv, MachineGeneratorTile tile) {
         super(ModMenus.MACHINE_GENERATOR.get(), id);
@@ -79,6 +91,7 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
             data.set(DATA_FLUID_CAPACITY, tank.getCapacity());
         }
         data.set(DATA_GP_POWERED, tile.isGpPowered() ? 1 : 0);
+        data.set(DATA_REDSTONE_STATE, tile.getRedstoneState().ordinal());
         super.broadcastChanges();
     }
 
@@ -102,11 +115,47 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
     public int getPlayerInvY() { return layout.playerInvY; }
     public int getUpgradeX() { return UPGRADE_X; }
     public int getUpgradeY() { return UPGRADE_Y; }
+    public int getRedstoneX() { return REDSTONE_X; }
+    public int getRedstoneY() { return REDSTONE_Y; }
+    public int getRedstoneButtonId() { return BUTTON_REDSTONE; }
+    public RedstoneState getRedstoneState() {
+        int v = data.get(DATA_REDSTONE_STATE);
+        RedstoneState[] values = RedstoneState.values();
+        return v >= 0 && v < values.length ? values[v] : RedstoneState.OPERATE_ALWAYS;
+    }
+    public boolean hasRedstonePulseMode() { return true; }
 
-    public float getFuelProgress() {
+    @Override
+    public float getArrowProgress() {
         int total = getFuelTotalTicks();
         if (total <= 0) return 0f;
-        return (float) getFuelRemainingTicks() / total;
+        int elapsed = Math.max(0, total - getFuelRemainingTicks());
+        return (float) elapsed / total;
+    }
+
+    @Override
+    public boolean isArrowOverloaded() {
+        return !isGpPowered();
+    }
+
+    @Override
+    public List<Component> getArrowTooltip() {
+        int total = getFuelTotalTicks();
+        if (total <= 0) return List.of();
+        int elapsed = Math.max(0, total - getFuelRemainingTicks());
+        return List.of(
+                Component.literal(String.format("%s / %s ",
+                        StringHelper.formatDurationSeconds(elapsed, true),
+                        StringHelper.formatDurationSeconds(total, false))),
+                Component.literal(ChatFormatting.GRAY
+                        + NumberFormat.getPercentInstance(Locale.UK).format((double) elapsed / (double) total)
+                        + ChatFormatting.RESET)
+        );
+    }
+
+    @Override
+    public List<Component> getArrowErrorTooltip() {
+        return List.of(Component.translatable("tooltip.extrautils2.grid_overloaded"));
     }
 
     private static final class Layout {
@@ -173,6 +222,15 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
         else slot.setChanged();
 
         return original;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        if (id == BUTTON_REDSTONE) {
+            tile.cycleRedstoneState(hasRedstonePulseMode());
+            return true;
+        }
+        return super.clickMenuButton(player, id);
     }
 
     @Override

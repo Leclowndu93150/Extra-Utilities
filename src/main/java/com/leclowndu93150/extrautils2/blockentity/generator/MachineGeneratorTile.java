@@ -9,6 +9,7 @@ import com.leclowndu93150.extrautils2.power.GpManager;
 import com.leclowndu93150.extrautils2.data.power.GpFrequency;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeStackHandler;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeType;
+import com.leclowndu93150.extrautils2.util.RedstoneState;
 import com.leclowndu93150.extrautils2.util.XUEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -46,6 +47,9 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
 
     private int ownerFrequency = 0;
     private boolean registered = false;
+    private RedstoneState redstoneState = RedstoneState.OPERATE_ALWAYS;
+    private boolean redstonePowered = false;
+    private int redstonePulses = 0;
 
     public MachineGeneratorTile(BlockEntityType<?> beType, BlockPos pos, BlockState state) {
         super(beType, pos, state);
@@ -89,10 +93,12 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
             tile.registered = true;
         }
 
+        tile.updateRedstoneState(level, pos);
+
         MachineGeneratorType type = getType(state);
         if (type == null) return;
 
-        boolean active = tile.isGpPowered() && tile.processFuel(type);
+        boolean active = tile.isGpPowered() && tile.canRunByRedstone() && tile.processFuel(type);
         tile.pushEnergy();
 
         boolean lit = active;
@@ -103,11 +109,13 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
 
     private boolean processFuel(MachineGeneratorType type) {
         if (fuelRemainingTicks > 0) {
+            boolean produced = false;
             if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
                 int speedFactor = 1 + getSpeedLevel();
                 int toAdd = energyPerTick * speedFactor;
                 int added = energyStorage.addEnergy(toAdd);
                 if (added > 0) {
+                    produced = true;
                     setChanged();
                     fuelRemainingTicks = Math.max(0, fuelRemainingTicks - speedFactor);
                     if (fuelRemainingTicks <= 0) {
@@ -118,7 +126,7 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
                     }
                 }
             }
-            return fuelRemainingTicks > 0;
+            return produced && fuelRemainingTicks > 0;
         }
 
         if (energyStorage.getEnergyStored() >= energyStorage.getMaxEnergyStored()) {
@@ -168,6 +176,9 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         energyPerTick = newRate;
         fuelTotalTicks = newTotalTicks;
         fuelRemainingTicks = newTotalTicks;
+        if (redstoneState == RedstoneState.OPERATE_REDSTONE_PULSE && redstonePulses > 0) {
+            redstonePulses--;
+        }
         setChanged();
         return true;
     }
@@ -240,6 +251,7 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
     public int getFuelRemainingTicks() { return fuelRemainingTicks; }
     public int getFuelTotalTicks() { return fuelTotalTicks; }
     public int getEnergyPerTick() { return energyPerTick; }
+    public int getSpeedLevel() { return getSpeedLevelInternal(); }
 
     public MachineGeneratorType getGeneratorType() {
         return getType(getBlockState());
@@ -271,6 +283,16 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
     public boolean stillValid(Player player) {
         if (level == null || level.getBlockEntity(worldPosition) != this) return false;
         return player.distanceToSqr(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5) <= 64.0;
+    }
+
+    public RedstoneState getRedstoneState() {
+        return redstoneState;
+    }
+
+    public void cycleRedstoneState(boolean allowPulse) {
+        redstoneState = redstoneState.next(allowPulse);
+        redstonePulses = 0;
+        setChanged();
     }
 
     public boolean isGpPowered() {
@@ -338,6 +360,9 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         tag.putInt("fuelTotalTicks", fuelTotalTicks);
         tag.putInt("energyPerTick", energyPerTick);
         tag.putInt("ownerFreq", ownerFrequency);
+        tag.putInt("redstoneState", redstoneState.ordinal());
+        tag.putBoolean("redstonePowered", redstonePowered);
+        tag.putInt("redstonePulses", redstonePulses);
         tag.put("inventory", inventory.serializeNBT(provider));
         tag.put("upgrades", upgrades.serializeNBT(provider));
         if (fluidTank != null) fluidTank.writeToNBT(provider, tag);
@@ -352,6 +377,11 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         fuelTotalTicks = tag.getInt("fuelTotalTicks");
         energyPerTick = tag.getInt("energyPerTick");
         ownerFrequency = tag.getInt("ownerFreq");
+        int rs = tag.getInt("redstoneState");
+        RedstoneState[] values = RedstoneState.values();
+        redstoneState = rs >= 0 && rs < values.length ? values[rs] : RedstoneState.OPERATE_ALWAYS;
+        redstonePowered = tag.getBoolean("redstonePowered");
+        redstonePulses = tag.getInt("redstonePulses");
         inventory.deserializeNBT(provider, tag.getCompound("inventory"));
         if (tag.contains("upgrades")) {
             upgrades.deserializeNBT(provider, tag.getCompound("upgrades"));
@@ -359,8 +389,28 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         if (fluidTank != null) fluidTank.readFromNBT(provider, tag);
     }
 
-    private int getSpeedLevel() {
+    private int getSpeedLevelInternal() {
         return upgrades.getLevel(UpgradeType.SPEED);
+    }
+
+    private boolean canRunByRedstone() {
+        return switch (redstoneState) {
+            case OPERATE_ALWAYS -> true;
+            case OPERATE_REDSTONE_ON -> redstonePowered;
+            case OPERATE_REDSTONE_OFF -> !redstonePowered;
+            case OPERATE_REDSTONE_PULSE -> redstonePulses > 0;
+        };
+    }
+
+    private void updateRedstoneState(Level level, BlockPos pos) {
+        boolean newPower = level.hasNeighborSignal(pos);
+        if (newPower != redstonePowered) {
+            redstonePowered = newPower;
+            if (newPower && redstoneState == RedstoneState.OPERATE_REDSTONE_PULSE) {
+                redstonePulses++;
+            }
+            setChanged();
+        }
     }
 
     private record FuelValues(int totalEnergy, int energyPerTick, int totalTicks) {

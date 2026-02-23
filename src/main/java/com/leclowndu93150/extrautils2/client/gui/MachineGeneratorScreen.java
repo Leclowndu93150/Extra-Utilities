@@ -18,8 +18,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
 
@@ -37,10 +35,6 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
     private static final int ENERGY_W = 18,  ENERGY_H = 54;
     private static final int FLUID_BG_U = 32, FLUID_BG_V = 0, FLUID_W = 18, FLUID_H = 33;
     private static final int FLUID_BORDER_U = 18, FLUID_BORDER_V = 0, FLUID_BORDER_W = 7;
-    private static final int ARROW_BG_U = 98,  ARROW_BG_V = 0;
-    private static final int ARROW_FILL_U = 98, ARROW_FILL_V = 16;
-    private static final int ARROW_W = 22, ARROW_H = 16;
-
     public MachineGeneratorScreen(MachineGeneratorMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
         this.imageWidth  = GUI_W;
@@ -65,9 +59,6 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
         int slots = menu.tile.getInventory().getSlots();
         int slotStartX = leftPos + menu.getSlotStartX();
         int slotY = topPos + menu.getSlotY();
-
-        int arrowX = leftPos + menu.getArrowX();
-        int arrowY = topPos + menu.getArrowY();
 
         drawMachinePreview(graphics, type);
 
@@ -103,22 +94,9 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
         drawUpgradeSlotBackgroundIfPresent(graphics, GUI_WIDGETS);
 
         drawPlayerInventorySlotBackgrounds(graphics, GUI_WIDGETS, menu.getPlayerInvX(), menu.getPlayerInvY());
-
-        if (!menu.isGpPowered()) {
-            graphics.blit(GUI_WIDGETS, arrowX, arrowY, 98f, 32f, ARROW_W, ARROW_H, 256, 256);
-        } else {
-            int fuelRemain = menu.getFuelRemainingTicks();
-            int fuelTotal = menu.getFuelTotalTicks();
-            int fuelElapsed = Math.max(0, fuelTotal - fuelRemain);
-            int arrowWidth = 0;
-            if (fuelTotal > 0 && fuelElapsed > 0) {
-                arrowWidth = 1 + Math.round((float) fuelElapsed / fuelTotal * 21f);
-            }
-            graphics.blit(GUI_WIDGETS, arrowX, arrowY, (float) ARROW_BG_U, (float) ARROW_BG_V, ARROW_W, ARROW_H, 256, 256);
-            if (arrowWidth > 0) {
-                graphics.blit(GUI_WIDGETS, arrowX, arrowY, (float) ARROW_FILL_U, (float) ARROW_FILL_V, arrowWidth, ARROW_H, 256, 256);
-            }
-        }
+        drawUpgradeSlotBackgroundIfPresent(graphics, GUI_WIDGETS);
+        drawRedstoneControlIfPresent(graphics, mouseX, mouseY);
+        drawProgressArrowIfPresent(graphics, GUI_WIDGETS);
     }
 
     @Override
@@ -163,29 +141,8 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
             }
         }
 
-        int arrowX = leftPos + menu.getArrowX();
-        int arrowY = topPos + menu.getArrowY();
-        if (mouseX >= arrowX && mouseX < arrowX + ARROW_W && mouseY >= arrowY && mouseY < arrowY + ARROW_H) {
-            if (!menu.isGpPowered()) {
-                List<Component> tooltip = new ArrayList<>();
-                tooltip.add(Component.translatable("tooltip.extrautils2.grid_overloaded"));
-                graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
-            } else {
-                int remain = menu.getFuelRemainingTicks();
-                int total = menu.getFuelTotalTicks();
-                int elapsed = Math.max(0, total - remain);
-                if (total > 0) {
-                    List<Component> tooltip = new ArrayList<>();
-                    tooltip.add(Component.literal(String.format("%s / %s ",
-                            StringHelper.formatDurationSeconds(elapsed, true),
-                            StringHelper.formatDurationSeconds(total, false))));
-                    tooltip.add(Component.literal(net.minecraft.ChatFormatting.GRAY
-                            + NumberFormat.getPercentInstance(Locale.UK).format((double) elapsed / (double) total)
-                            + net.minecraft.ChatFormatting.RESET));
-                    graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
-                }
-            }
-        }
+        renderRedstoneControlTooltipIfPresent(graphics, mouseX, mouseY);
+        renderProgressArrowTooltipIfPresent(graphics, mouseX, mouseY);
     }
 
     private void drawMachinePreview(GuiGraphics graphics, MachineGeneratorType type) {
