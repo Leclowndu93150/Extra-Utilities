@@ -40,7 +40,8 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
     public static final int DATA_FUEL_TICKS_TOTAL    = 3;
     public static final int DATA_FLUID_AMOUNT        = 4;
     public static final int DATA_FLUID_CAPACITY      = 5;
-    public static final int DATA_COUNT               = 6;
+    public static final int DATA_GP_POWERED          = 6;
+    public static final int DATA_COUNT               = 7;
 
     public MachineGeneratorMenu(int id, Inventory playerInv, MachineGeneratorTile tile) {
         super(ModMenus.MACHINE_GENERATOR.get(), id);
@@ -77,6 +78,7 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
             data.set(DATA_FLUID_AMOUNT,   tank.getFluidAmount());
             data.set(DATA_FLUID_CAPACITY, tank.getCapacity());
         }
+        data.set(DATA_GP_POWERED, tile.isGpPowered() ? 1 : 0);
         super.broadcastChanges();
     }
 
@@ -86,6 +88,7 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
     public int getFuelTotalTicks()     { return data.get(DATA_FUEL_TICKS_TOTAL); }
     public int getFluidAmount()    { return data.get(DATA_FLUID_AMOUNT); }
     public int getFluidCapacity()  { return data.get(DATA_FLUID_CAPACITY); }
+    public boolean isGpPowered()   { return data.get(DATA_GP_POWERED) != 0; }
     public MachineGeneratorType getGeneratorType() { return tile.getGeneratorType(); }
     public int getEnergyX() { return layout.energyX; }
     public int getEnergyY() { return ENERGY_Y; }

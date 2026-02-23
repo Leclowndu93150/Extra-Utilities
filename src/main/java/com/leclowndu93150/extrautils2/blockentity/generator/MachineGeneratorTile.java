@@ -273,7 +273,7 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         return player.distanceToSqr(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5) <= 64.0;
     }
 
-    private boolean isGpPowered() {
+    public boolean isGpPowered() {
         if (level == null || level.isClientSide) return false;
         if (ownerFrequency == 0) return false;
         GpFrequency freq = GpManager.INSTANCE.getOrCreateFreq(ownerFrequency);

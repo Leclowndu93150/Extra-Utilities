@@ -156,6 +156,7 @@ public class XULanguageProvider extends LanguageProvider {
         add("tooltip.extrautils2.spike.wood", "Reduces health to half a heart, but doesn't kill");
         add("tooltip.extrautils2.spike.gold", "Mobs drop experience");
         add("tooltip.extrautils2.spike.diamond", "Mobs drop 'Player-kill only' items");
+        add("tooltip.extrautils2.grid_overloaded", "Grid is overloaded");
 
         add("death.attack.spike", "%1$s walked on a pointy spike (ouchies)");
         add("death.attack.spike.item", "%1$s walked on a pointy spike (ouchies)");

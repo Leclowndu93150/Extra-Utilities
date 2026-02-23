@@ -104,16 +104,20 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
 
         drawPlayerInventorySlotBackgrounds(graphics, GUI_WIDGETS, menu.getPlayerInvX(), menu.getPlayerInvY());
 
-        int fuelRemain = menu.getFuelRemainingTicks();
-        int fuelTotal = menu.getFuelTotalTicks();
-        int fuelElapsed = Math.max(0, fuelTotal - fuelRemain);
-        int arrowWidth = 0;
-        if (fuelTotal > 0 && fuelElapsed > 0) {
-            arrowWidth = 1 + Math.round((float) fuelElapsed / fuelTotal * 21f);
-        }
-        graphics.blit(GUI_WIDGETS, arrowX, arrowY, (float) ARROW_BG_U, (float) ARROW_BG_V, ARROW_W, ARROW_H, 256, 256);
-        if (arrowWidth > 0) {
-            graphics.blit(GUI_WIDGETS, arrowX, arrowY, (float) ARROW_FILL_U, (float) ARROW_FILL_V, arrowWidth, ARROW_H, 256, 256);
+        if (!menu.isGpPowered()) {
+            graphics.blit(GUI_WIDGETS, arrowX, arrowY, 98f, 32f, ARROW_W, ARROW_H, 256, 256);
+        } else {
+            int fuelRemain = menu.getFuelRemainingTicks();
+            int fuelTotal = menu.getFuelTotalTicks();
+            int fuelElapsed = Math.max(0, fuelTotal - fuelRemain);
+            int arrowWidth = 0;
+            if (fuelTotal > 0 && fuelElapsed > 0) {
+                arrowWidth = 1 + Math.round((float) fuelElapsed / fuelTotal * 21f);
+            }
+            graphics.blit(GUI_WIDGETS, arrowX, arrowY, (float) ARROW_BG_U, (float) ARROW_BG_V, ARROW_W, ARROW_H, 256, 256);
+            if (arrowWidth > 0) {
+                graphics.blit(GUI_WIDGETS, arrowX, arrowY, (float) ARROW_FILL_U, (float) ARROW_FILL_V, arrowWidth, ARROW_H, 256, 256);
+            }
         }
     }
 
@@ -162,18 +166,24 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
         int arrowX = leftPos + menu.getArrowX();
         int arrowY = topPos + menu.getArrowY();
         if (mouseX >= arrowX && mouseX < arrowX + ARROW_W && mouseY >= arrowY && mouseY < arrowY + ARROW_H) {
-            int remain = menu.getFuelRemainingTicks();
-            int total = menu.getFuelTotalTicks();
-            int elapsed = Math.max(0, total - remain);
-            if (total > 0) {
+            if (!menu.isGpPowered()) {
                 List<Component> tooltip = new ArrayList<>();
-                tooltip.add(Component.literal(String.format("%s / %s ",
-                        StringHelper.formatDurationSeconds(elapsed, true),
-                        StringHelper.formatDurationSeconds(total, false))));
-                tooltip.add(Component.literal(net.minecraft.ChatFormatting.GRAY
-                        + NumberFormat.getPercentInstance(Locale.UK).format((double) elapsed / (double) total)
-                        + net.minecraft.ChatFormatting.RESET));
+                tooltip.add(Component.translatable("tooltip.extrautils2.grid_overloaded"));
                 graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
+            } else {
+                int remain = menu.getFuelRemainingTicks();
+                int total = menu.getFuelTotalTicks();
+                int elapsed = Math.max(0, total - remain);
+                if (total > 0) {
+                    List<Component> tooltip = new ArrayList<>();
+                    tooltip.add(Component.literal(String.format("%s / %s ",
+                            StringHelper.formatDurationSeconds(elapsed, true),
+                            StringHelper.formatDurationSeconds(total, false))));
+                    tooltip.add(Component.literal(net.minecraft.ChatFormatting.GRAY
+                            + NumberFormat.getPercentInstance(Locale.UK).format((double) elapsed / (double) total)
+                            + net.minecraft.ChatFormatting.RESET));
+                    graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
+                }
             }
         }
     }
