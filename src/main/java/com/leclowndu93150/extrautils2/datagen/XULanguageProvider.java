@@ -98,6 +98,13 @@ public class XULanguageProvider extends LanguageProvider {
 
         addItem(ModItems.GOLDEN_BAG, "Golden Bag");
 
+        addItem(ModItems.ANGEL_RING_BASE, "Angel Ring");
+        addItem(ModItems.ANGEL_RING_FEATHER, "Angel Ring (Feather)");
+        addItem(ModItems.ANGEL_RING_BUTTERFLY, "Angel Ring (Butterfly)");
+        addItem(ModItems.ANGEL_RING_DEMON, "Angel Ring (Demon)");
+        addItem(ModItems.ANGEL_RING_GOLDEN, "Angel Ring (Golden)");
+        addItem(ModItems.ANGEL_RING_BAT, "Angel Ring (Bat)");
+
         add("tooltip.extrautils2.compressed", "%s Blocks");
         add("tooltip.extrautils2.drum.empty", "Drum: Empty");
         add("tooltip.extrautils2.drum", "Drum: %s (%s / %s)");

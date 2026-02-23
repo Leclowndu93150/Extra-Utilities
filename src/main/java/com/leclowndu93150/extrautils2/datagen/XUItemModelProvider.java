@@ -1,6 +1,7 @@
 package com.leclowndu93150.extrautils2.datagen;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
+import com.leclowndu93150.extrautils2.item.AngelRingItem;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModItems;
 import net.minecraft.data.PackOutput;
@@ -92,6 +93,10 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.SYNERGY_UNIT.get());
 
         handheld("golden_bag", tex("bag_of_holding"));
+
+        for (String type : AngelRingItem.WING_TYPES) {
+            handheld("angel_ring_" + type, tex("angelring_" + type));
+        }
     }
 
     private void blockItem(Block block) {

@@ -5,9 +5,11 @@ import com.leclowndu93150.extrautils2.client.sprite.ModSpriteSourceTypes;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
+import com.leclowndu93150.extrautils2.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -16,6 +18,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterSpriteSourceTypesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
+import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = ExtraUtilities.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -23,6 +26,17 @@ public final class ClientModEvents {
     @SubscribeEvent
     public static void onRegisterSpriteSourceTypes(RegisterSpriteSourceTypesEvent event) {
         event.register(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "compressed"), ModSpriteSourceTypes.COMPRESSED);
+    }
+
+    @SubscribeEvent
+    public static void onAddRenderLayers(EntityRenderersEvent.AddLayers event) {
+        CuriosRendererRegistry.register(ModItems.ANGEL_RING_BASE.get(), WingsRenderer::new);
+        CuriosRendererRegistry.register(ModItems.ANGEL_RING_FEATHER.get(), WingsRenderer::new);
+        CuriosRendererRegistry.register(ModItems.ANGEL_RING_BUTTERFLY.get(), WingsRenderer::new);
+        CuriosRendererRegistry.register(ModItems.ANGEL_RING_DEMON.get(), WingsRenderer::new);
+        CuriosRendererRegistry.register(ModItems.ANGEL_RING_GOLDEN.get(), WingsRenderer::new);
+        CuriosRendererRegistry.register(ModItems.ANGEL_RING_BAT.get(), WingsRenderer::new);
+        CuriosRendererRegistry.load();
     }
 
     @SubscribeEvent
