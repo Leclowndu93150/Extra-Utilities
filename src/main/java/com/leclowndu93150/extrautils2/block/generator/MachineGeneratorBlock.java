@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class MachineGeneratorBlock extends XUEntityBlock.FacingAll {
+public class MachineGeneratorBlock extends XUEntityBlock.Facing {
 
     public static final BooleanProperty POWERED = BlockStateProperties.LIT;
 

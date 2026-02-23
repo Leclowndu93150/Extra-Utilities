@@ -1,19 +1,31 @@
 package com.leclowndu93150.extrautils2.client.gui;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
+import com.leclowndu93150.extrautils2.gui.HasEnergyBar;
+import com.leclowndu93150.extrautils2.gui.HasFluidBar;
 import com.leclowndu93150.extrautils2.gui.HasProgressArrow;
 import com.leclowndu93150.extrautils2.gui.HasRedstoneControl;
 import com.leclowndu93150.extrautils2.util.RedstoneState;
+import com.leclowndu93150.extrautils2.util.StringHelper;
 import com.leclowndu93150.extrautils2.gui.XUBaseMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class XUBaseScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
@@ -137,7 +149,18 @@ public abstract class XUBaseScreen<T extends AbstractContainerMenu> extends Abst
             int y = topPos + rs.getRedstoneY();
             if (mouseX >= x && mouseX < x + 18 && mouseY >= y && mouseY < y + 18) {
                 if (minecraft != null && minecraft.gameMode != null) {
+                    minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     minecraft.gameMode.handleInventoryButtonClick(menu.containerId, rs.getRedstoneButtonId());
+                }
+                return true;
+            }
+        }
+        if (button == 0 && menu instanceof HasFluidBar fluid) {
+            int x = leftPos + fluid.getFluidBarX();
+            int y = topPos + fluid.getFluidBarY();
+            if (mouseX >= x && mouseX < x + FLUID_W && mouseY >= y && mouseY < y + FLUID_H) {
+                if (minecraft != null && minecraft.gameMode != null) {
+                    minecraft.gameMode.handleInventoryButtonClick(menu.containerId, fluid.getFluidBarButtonId());
                 }
                 return true;
             }
@@ -161,5 +184,91 @@ public abstract class XUBaseScreen<T extends AbstractContainerMenu> extends Abst
             case OPERATE_REDSTONE_OFF -> Component.translatable("tooltip.extrautils2.redstone.off");
             case OPERATE_REDSTONE_PULSE -> Component.translatable("tooltip.extrautils2.redstone.pulse");
         };
+    }
+
+    private static final int ENERGY_U_EMPTY  = 160, ENERGY_V_EMPTY  = 0;
+    private static final int ENERGY_U_FILLED = 178, ENERGY_V_FILLED = 0;
+    private static final int ENERGY_W = 18,  ENERGY_H = 54;
+
+    protected void drawEnergyBarIfPresent(GuiGraphics graphics, ResourceLocation widgetsTexture) {
+        if (!(menu instanceof HasEnergyBar energy)) return;
+        int x = leftPos + energy.getEnergyBarX();
+        int y = topPos + energy.getEnergyBarY();
+        int stored = energy.getEnergyStored();
+        int capacity = energy.getEnergyCapacity();
+        int level = (capacity > 0) ? 1 + Math.round((float) stored / capacity * 52f) : 0;
+        int emptyH = ENERGY_H - level;
+        graphics.blit(widgetsTexture, x, y, (float) ENERGY_U_EMPTY, (float) ENERGY_V_EMPTY, ENERGY_W, emptyH, 256, 256);
+        if (level > 0) {
+            graphics.blit(widgetsTexture, x, y + emptyH, (float) ENERGY_U_FILLED, (float) (ENERGY_V_FILLED + emptyH), ENERGY_W, level, 256, 256);
+        }
+    }
+
+    protected void renderEnergyBarTooltipIfPresent(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (!(menu instanceof HasEnergyBar energy)) return;
+        int x = leftPos + energy.getEnergyBarX();
+        int y = topPos + energy.getEnergyBarY();
+        if (mouseX < x || mouseX >= x + ENERGY_W || mouseY < y || mouseY >= y + ENERGY_H) return;
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(Component.literal(StringHelper.format(energy.getEnergyStored()) + " / " + StringHelper.format(energy.getEnergyCapacity()) + " RF"));
+        graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
+    }
+
+    private static final int FLUID_BG_U = 32, FLUID_BG_V = 0, FLUID_W = 18, FLUID_H = 33;
+    private static final int FLUID_BORDER_U = 18, FLUID_BORDER_V = 0, FLUID_BORDER_W = 7;
+
+    protected void drawFluidBarIfPresent(GuiGraphics graphics, ResourceLocation widgetsTexture) {
+        if (!(menu instanceof HasFluidBar fluid)) return;
+        int x = leftPos + fluid.getFluidBarX();
+        int y = topPos + fluid.getFluidBarY();
+        graphics.blit(widgetsTexture, x, y, (float) FLUID_BG_U, (float) FLUID_BG_V, FLUID_W, FLUID_H, 256, 256);
+        int amt = fluid.getFluidAmount();
+        int cap = fluid.getFluidCapacity();
+        if (amt > 0 && cap > 0) {
+            int fillH = Math.max(1, amt * (FLUID_H - 2) / cap);
+            FluidStack stack = fluid.getFluidStack();
+            if (!stack.isEmpty()) {
+                renderFluid(graphics, stack, x + 1, y + 1 + (FLUID_H - 2 - fillH), FLUID_W - 2, fillH);
+            }
+        }
+        graphics.blit(widgetsTexture, x + FLUID_W - FLUID_BORDER_W - 1, y + 1, (float) (FLUID_BORDER_U + FLUID_BORDER_W), (float) FLUID_BORDER_V, FLUID_BORDER_W, FLUID_H - 2, 256, 256);
+        graphics.blit(widgetsTexture, x + 1, y + 1, (float) FLUID_BORDER_U, (float) FLUID_BORDER_V, FLUID_BORDER_W, FLUID_H - 2, 256, 256);
+    }
+
+    protected void renderFluidBarTooltipIfPresent(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (!(menu instanceof HasFluidBar fluid)) return;
+        int x = leftPos + fluid.getFluidBarX();
+        int y = topPos + fluid.getFluidBarY();
+        if (mouseX < x || mouseX >= x + FLUID_W || mouseY < y || mouseY >= y + FLUID_H) return;
+        FluidStack stack = fluid.getFluidStack();
+        List<Component> tooltip = new ArrayList<>();
+        if (!stack.isEmpty()) {
+            tooltip.add(Component.literal(stack.getDisplayName().getString()));
+            tooltip.add(Component.literal(fluid.getFluidAmount() + " / " + fluid.getFluidCapacity() + " mB"));
+        } else {
+            tooltip.add(Component.literal("Empty (" + fluid.getFluidCapacity() + " mB)"));
+        }
+        graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
+    }
+
+    protected void renderFluid(GuiGraphics graphics, FluidStack fluid, int x, int y, int w, int h) {
+        if (w <= 0 || h <= 0) return;
+        IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(fluid.getFluidType());
+        ResourceLocation still = ext.getStillTexture(fluid);
+        if (still == null) return;
+        int color = ext.getTintColor(fluid);
+        float r = ((color >> 16) & 0xFF) / 255f;
+        float g = ((color >> 8) & 0xFF) / 255f;
+        float b = (color & 0xFF) / 255f;
+        graphics.setColor(r, g, b, 1f);
+        TextureAtlasSprite sprite = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(still);
+        for (int tx = x; tx < x + w; tx += 16) {
+            int tw = Math.min(16, x + w - tx);
+            for (int ty = y; ty < y + h; ty += 16) {
+                int th = Math.min(16, y + h - ty);
+                graphics.blit(tx, ty, 0, tw, th, sprite);
+            }
+        }
+        graphics.setColor(1f, 1f, 1f, 1f);
     }
 }

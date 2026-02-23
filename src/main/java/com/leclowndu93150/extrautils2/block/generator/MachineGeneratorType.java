@@ -38,7 +38,7 @@ public enum MachineGeneratorType {
             return new FuelResult(energy, 8000f);
         }
     },
-    POTION(0x5411B1, "machine/generator/generator_potion", null, null, 100000, 1000) {
+    POTION(0x540F91, "machine/generator/generator_potion", null, null, 100000, 1000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (!(stack.getItem() instanceof PotionItem)) return null;
@@ -51,7 +51,7 @@ public enum MachineGeneratorType {
             return new FuelResult(duration * 100, 1000f);
         }
     },
-    TNT(0xDB441A, "machine/generator/generator_tnt", null, null, 100000, 1000) {
+    TNT(0xDB591A, "machine/generator/generator_tnt", null, null, 100000, 1000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Blocks.TNT.asItem())) return new FuelResult(512000, 160f);
@@ -59,14 +59,14 @@ public enum MachineGeneratorType {
             return null;
         }
     },
-    LAVA(0x991522, null, null, null, 100000, 1000) {
+    LAVA(0x990A22, null, null, null, 100000, 1000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) { return null; }
 
         @Override
         public boolean usesFluid() { return true; }
     },
-    PINK(0xFF4550, "machine/generator/generator_pink", null, null, 100000, 100) {
+    PINK(0xFF9DB0, "machine/generator/generator_pink", null, null, 100000, 100) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Items.PINK_DYE)) return new FuelResult(4000, 100f);
@@ -83,7 +83,7 @@ public enum MachineGeneratorType {
             return null;
         }
     },
-    ENDER(0x258474, "machine/generator/generator_ender", null, null, 100000, 4000) {
+    ENDER(0x2596B4, "machine/generator/generator_ender", null, null, 100000, 4000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Items.ENDER_PEARL)) return new FuelResult(64000, 40f);
@@ -91,7 +91,7 @@ public enum MachineGeneratorType {
             return null;
         }
     },
-    REDSTONE(0xAA4E03, "machine/generator/generator_redstone", null, null, 100000, 1600) {
+    REDSTONE(0xAA6E23, "machine/generator/generator_redstone", null, null, 100000, 1600) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Items.REDSTONE)) return new FuelResult(20000, 160f);
@@ -101,7 +101,7 @@ public enum MachineGeneratorType {
         @Override
         public boolean usesFluid() { return true; }
     },
-    OVERCLOCK(0x1B0FB0, "machine/generator/generator_overclock", null, null, 1000000, 1000000) {
+    OVERCLOCK(0x1B0B90, "machine/generator/generator_overclock", null, null, 1000000, 1000000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             int burnTime = stack.getBurnTime(RecipeType.SMELTING);
@@ -109,14 +109,14 @@ public enum MachineGeneratorType {
             return new FuelResult(Math.max(1, burnTime / 10), 4000f);
         }
     },
-    DRAGON(0xA77AA7, null, null, null, 1000000, 8000) {
+    DRAGON(0xA74BA7, null, null, null, 1000000, 8000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Items.DRAGON_BREATH)) return new FuelResult(480000, 40f);
             return null;
         }
     },
-    ICE(0x4E6C9F, null, null, null, 100000, 1000) {
+    ICE(0x4E4FDF, null, null, null, 100000, 1000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Blocks.ICE.asItem())) return new FuelResult(1600, 40f);
@@ -125,8 +125,11 @@ public enum MachineGeneratorType {
             if (stack.is(Blocks.SNOW_BLOCK.asItem())) return new FuelResult(800, 40f);
             return null;
         }
+
+        @Override
+        public String getOnFrontTexture() { return "machine/generator/generator_on_ice"; }
     },
-    DEATH(0xD8CD9C, "machine/generator/generator_death", null, null, 100000, 1000) {
+    DEATH(0xD8A63C, "machine/generator/generator_death", null, null, 100000, 1000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Items.BONE)) return new FuelResult(16000, 1000f);
@@ -136,7 +139,7 @@ public enum MachineGeneratorType {
             return null;
         }
     },
-    ENCHANT(0x3C3056, "machine/generator/generator_enchant", null, null, 100000, 1000) {
+    ENCHANT(0x3C3F76, "machine/generator/generator_enchant", null, null, 100000, 1000) {
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (!stack.isEnchanted()) return null;
@@ -177,6 +180,7 @@ public enum MachineGeneratorType {
 
     public boolean usesFluid() { return false; }
     public boolean needsSecondarySlot() { return false; }
+    public String getOnFrontTexture() { return "machine/generator_on"; }
 
     public record FuelResult(int totalEnergy, float gpRate) {}
 }

@@ -15,13 +15,15 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, HasProgressArrow, HasRedstoneControl {
+public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, HasProgressArrow, HasRedstoneControl, HasEnergyBar, HasFluidBar {
 
     public final MachineGeneratorTile tile;
     private final ContainerData data;
@@ -54,6 +56,7 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
     private static final int REDSTONE_X = UPGRADE_X;
     private static final int REDSTONE_Y = UPGRADE_Y + 19;
     private static final int BUTTON_REDSTONE = 1;
+    private static final int BUTTON_FLUID = 2;
 
     public MachineGeneratorMenu(int id, Inventory playerInv, MachineGeneratorTile tile) {
         super(ModMenus.MACHINE_GENERATOR.get(), id);
@@ -101,12 +104,18 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
     public int getFuelTotalTicks()     { return data.get(DATA_FUEL_TICKS_TOTAL); }
     public int getFluidAmount()    { return data.get(DATA_FLUID_AMOUNT); }
     public int getFluidCapacity()  { return data.get(DATA_FLUID_CAPACITY); }
+    public FluidStack getFluidStack() {
+        var tank = tile.getFluidTank();
+        return tank != null ? tank.getFluid() : FluidStack.EMPTY;
+    }
     public boolean isGpPowered()   { return data.get(DATA_GP_POWERED) != 0; }
     public MachineGeneratorType getGeneratorType() { return tile.getGeneratorType(); }
-    public int getEnergyX() { return layout.energyX; }
-    public int getEnergyY() { return ENERGY_Y; }
-    public int getFluidX() { return layout.fluidX; }
-    public int getFluidY() { return FLUID_Y; }
+    public int getEnergyBarX() { return layout.energyX; }
+    public int getEnergyBarY() { return ENERGY_Y; }
+    public int getFluidBarX() { return layout.fluidX; }
+    public int getFluidBarY() { return FLUID_Y; }
+    public int getFluidBarButtonId() { return BUTTON_FLUID; }
+    public IFluidHandler getFluidHandler() { return tile.getFluidTank(); }
     public int getArrowX() { return layout.arrowX; }
     public int getArrowY() { return SLOT_Y; }
     public int getSlotStartX() { return layout.slotStartX; }
@@ -124,6 +133,7 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
         return v >= 0 && v < values.length ? values[v] : RedstoneState.OPERATE_ALWAYS;
     }
     public boolean hasRedstonePulseMode() { return true; }
+    public void cycleRedstone() { tile.cycleRedstoneState(hasRedstonePulseMode()); }
 
     @Override
     public float getArrowProgress() {
@@ -222,15 +232,6 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
         else slot.setChanged();
 
         return original;
-    }
-
-    @Override
-    public boolean clickMenuButton(Player player, int id) {
-        if (id == BUTTON_REDSTONE) {
-            tile.cycleRedstoneState(hasRedstonePulseMode());
-            return true;
-        }
-        return super.clickMenuButton(player, id);
     }
 
     @Override

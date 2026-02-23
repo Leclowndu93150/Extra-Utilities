@@ -218,20 +218,14 @@ public class XUBlockStateProvider extends BlockStateProvider {
                 case EAST  -> 90;
                 default    -> 0;
             };
-            int xRot = switch (state.getValue(MachineGeneratorBlock.FACING)) {
-                case DOWN -> 90;
-                case UP   -> 270;
-                default   -> 0;
-            };
-            boolean uvLock = state.getValue(MachineGeneratorBlock.FACING).getAxis().isHorizontal();
-            return ConfiguredModel.builder().modelFile(model).rotationX(xRot).rotationY(yRot).uvLock(uvLock).build();
+            return ConfiguredModel.builder().modelFile(model).rotationY(yRot).uvLock(true).build();
         });
     }
 
     private ModelFile machineGeneratorModel(String name, MachineGeneratorType type, boolean on) {
         String side   = type.sideTex   != null ? type.sideTex   : "machine/machine_base_white_side";
         String bottom = type.bottomTex != null ? type.bottomTex : "machine/machine_base_white_bottom";
-        String front  = on ? "machine/generator_on" : "machine/generator_off";
+        String front  = on ? type.getOnFrontTexture() : "machine/generator_off";
 
         BlockModelBuilder base = models().getBuilder(name)
                 .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
@@ -259,6 +253,7 @@ public class XUBlockStateProvider extends BlockStateProvider {
         if (type.overlayTexture == null) {
             return models().getBuilder(name + "_composite")
                     .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                    .texture("particle", tex(side))
                     .customLoader(CompositeModelBuilder::begin)
                         .child("base", base)
                         .child("front", frontOverlay)
@@ -277,6 +272,7 @@ public class XUBlockStateProvider extends BlockStateProvider {
 
         return models().getBuilder(name + "_composite")
                 .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .texture("particle", tex(side))
                 .customLoader(CompositeModelBuilder::begin)
                     .child("base", base)
                     .child("front", frontOverlay)
