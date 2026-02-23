@@ -121,11 +121,20 @@ public class XULanguageProvider extends LanguageProvider {
         addItem(ModItems.ANGEL_RING_DEMON, "Angel Ring (Demon)");
         addItem(ModItems.ANGEL_RING_GOLDEN, "Angel Ring (Golden)");
         addItem(ModItems.ANGEL_RING_BAT, "Angel Ring (Bat)");
+        addItem(ModItems.UPGRADE_SPEED, "Speed Upgrade");
+        addItem(ModItems.UPGRADE_SPEED_ENCHANTED, "Speed Upgrade (Enchanted)");
+        addItem(ModItems.UPGRADE_SPEED_SUPER, "Speed Upgrade (Super)");
+        addItem(ModItems.UPGRADE_STACK_SIZE, "Stack Size Upgrade");
+        addItem(ModItems.UPGRADE_MINING, "Mining Upgrade");
 
         add("tooltip.extrautils2.compressed", "%s Blocks");
         add("tooltip.extrautils2.drum.empty", "Drum: Empty");
         add("tooltip.extrautils2.drum", "Drum: %s (%s / %s)");
         add("tooltip.extrautils2.gp.status", "GP: %s / %s");
+        add("tooltip.extrautils2.upgrade.max", "Max Upgrades: %s");
+        add("tooltip.extrautils2.upgrade.power.single", "Power Penalty: +%s GP");
+        add("tooltip.extrautils2.upgrade.power.level1", "Power Penalty (level 1): +%s GP");
+        add("tooltip.extrautils2.upgrade.power.leveln", "Power Penalty (level %s): +%s GP");
         add("tooltip.extrautils2.generator.solar.1", "Gives power during daylight hours.");
         add("tooltip.extrautils2.generator.solar.2", "Must have clear line of sight to sky.");
         add("tooltip.extrautils2.generator.solar.3", "Power reduced by rain.");

@@ -1,12 +1,15 @@
 package com.leclowndu93150.extrautils2.blockentity.generator;
 
 import com.leclowndu93150.extrautils2.api.power.IGpSource;
-import com.leclowndu93150.extrautils2.api.power.IPassiveGp;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.blockentity.XUBlockEntity;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
 import com.leclowndu93150.extrautils2.power.GpManager;
+import com.leclowndu93150.extrautils2.data.power.GpFrequency;
+import com.leclowndu93150.extrautils2.upgrade.UpgradeStackHandler;
+import com.leclowndu93150.extrautils2.upgrade.UpgradeType;
+import com.leclowndu93150.extrautils2.util.XUEnergyStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -20,24 +23,29 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineGeneratorTile extends XUBlockEntity implements IGpSource, IPassiveGp, MenuProvider {
+public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider, IGpSource {
 
     private final ItemStackHandler inventory;
     private final @Nullable FluidTank fluidTank;
+    private final UpgradeStackHandler upgrades;
+
+    private final XUEnergyStorage energyStorage;
+
+    private int fuelTotalEnergy = 0;
+    private int fuelRemainingTicks = 0;
+    private int fuelTotalTicks = 0;
+    private int energyPerTick = 0;
 
     private int ownerFrequency = 0;
     private boolean registered = false;
-    private float currentGp = 0f;
-
-    private int fuelTotalEnergy = 0;
-    private int fuelRemaining = 0;
-    private float fuelGpRate = 0f;
 
     public MachineGeneratorTile(BlockEntityType<?> beType, BlockPos pos, BlockState state) {
         super(beType, pos, state);
@@ -57,6 +65,15 @@ public class MachineGeneratorTile extends XUBlockEntity implements IGpSource, IP
                     }
                 }
                 : null;
+        this.upgrades = new UpgradeStackHandler(java.util.EnumSet.of(UpgradeType.SPEED), () -> {
+            setChanged();
+            if (ownerFrequency != 0) {
+                GpManager.INSTANCE.markSourceDirty(this);
+            }
+        });
+        int capacity = genType != null ? genType.energyCapacity : 10000;
+        int maxExtract = genType != null ? genType.maxExtract : 1000;
+        this.energyStorage = new XUEnergyStorage(capacity, 0, maxExtract, false, true);
     }
 
     private static @Nullable MachineGeneratorType getType(BlockState state) {
@@ -75,112 +92,166 @@ public class MachineGeneratorTile extends XUBlockEntity implements IGpSource, IP
         MachineGeneratorType type = getType(state);
         if (type == null) return;
 
-        float newGp = tile.processFuel(type);
-        if (newGp != tile.currentGp) {
-            tile.currentGp = newGp;
-            GpManager.INSTANCE.markSourceDirty(tile);
-        }
+        boolean active = tile.isGpPowered() && tile.processFuel(type);
+        tile.pushEnergy();
 
-        boolean lit = newGp > 0f;
+        boolean lit = active;
         if (state.getValue(MachineGeneratorBlock.POWERED) != lit) {
             level.setBlock(pos, state.setValue(MachineGeneratorBlock.POWERED, lit), 3);
         }
     }
 
-    private float processFuel(MachineGeneratorType type) {
-        if (fuelRemaining > 0) {
-            float rate = fuelGpRate;
-            fuelRemaining--;
-            if (fuelRemaining == 0) {
-                fuelTotalEnergy = 0;
-                fuelGpRate = 0f;
-                setChanged();
+    private boolean processFuel(MachineGeneratorType type) {
+        if (fuelRemainingTicks > 0) {
+            if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
+                int speedFactor = 1 + getSpeedLevel();
+                int toAdd = energyPerTick * speedFactor;
+                int added = energyStorage.addEnergy(toAdd);
+                if (added > 0) {
+                    setChanged();
+                    fuelRemainingTicks = Math.max(0, fuelRemainingTicks - speedFactor);
+                    if (fuelRemainingTicks <= 0) {
+                        fuelTotalEnergy = 0;
+                        fuelTotalTicks = 0;
+                        energyPerTick = 0;
+                        setChanged();
+                    }
+                }
             }
-            return rate;
+            return fuelRemainingTicks > 0;
         }
+
+        if (energyStorage.getEnergyStored() >= energyStorage.getMaxEnergyStored()) {
+            return false;
+        }
+
+        int newRate = 0;
+        int newTotalEnergy = 0;
+        int newTotalTicks = 0;
 
         if (type == MachineGeneratorType.LAVA) {
-            return tryConsumeLava();
+            FuelValues v = tryConsumeLava();
+            if (v != null) {
+                newTotalEnergy = v.totalEnergy;
+                newRate = v.energyPerTick;
+                newTotalTicks = v.totalTicks;
+            }
+        } else if (type == MachineGeneratorType.REDSTONE) {
+            FuelValues v = tryConsumeRedstone();
+            if (v != null) {
+                newTotalEnergy = v.totalEnergy;
+                newRate = v.energyPerTick;
+                newTotalTicks = v.totalTicks;
+            }
+        } else if (type == MachineGeneratorType.SLIME) {
+            FuelValues v = tryConsumeSlime();
+            if (v != null) {
+                newTotalEnergy = v.totalEnergy;
+                newRate = v.energyPerTick;
+                newTotalTicks = v.totalTicks;
+            }
+        } else {
+            ItemStack input = inventory.getStackInSlot(0);
+            if (input.isEmpty()) return false;
+
+            MachineGeneratorType.FuelResult result = type.getFuelResult(input);
+            if (result == null) return false;
+
+            inventory.extractItem(0, 1, false);
+            newTotalEnergy = result.totalEnergy();
+            newRate = Math.max(1, Math.round(result.gpRate()));
+            newTotalTicks = newTotalEnergy / newRate;
         }
 
-        if (type == MachineGeneratorType.REDSTONE) {
-            return tryConsumeRedstone();
-        }
-
-        if (type == MachineGeneratorType.SLIME) {
-            return tryConsumeSlime();
-        }
-
-        ItemStack input = inventory.getStackInSlot(0);
-        if (input.isEmpty()) return 0f;
-
-        MachineGeneratorType.FuelResult result = type.getFuelResult(input);
-        if (result == null) return 0f;
-
-        inventory.extractItem(0, 1, false);
-        fuelTotalEnergy = result.totalEnergy();
-        fuelGpRate = result.gpRate();
-        fuelRemaining = (int) (result.totalEnergy() / result.gpRate());
+        if (newTotalTicks <= 0 || newRate <= 0) return false;
+        fuelTotalEnergy = newTotalEnergy;
+        energyPerTick = newRate;
+        fuelTotalTicks = newTotalTicks;
+        fuelRemainingTicks = newTotalTicks;
         setChanged();
-        return fuelGpRate;
+        return true;
     }
 
-    private float tryConsumeLava() {
-        if (fluidTank == null) return 0f;
+    private @Nullable FuelValues tryConsumeLava() {
+        if (fluidTank == null) return null;
         FluidStack lava = fluidTank.getFluid();
-        if (lava.isEmpty() || lava.getAmount() < 50) return 0f;
+        if (lava.isEmpty() || lava.getAmount() < 50) return null;
         fluidTank.drain(50, IFluidHandler.FluidAction.EXECUTE);
-        fuelTotalEnergy = 5000;
-        fuelGpRate = 40f;
-        fuelRemaining = (int) (5000f / 40f);
-        setChanged();
-        return fuelGpRate;
+        return FuelValues.of(5000, 40);
     }
 
-    private float tryConsumeRedstone() {
-        if (fluidTank == null) return 0f;
+    private @Nullable FuelValues tryConsumeRedstone() {
+        if (fluidTank == null) return null;
         ItemStack dust = inventory.getStackInSlot(0);
-        if (!dust.is(net.minecraft.world.item.Items.REDSTONE)) return 0f;
+        if (!dust.is(net.minecraft.world.item.Items.REDSTONE)) return null;
         FluidStack lava = fluidTank.getFluid();
-        if (lava.isEmpty() || lava.getAmount() < 50) return 0f;
+        if (lava.isEmpty() || lava.getAmount() < 50) return null;
         inventory.extractItem(0, 1, false);
         fluidTank.drain(50, IFluidHandler.FluidAction.EXECUTE);
-        fuelTotalEnergy = 20000;
-        fuelGpRate = 160f;
-        fuelRemaining = (int) (20000f / 160f);
-        setChanged();
-        return fuelGpRate;
+        return FuelValues.of(20000, 160);
     }
 
-    private float tryConsumeSlime() {
+    private @Nullable FuelValues tryConsumeSlime() {
         ItemStack slimeballs = inventory.getStackInSlot(0);
         ItemStack milk = inventory.getStackInSlot(1);
-        if (!slimeballs.is(Items.SLIME_BALL) || slimeballs.getCount() < 4) return 0f;
-        if (!milk.is(Items.MILK_BUCKET)) return 0f;
+        if (!slimeballs.is(Items.SLIME_BALL) || slimeballs.getCount() < 4) return null;
+        if (!milk.is(Items.MILK_BUCKET)) return null;
         inventory.extractItem(0, 4, false);
         inventory.setStackInSlot(1, new ItemStack(Items.BUCKET));
-        fuelTotalEnergy = 192000;
-        fuelGpRate = 400f;
-        fuelRemaining = (int) (192000f / 400f);
-        setChanged();
-        return fuelGpRate;
+        return FuelValues.of(192000, 400);
+    }
+
+    private void pushEnergy() {
+        if (level == null) return;
+        int available = energyStorage.getEnergyStored();
+        if (available <= 0) return;
+        int speedFactor = 1 + getSpeedLevel();
+        int remaining = Math.min(energyStorage.getMaxExtract() * speedFactor, available);
+        for (var dir : net.minecraft.core.Direction.values()) {
+            if (remaining <= 0) break;
+            var target = level.getBlockEntity(worldPosition.relative(dir));
+            if (target == null) continue;
+            IEnergyStorage cap = level.getCapability(Capabilities.EnergyStorage.BLOCK, target.getBlockPos(), dir.getOpposite());
+            if (cap == null || !cap.canReceive()) continue;
+            int sent = cap.receiveEnergy(remaining, false);
+            if (sent > 0) {
+                energyStorage.extractEnergy(sent, false);
+                setChanged();
+                remaining -= sent;
+            }
+        }
     }
 
     public ItemStackHandler getInventory() {
         return inventory;
     }
 
+    public UpgradeStackHandler getUpgrades() {
+        return upgrades;
+    }
+
     public @Nullable FluidTank getFluidTank() {
         return fluidTank;
     }
 
-    public int getFuelRemaining() { return fuelRemaining; }
-    public int getFuelTotalEnergy() { return fuelTotalEnergy; }
-    public float getCurrentGp() { return currentGp; }
-    public float getGpRate() { return fuelGpRate; }
+    public IEnergyStorage getEnergyStorage() { return energyStorage; }
+    public int getEnergyStored() { return energyStorage.getEnergyStored(); }
+    public int getEnergyCapacity() { return energyStorage.getMaxEnergyStored(); }
+    public int getFuelRemainingTicks() { return fuelRemainingTicks; }
+    public int getFuelTotalTicks() { return fuelTotalTicks; }
+    public int getEnergyPerTick() { return energyPerTick; }
 
     public MachineGeneratorType getGeneratorType() {
         return getType(getBlockState());
+    }
+
+    public void setOwnerFrequency(int freq) {
+        this.ownerFrequency = freq;
+        setChanged();
+        if (level != null && !level.isClientSide && ownerFrequency != 0 && !registered) {
+            GpManager.INSTANCE.addSource(this);
+            registered = true;
+        }
     }
 
     @Override
@@ -202,9 +273,42 @@ public class MachineGeneratorTile extends XUBlockEntity implements IGpSource, IP
         return player.distanceToSqr(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5) <= 64.0;
     }
 
-    public void setOwnerFrequency(int freq) {
-        this.ownerFrequency = freq;
-        setChanged();
+    private boolean isGpPowered() {
+        if (level == null || level.isClientSide) return false;
+        if (ownerFrequency == 0) return false;
+        GpFrequency freq = GpManager.INSTANCE.getOrCreateFreq(ownerFrequency);
+        return freq.isPowered();
+    }
+
+    @Override
+    public float getGp() {
+        int level = getSpeedLevel();
+        if (level <= 0) return Float.NaN;
+        return UpgradeType.SPEED.getPowerUse(level);
+    }
+
+    @Override
+    public int frequency() {
+        return ownerFrequency;
+    }
+
+    @Override
+    public void onPowerChanged(boolean powered) {
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return level != null && !level.isClientSide && !isRemoved();
+    }
+
+    @Override
+    public @Nullable Level level() {
+        return level;
+    }
+
+    @Override
+    public @Nullable BlockPos getPos() {
+        return worldPosition;
     }
 
     @Override
@@ -226,46 +330,43 @@ public class MachineGeneratorTile extends XUBlockEntity implements IGpSource, IP
     }
 
     @Override
-    public float getGp() { return currentGp; }
-
-    @Override
-    public int frequency() { return ownerFrequency; }
-
-    @Override
-    public void onPowerChanged(boolean powered) {}
-
-    @Override
-    public boolean isLoaded() {
-        return level != null && !level.isClientSide && !isRemoved();
-    }
-
-    @Override
-    public @Nullable Level level() { return level; }
-
-    @Override
-    public @Nullable BlockPos getPos() { return worldPosition; }
-
-    @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putInt("ownerFreq", ownerFrequency);
-        tag.putFloat("currentGp", currentGp);
-        tag.putInt("fuelRemaining", fuelRemaining);
+        tag.putInt("energyStored", energyStorage.getEnergyStored());
+        tag.putInt("fuelRemainingTicks", fuelRemainingTicks);
         tag.putInt("fuelTotalEnergy", fuelTotalEnergy);
-        tag.putFloat("fuelGpRate", fuelGpRate);
+        tag.putInt("fuelTotalTicks", fuelTotalTicks);
+        tag.putInt("energyPerTick", energyPerTick);
+        tag.putInt("ownerFreq", ownerFrequency);
         tag.put("inventory", inventory.serializeNBT(provider));
+        tag.put("upgrades", upgrades.serializeNBT(provider));
         if (fluidTank != null) fluidTank.writeToNBT(provider, tag);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        ownerFrequency = tag.getInt("ownerFreq");
-        currentGp = tag.getFloat("currentGp");
-        fuelRemaining = tag.getInt("fuelRemaining");
+        energyStorage.setEnergy(tag.getInt("energyStored"));
+        fuelRemainingTicks = tag.getInt("fuelRemainingTicks");
         fuelTotalEnergy = tag.getInt("fuelTotalEnergy");
-        fuelGpRate = tag.getFloat("fuelGpRate");
+        fuelTotalTicks = tag.getInt("fuelTotalTicks");
+        energyPerTick = tag.getInt("energyPerTick");
+        ownerFrequency = tag.getInt("ownerFreq");
         inventory.deserializeNBT(provider, tag.getCompound("inventory"));
+        if (tag.contains("upgrades")) {
+            upgrades.deserializeNBT(provider, tag.getCompound("upgrades"));
+        }
         if (fluidTank != null) fluidTank.readFromNBT(provider, tag);
+    }
+
+    private int getSpeedLevel() {
+        return upgrades.getLevel(UpgradeType.SPEED);
+    }
+
+    private record FuelValues(int totalEnergy, int energyPerTick, int totalTicks) {
+        static FuelValues of(int totalEnergy, int energyPerTick) {
+            int ticks = totalEnergy / Math.max(1, energyPerTick);
+            return new FuelValues(totalEnergy, Math.max(1, energyPerTick), ticks);
+        }
     }
 }

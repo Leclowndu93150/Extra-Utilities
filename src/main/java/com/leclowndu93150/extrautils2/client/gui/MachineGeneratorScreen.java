@@ -4,6 +4,7 @@ import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
+import com.leclowndu93150.extrautils2.util.StringHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -17,6 +18,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
 
@@ -68,9 +71,9 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
 
         drawMachinePreview(graphics, type);
 
-        int fuelRemaining = menu.getFuelRemaining();
-        int fuelTotal     = menu.getFuelTotal();
-        int energyLevel = (fuelTotal > 0) ? 1 + Math.round((float) fuelRemaining / fuelTotal * 52f) : 0;
+        int stored = menu.getEnergyStored();
+        int capacity = menu.getEnergyCapacity();
+        int energyLevel = (capacity > 0) ? 1 + Math.round((float) stored / capacity * 52f) : 0;
         int emptyH = ENERGY_H - energyLevel;
 
         graphics.blit(GUI_WIDGETS, energyX, energyY, (float) ENERGY_U_EMPTY, (float) ENERGY_V_EMPTY, ENERGY_W, emptyH, 256, 256);
@@ -86,11 +89,7 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
                 int fillH = Math.max(1, fluidAmt * (FLUID_H - 2) / fluidCap);
                 FluidStack fluid = menu.tile.getFluidTank() != null ? menu.tile.getFluidTank().getFluid() : FluidStack.EMPTY;
                 if (!fluid.isEmpty()) {
-                    int color = IClientFluidTypeExtensions.of(fluid.getFluidType()).getTintColor(fluid);
-                    graphics.fill(
-                            fluidX + 1, fluidY + 1 + (FLUID_H - 2 - fillH),
-                            fluidX + FLUID_W - 1, fluidY + 1 + (FLUID_H - 2),
-                            color | 0xFF000000);
+                    renderFluid(graphics, fluid, fluidX + 1, fluidY + 1 + (FLUID_H - 2 - fillH), FLUID_W - 2, fillH);
                 }
                 graphics.blit(GUI_WIDGETS, fluidX + FLUID_W - FLUID_BORDER_W - 1, fluidY + 1, (float) (FLUID_BORDER_U + FLUID_BORDER_W), (float) FLUID_BORDER_V, FLUID_BORDER_W, FLUID_H - 2, 256, 256);
                 graphics.blit(GUI_WIDGETS, fluidX + 1, fluidY + 1, (float) FLUID_BORDER_U, (float) FLUID_BORDER_V, FLUID_BORDER_W, FLUID_H - 2, 256, 256);
@@ -101,11 +100,16 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
             graphics.blit(GUI_WIDGETS, slotStartX + i * (SLOT_W + 2), slotY, (float) SLOT_U, (float) SLOT_V, SLOT_W, SLOT_H, 256, 256);
         }
 
+        drawUpgradeSlotBackgroundIfPresent(graphics, GUI_WIDGETS);
+
         drawPlayerInventorySlotBackgrounds(graphics, GUI_WIDGETS, menu.getPlayerInvX(), menu.getPlayerInvY());
 
+        int fuelRemain = menu.getFuelRemainingTicks();
+        int fuelTotal = menu.getFuelTotalTicks();
+        int fuelElapsed = Math.max(0, fuelTotal - fuelRemain);
         int arrowWidth = 0;
-        if (fuelTotal > 0 && fuelRemaining > 0) {
-            arrowWidth = 1 + Math.round((float) fuelRemaining / fuelTotal * 21f);
+        if (fuelTotal > 0 && fuelElapsed > 0) {
+            arrowWidth = 1 + Math.round((float) fuelElapsed / fuelTotal * 21f);
         }
         graphics.blit(GUI_WIDGETS, arrowX, arrowY, (float) ARROW_BG_U, (float) ARROW_BG_V, ARROW_W, ARROW_H, 256, 256);
         if (arrowWidth > 0) {
@@ -135,8 +139,7 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
 
         if (mouseX >= energyX && mouseX < energyX + ENERGY_W && mouseY >= energyY && mouseY < energyY + ENERGY_H) {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.literal(String.format("%.0f GP/t", menu.getGpRate())));
-            tooltip.add(Component.literal(String.format("Fuel: %d / %d", menu.getFuelRemaining(), menu.getFuelTotal())));
+            tooltip.add(Component.literal(StringHelper.format(menu.getEnergyStored()) + " / " + StringHelper.format(menu.getEnergyCapacity()) + " RF"));
             graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
         }
 
@@ -152,6 +155,24 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
                 } else {
                     tooltip.add(Component.literal("Empty (" + menu.getFluidCapacity() + " mB)"));
                 }
+                graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
+            }
+        }
+
+        int arrowX = leftPos + menu.getArrowX();
+        int arrowY = topPos + menu.getArrowY();
+        if (mouseX >= arrowX && mouseX < arrowX + ARROW_W && mouseY >= arrowY && mouseY < arrowY + ARROW_H) {
+            int remain = menu.getFuelRemainingTicks();
+            int total = menu.getFuelTotalTicks();
+            int elapsed = Math.max(0, total - remain);
+            if (total > 0) {
+                List<Component> tooltip = new ArrayList<>();
+                tooltip.add(Component.literal(String.format("%s / %s ",
+                        StringHelper.formatDurationSeconds(elapsed, true),
+                        StringHelper.formatDurationSeconds(total, false))));
+                tooltip.add(Component.literal(net.minecraft.ChatFormatting.GRAY
+                        + NumberFormat.getPercentInstance(Locale.UK).format((double) elapsed / (double) total)
+                        + net.minecraft.ChatFormatting.RESET));
                 graphics.renderTooltip(font, tooltip, Optional.<TooltipComponent>empty(), mouseX, mouseY);
             }
         }
@@ -181,6 +202,27 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
 
         graphics.setColor(1f, 1f, 1f, 0.9f);
         graphics.blit(GUI_BASE, x, y, 103f, 103f, PREVIEW_W, PREVIEW_H, 256, 256);
+        graphics.setColor(1f, 1f, 1f, 1f);
+    }
+
+    private void renderFluid(GuiGraphics graphics, FluidStack fluid, int x, int y, int w, int h) {
+        if (w <= 0 || h <= 0) return;
+        IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(fluid.getFluidType());
+        ResourceLocation still = ext.getStillTexture(fluid);
+        if (still == null) return;
+        int color = ext.getTintColor(fluid);
+        float r = ((color >> 16) & 0xFF) / 255f;
+        float g = ((color >> 8) & 0xFF) / 255f;
+        float b = (color & 0xFF) / 255f;
+        graphics.setColor(r, g, b, 1f);
+        TextureAtlasSprite sprite = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(still);
+        for (int tx = x; tx < x + w; tx += 16) {
+            int tw = Math.min(16, x + w - tx);
+            for (int ty = y; ty < y + h; ty += 16) {
+                int th = Math.min(16, y + h - ty);
+                graphics.blit(tx, ty, 0, tw, th, sprite);
+            }
+        }
         graphics.setColor(1f, 1f, 1f, 1f);
     }
 

@@ -4,10 +4,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import com.leclowndu93150.extrautils2.gui.UpgradeSlot;
+import com.leclowndu93150.extrautils2.upgrade.UpgradeStackHandler;
 
 public abstract class XUBaseMenu extends AbstractContainerMenu {
     public static final int INV_SLOT_X_OFFSET = 1;
     public static final int INV_SLOT_Y_OFFSET = 1;
+    protected static final int MENU_SLOT_X_OFFSET = 1;
+    protected static final int MENU_SLOT_Y_OFFSET = 1;
 
     protected XUBaseMenu(MenuType<?> type, int id) {
         super(type, id);
@@ -24,5 +28,23 @@ public abstract class XUBaseMenu extends AbstractContainerMenu {
         for (int col = 0; col < 9; col++) {
             addSlot(new Slot(inv, col, baseX + col * 18, baseY + 14 + 58));
         }
+    }
+
+    protected void addUpgradeSlot(UpgradeStackHandler upgrades, int x, int y) {
+        addSlot(new UpgradeSlot(upgrades, 0, menuSlotX(x), menuSlotY(y)));
+    }
+
+    protected int addUpgradeSlotAndGetIndex(UpgradeStackHandler upgrades, int x, int y) {
+        int index = slots.size();
+        addUpgradeSlot(upgrades, x, y);
+        return index;
+    }
+
+    protected int menuSlotX(int x) {
+        return x + MENU_SLOT_X_OFFSET;
+    }
+
+    protected int menuSlotY(int y) {
+        return y + MENU_SLOT_Y_OFFSET;
     }
 }

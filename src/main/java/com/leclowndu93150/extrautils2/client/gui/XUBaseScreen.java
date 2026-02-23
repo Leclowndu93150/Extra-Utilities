@@ -1,5 +1,6 @@
 package com.leclowndu93150.extrautils2.client.gui;
 
+import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.gui.XUBaseMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -11,6 +12,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 public abstract class XUBaseScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
     protected static final int SCREEN_INV_SLOT_X_OFFSET = 0;
     protected static final int SCREEN_INV_SLOT_Y_OFFSET = 0;
+    private static final ResourceLocation UPGRADE_SLOT_BG = ResourceLocation.fromNamespaceAndPath(
+            ExtraUtilities.MODID, "textures/gui/upgrade_speed_skeleton.png");
     protected XUBaseScreen(T menu, Inventory inv, Component title) {
         super(menu, inv, title);
     }
@@ -36,6 +39,21 @@ public abstract class XUBaseScreen<T extends AbstractContainerMenu> extends Abst
         }
         for (int col = 0; col < 9; col++) {
             graphics.blit(widgetsTexture, x + col * 18, y + 14 + 58, 0f, 0f, 18, 18, 256, 256);
+        }
+    }
+
+    protected void drawSlotBackground(GuiGraphics graphics, ResourceLocation widgetsTexture, int x, int y) {
+        graphics.blit(widgetsTexture, leftPos + x, topPos + y, 0f, 0f, 18, 18, 256, 256);
+    }
+
+    protected void drawUpgradeSlotBackground(GuiGraphics graphics, ResourceLocation widgetsTexture, int slotX, int slotY) {
+        graphics.blit(widgetsTexture, leftPos + slotX, topPos + slotY, 0f, 0f, 18, 18, 256, 256);
+        graphics.blit(UPGRADE_SLOT_BG, leftPos + slotX + 1, topPos + slotY + 1, 0f, 0f, 16, 16, 16, 16);
+    }
+
+    protected void drawUpgradeSlotBackgroundIfPresent(GuiGraphics graphics, ResourceLocation widgetsTexture) {
+        if (menu instanceof com.leclowndu93150.extrautils2.gui.HasUpgradeSlot upgrade) {
+            drawUpgradeSlotBackground(graphics, widgetsTexture, upgrade.getUpgradeX(), upgrade.getUpgradeY());
         }
     }
 }

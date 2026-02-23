@@ -14,11 +14,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-public class MachineGeneratorMenu extends XUBaseMenu {
+public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot {
 
     public final MachineGeneratorTile tile;
     private final ContainerData data;
     private final Layout layout;
+    private final int upgradeSlotIndex;
 
     private static final int GUI_W = 176;
     private static final int LAYOUT_W = 170;
@@ -28,16 +29,18 @@ public class MachineGeneratorMenu extends XUBaseMenu {
     private static final int ENERGY_Y = 16;
     private static final int FLUID_H = 33;
     private static final int FLUID_Y = SLOT_Y + 9 - FLUID_H / 2;
-    private static final int INPUT_SLOT_X_OFFSET = 1;
-    private static final int INPUT_SLOT_Y_OFFSET = 1;
+    private static final int INPUT_SLOT_X_OFFSET = 0;
+    private static final int INPUT_SLOT_Y_OFFSET = 0;
+    private static final int UPGRADE_X = 4;
+    private static final int UPGRADE_Y = 16;
 
-    public static final int DATA_FUEL_REMAINING  = 0;
-    public static final int DATA_FUEL_TOTAL      = 1;
-    public static final int DATA_GP_RATE_X100    = 2;
-    public static final int DATA_CURRENT_GP_X100 = 3;
-    public static final int DATA_FLUID_AMOUNT    = 4;
-    public static final int DATA_FLUID_CAPACITY  = 5;
-    public static final int DATA_COUNT           = 6;
+    public static final int DATA_ENERGY_STORED       = 0;
+    public static final int DATA_ENERGY_CAPACITY     = 1;
+    public static final int DATA_FUEL_TICKS_REMAIN   = 2;
+    public static final int DATA_FUEL_TICKS_TOTAL    = 3;
+    public static final int DATA_FLUID_AMOUNT        = 4;
+    public static final int DATA_FLUID_CAPACITY      = 5;
+    public static final int DATA_COUNT               = 6;
 
     public MachineGeneratorMenu(int id, Inventory playerInv, MachineGeneratorTile tile) {
         super(ModMenus.MACHINE_GENERATOR.get(), id);
@@ -49,8 +52,10 @@ public class MachineGeneratorMenu extends XUBaseMenu {
 
         IItemHandler inv = tile.getInventory();
         int slots = inv.getSlots();
-        if (slots >= 1) addSlot(new SlotItemHandler(inv, 0, layout.slotStartX + INPUT_SLOT_X_OFFSET, SLOT_Y + INPUT_SLOT_Y_OFFSET));
-        if (slots >= 2) addSlot(new SlotItemHandler(inv, 1, layout.slotStartX + 22 + INPUT_SLOT_X_OFFSET - 2, SLOT_Y + INPUT_SLOT_Y_OFFSET));
+        if (slots >= 1) addSlot(new SlotItemHandler(inv, 0, menuSlotX(layout.slotStartX + INPUT_SLOT_X_OFFSET), menuSlotY(SLOT_Y + INPUT_SLOT_Y_OFFSET)));
+        if (slots >= 2) addSlot(new SlotItemHandler(inv, 1, menuSlotX(layout.slotStartX + 22 + INPUT_SLOT_X_OFFSET - 2), menuSlotY(SLOT_Y + INPUT_SLOT_Y_OFFSET)));
+
+        this.upgradeSlotIndex = addUpgradeSlotAndGetIndex(tile.getUpgrades(), UPGRADE_X, UPGRADE_Y);
 
         addPlayerSlots(playerInv, layout.playerInvX, layout.playerInvY);
     }
@@ -63,10 +68,10 @@ public class MachineGeneratorMenu extends XUBaseMenu {
 
     @Override
     public void broadcastChanges() {
-        data.set(DATA_FUEL_REMAINING,  tile.getFuelRemaining());
-        data.set(DATA_FUEL_TOTAL,      tile.getFuelTotalEnergy());
-        data.set(DATA_GP_RATE_X100,    (int) (tile.getCurrentGp() * 100));
-        data.set(DATA_CURRENT_GP_X100, (int) (tile.getCurrentGp() * 100));
+        data.set(DATA_ENERGY_STORED,   tile.getEnergyStored());
+        data.set(DATA_ENERGY_CAPACITY, tile.getEnergyCapacity());
+        data.set(DATA_FUEL_TICKS_REMAIN, tile.getFuelRemainingTicks());
+        data.set(DATA_FUEL_TICKS_TOTAL, tile.getFuelTotalTicks());
         var tank = tile.getFluidTank();
         if (tank != null) {
             data.set(DATA_FLUID_AMOUNT,   tank.getFluidAmount());
@@ -75,9 +80,10 @@ public class MachineGeneratorMenu extends XUBaseMenu {
         super.broadcastChanges();
     }
 
-    public int getFuelRemaining()  { return data.get(DATA_FUEL_REMAINING); }
-    public int getFuelTotal()      { return data.get(DATA_FUEL_TOTAL); }
-    public float getGpRate()       { return data.get(DATA_GP_RATE_X100) / 100f; }
+    public int getEnergyStored()   { return data.get(DATA_ENERGY_STORED); }
+    public int getEnergyCapacity() { return data.get(DATA_ENERGY_CAPACITY); }
+    public int getFuelRemainingTicks() { return data.get(DATA_FUEL_TICKS_REMAIN); }
+    public int getFuelTotalTicks()     { return data.get(DATA_FUEL_TICKS_TOTAL); }
     public int getFluidAmount()    { return data.get(DATA_FLUID_AMOUNT); }
     public int getFluidCapacity()  { return data.get(DATA_FLUID_CAPACITY); }
     public MachineGeneratorType getGeneratorType() { return tile.getGeneratorType(); }
@@ -91,11 +97,13 @@ public class MachineGeneratorMenu extends XUBaseMenu {
     public int getSlotY() { return SLOT_Y; }
     public int getPlayerInvX() { return layout.playerInvX; }
     public int getPlayerInvY() { return layout.playerInvY; }
+    public int getUpgradeX() { return UPGRADE_X; }
+    public int getUpgradeY() { return UPGRADE_Y; }
 
     public float getFuelProgress() {
-        int total = getFuelTotal();
+        int total = getFuelTotalTicks();
         if (total <= 0) return 0f;
-        return (float) getFuelRemaining() / total * tile.getGpRate();
+        return (float) getFuelRemainingTicks() / total;
     }
 
     private static final class Layout {
@@ -141,13 +149,21 @@ public class MachineGeneratorMenu extends XUBaseMenu {
 
         int invSlots = tile.getInventory().getSlots();
         int totalSlots = slots.size();
-        int playerStart = invSlots;
+        int playerStart = invSlots + 1;
         int playerEnd = totalSlots;
 
         if (index < invSlots) {
             if (!moveItemStackTo(stack, playerStart, playerEnd, true)) return ItemStack.EMPTY;
+        } else if (index == upgradeSlotIndex) {
+            if (!moveItemStackTo(stack, playerStart, playerEnd, true)) return ItemStack.EMPTY;
         } else {
-            if (!moveItemStackTo(stack, 0, invSlots, false)) return ItemStack.EMPTY;
+            if (slots.get(upgradeSlotIndex).mayPlace(stack)) {
+                if (!moveItemStackTo(stack, upgradeSlotIndex, upgradeSlotIndex + 1, false)) {
+                    if (!moveItemStackTo(stack, 0, invSlots, false)) return ItemStack.EMPTY;
+                }
+            } else {
+                if (!moveItemStackTo(stack, 0, invSlots, false)) return ItemStack.EMPTY;
+            }
         }
 
         if (stack.isEmpty()) slot.set(ItemStack.EMPTY);

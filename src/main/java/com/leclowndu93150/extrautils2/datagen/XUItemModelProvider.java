@@ -22,6 +22,10 @@ public class XUItemModelProvider extends ItemModelProvider {
         return ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "block/" + path);
     }
 
+    private ResourceLocation itemTex(String path) {
+        return ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "item/" + path);
+    }
+
     @Override
     protected void registerModels() {
         blockItem(ModBlocks.ANGEL_BLOCK.get());
@@ -115,6 +119,12 @@ public class XUItemModelProvider extends ItemModelProvider {
         for (String type : AngelRingItem.WING_TYPES) {
             handheld("angel_ring_" + type, tex("angelring_" + type));
         }
+
+        handheld("upgrade_speed", itemTex("upgrade_speed"));
+        handheld("upgrade_speed_enchanted", itemTex("upgrade_speed_enchanted"));
+        handheld("upgrade_speed_super", itemTex("upgrade_speed_super"));
+        handheld("upgrade_stack_size", itemTex("upgrade_stack_size"));
+        handheld("upgrade_mining", itemTex("upgrade_mining"));
     }
 
     private void blockItem(Block block) {
