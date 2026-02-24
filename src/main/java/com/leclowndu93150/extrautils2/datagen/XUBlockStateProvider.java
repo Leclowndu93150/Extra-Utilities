@@ -164,12 +164,9 @@ public class XUBlockStateProvider extends BlockStateProvider {
     }
 
     private void machines() {
-        simpleBlock(ModBlocks.TRASH_CAN.get(), models().cubeBottomTop(name(ModBlocks.TRASH_CAN.get()),
-                tex("trashcan"), tex("trashcan_bottom"), tex("trashcan_top")));
-        simpleBlock(ModBlocks.TRASH_CAN_FLUID.get(), models().cubeBottomTop(name(ModBlocks.TRASH_CAN_FLUID.get()),
-                tex("trashcan_fluid"), tex("trashcan_bottom_fluid"), tex("trashcan_top_fluid")));
-        simpleBlock(ModBlocks.TRASH_CAN_ENERGY.get(), models().cubeBottomTop(name(ModBlocks.TRASH_CAN_ENERGY.get()),
-                tex("trashcan_energy"), tex("trashcan_bottom_energy"), tex("trashcan_top_energy")));
+        simpleBlock(ModBlocks.TRASH_CAN.get(), models().getExistingFile(modLoc("block/trash_can")));
+        simpleBlock(ModBlocks.TRASH_CAN_FLUID.get(), models().getExistingFile(modLoc("block/trash_can_fluid")));
+        simpleBlock(ModBlocks.TRASH_CAN_ENERGY.get(), models().getExistingFile(modLoc("block/trash_can_energy")));
         simpleBlock(ModBlocks.RESONATOR.get(), models().cubeBottomTop(name(ModBlocks.RESONATOR.get()),
                 tex("resonator_side"), tex("resonator_bottom"), tex("resonator_top")));
         simpleBlock(ModBlocks.CRAFTER.get(), models().cubeAll(name(ModBlocks.CRAFTER.get()), tex("autocraft")));

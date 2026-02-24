@@ -94,6 +94,9 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         if (type == null) return;
 
         boolean active = tile.isGpPowered() && tile.canRunByRedstone() && tile.processFuel(type);
+        if (active) {
+            type.processingTick(level, pos, tile.getSpeedLevel());
+        }
         tile.pushEnergy();
 
         boolean lit = active;

@@ -152,16 +152,18 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
     @Override
     public List<Component> getArrowTooltip() {
         int total = getFuelTotalTicks();
-        if (total <= 0) return List.of();
-        int elapsed = Math.max(0, total - getFuelRemainingTicks());
-        return List.of(
-                Component.literal(String.format("%s / %s ",
-                        StringHelper.formatDurationSeconds(elapsed, true),
-                        StringHelper.formatDurationSeconds(total, false))),
-                Component.literal(ChatFormatting.GRAY
-                        + NumberFormat.getPercentInstance(Locale.UK).format((double) elapsed / (double) total)
-                        + ChatFormatting.RESET)
-        );
+        List<Component> lines = new java.util.ArrayList<>();
+        if (total > 0) {
+            int elapsed = Math.max(0, total - getFuelRemainingTicks());
+            lines.add(Component.literal(String.format("%s / %s ",
+                    StringHelper.formatDurationSeconds(elapsed, true),
+                    StringHelper.formatDurationSeconds(total, false))));
+            lines.add(Component.literal(ChatFormatting.GRAY
+                    + NumberFormat.getPercentInstance(Locale.UK).format((double) elapsed / (double) total)
+                    + ChatFormatting.RESET));
+        }
+        lines.add(Component.translatable("jei.tooltip.show.recipes").withStyle(ChatFormatting.GRAY));
+        return lines;
     }
 
     @Override

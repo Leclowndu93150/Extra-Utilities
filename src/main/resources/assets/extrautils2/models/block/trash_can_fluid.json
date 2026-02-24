@@ -1,0 +1,8 @@
+{
+  "parent": "extrautils2:block/trash_can",
+  "textures": {
+    "side": "extrautils2:block/trashcan_fluid",
+    "top": "extrautils2:block/trashcan_top_fluid",
+    "bottom": "extrautils2:block/trashcan_bottom_fluid"
+  }
+}

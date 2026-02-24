@@ -4,6 +4,7 @@ import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -87,16 +88,19 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
         int y = topPos + 16;
 
         var atlas = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
-        TextureAtlasSprite base = atlas.apply(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "machine/machine_base_white"));
+        TextureAtlasSprite base = atlas.apply(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "block/" + type.getPreviewBaseTexture()));
         TextureAtlasSprite front = atlas.apply(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID,
-                menu.tile.getBlockState().getValue(MachineGeneratorBlock.POWERED)
+                "block/" + (menu.tile.getBlockState().getValue(MachineGeneratorBlock.POWERED)
                         ? type.getOnFrontTexture()
-                        : "machine/generator_off"));
+                        : "machine/generator_off")));
 
         int color = type.color;
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;
         float b = (color & 0xFF) / 255f;
+
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
 
         graphics.setColor(r, g, b, 1f);
         graphics.blit(x, y, 0, PREVIEW_W, PREVIEW_H, base);
@@ -106,5 +110,7 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
         graphics.setColor(1f, 1f, 1f, 0.9f);
         graphics.blit(GUI_BASE, x, y, 103f, 103f, PREVIEW_W, PREVIEW_H, 256, 256);
         graphics.setColor(1f, 1f, 1f, 1f);
+
+        RenderSystem.disableBlend();
     }
 }

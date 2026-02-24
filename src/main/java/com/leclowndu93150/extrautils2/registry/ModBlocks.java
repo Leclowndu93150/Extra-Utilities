@@ -4,6 +4,7 @@ import com.leclowndu93150.extrautils2.block.CompressedBlock;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
+import com.leclowndu93150.extrautils2.block.TrashCanBlock;
 import com.leclowndu93150.extrautils2.block.XUBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorType;
@@ -101,12 +102,12 @@ public class ModBlocks {
             "opinium_block", () -> new XUBlock(XUBlock.defaultProps()));
 
     // --- Machines (stubs - tile entity blocks) ---
-    public static final DeferredBlock<Block> TRASH_CAN = ModRegistries.registerBlock(
-            "trash_can", () -> new XUBlock(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> TRASH_CAN_FLUID = ModRegistries.registerBlock(
-            "trash_can_fluid", () -> new XUBlock(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> TRASH_CAN_ENERGY = ModRegistries.registerBlock(
-            "trash_can_energy", () -> new XUBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<TrashCanBlock> TRASH_CAN = ModRegistries.registerBlock(
+            "trash_can", () -> new TrashCanBlock(XUBlock.defaultProps().noOcclusion(), TrashCanBlock.TrashType.ITEM));
+    public static final DeferredBlock<TrashCanBlock> TRASH_CAN_FLUID = ModRegistries.registerBlock(
+            "trash_can_fluid", () -> new TrashCanBlock(XUBlock.defaultProps().noOcclusion(), TrashCanBlock.TrashType.FLUID));
+    public static final DeferredBlock<TrashCanBlock> TRASH_CAN_ENERGY = ModRegistries.registerBlock(
+            "trash_can_energy", () -> new TrashCanBlock(XUBlock.defaultProps().noOcclusion(), TrashCanBlock.TrashType.ENERGY));
     public static final DeferredBlock<Block> CRAFTER = ModRegistries.registerBlock(
             "crafter", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> RESONATOR = ModRegistries.registerBlock(

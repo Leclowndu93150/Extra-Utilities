@@ -166,5 +166,9 @@ public class XULanguageProvider extends LanguageProvider {
         add("death.attack.spike.item", "%1$s walked on a pointy spike (ouchies)");
         add("death.attack.spike_creative", "%1$s failed to become the guy");
         add("death.attack.spike_creative.item", "%1$s failed to become the guy");
+
+        add("effect.extrautils2.doom", "Doom");
+        add("death.attack.doom", "%1$s met his doom");
+        add("death.attack.doom.item", "%1$s met his doom");
     }
 }

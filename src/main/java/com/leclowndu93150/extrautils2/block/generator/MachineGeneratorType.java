@@ -1,13 +1,33 @@
 package com.leclowndu93150.extrautils2.block.generator;
 
+import com.leclowndu93150.extrautils2.registry.ModMobEffects;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Endermite;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public enum MachineGeneratorType {
     FURNACE(0xFFFFFF, null, null, null, 10000, 1000) {
@@ -58,6 +78,30 @@ public enum MachineGeneratorType {
             if (stack.is(Items.GUNPOWDER)) return new FuelResult(64000, 160f);
             return null;
         }
+
+        @Override
+        public void processingTick(Level level, BlockPos pos, int speedLevel) {
+            var rand = level.getRandom();
+            int n = 1 + speedLevel;
+            for (int j = 0; j < n; j++) {
+                if (rand.nextInt(41) == 0) {
+                    for (int i = 0; i < 10; i++) {
+                        double v = 1.5;
+                        double x = pos.getX() + 0.5 + v * rand.nextGaussian();
+                        double y = pos.getY() + 0.5 + v * rand.nextGaussian();
+                        double z = pos.getZ() + 0.5 + v * rand.nextGaussian();
+                        BlockPos other = BlockPos.containing(x, y, z);
+                        if (i == 9 || !pos.equals(other)) {
+                            BlockState state = level.getBlockState(other);
+                            if (i >= 5 || state.getExplosionResistance(level, other, null) == 0.0f) {
+                                level.explode(null, x, y, z, 2.0f, Level.ExplosionInteraction.NONE);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     },
     LAVA(0x990A22, null, null, null, 100000, 1000) {
         @Override
@@ -67,11 +111,26 @@ public enum MachineGeneratorType {
         public boolean usesFluid() { return true; }
     },
     PINK(0xFF9DB0, "machine/generator/generator_pink", null, null, 100000, 100) {
+        private volatile Set<Item> pinkItems;
+
+        private Set<Item> getPinkItems() {
+            if (pinkItems == null) {
+                Set<Item> set = new HashSet<>();
+                for (var item : BuiltInRegistries.ITEM) {
+                    var key = BuiltInRegistries.ITEM.getKey(item);
+                    if (key != null && key.getPath().contains("pink")) {
+                        set.add(item);
+                    }
+                }
+                pinkItems = set;
+            }
+            return pinkItems;
+        }
+
         @Override
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Items.PINK_DYE)) return new FuelResult(4000, 100f);
-            if (stack.is(Blocks.PINK_TULIP.asItem())) return new FuelResult(400, 40f);
-            if (stack.is(Blocks.PEONY.asItem())) return new FuelResult(400, 40f);
+            if (getPinkItems().contains(stack.getItem())) return new FuelResult(400, 40f);
             return null;
         }
     },
@@ -81,6 +140,26 @@ public enum MachineGeneratorType {
         public FuelResult getFuelResult(ItemStack stack) {
             if (stack.is(Items.NETHER_STAR)) return new FuelResult(9600000, 4000f);
             return null;
+        }
+
+        @Override
+        public String getPreviewBaseTexture() {
+            return "machine/generator/machine_base_netherstar";
+        }
+
+        @Override
+        public void processingTick(Level level, BlockPos pos, int speedLevel) {
+            int n = 1 + speedLevel;
+            AABB area = new AABB(pos).inflate(5.0);
+            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
+                if (!(entity instanceof Endermite)) {
+                    entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 410,
+                            (int) Math.floor(Math.sqrt(5 + n)) - 1));
+                }
+            }
+            if (level instanceof ServerLevel serverLevel) {
+                spawnEffectParticles(serverLevel, area, 2, 0.1f, 0.1f, 0.1f);
+            }
         }
     },
     ENDER(0x2596B4, "machine/generator/generator_ender", null, null, 100000, 4000) {
@@ -115,6 +194,20 @@ public enum MachineGeneratorType {
             if (stack.is(Items.DRAGON_BREATH)) return new FuelResult(480000, 40f);
             return null;
         }
+
+        @Override
+        public void processingTick(Level level, BlockPos pos, int speedLevel) {
+            if (level.getDifficulty() == Difficulty.PEACEFUL) return;
+            if (level.getRandom().nextInt(1200) != 0) return;
+            var rand = level.getRandom();
+            double x = pos.getX() + 0.5 + rand.nextGaussian() * 3.0;
+            double y = pos.getY() + 0.5 + rand.nextGaussian() * 3.0;
+            double z = pos.getZ() + 0.5 + rand.nextGaussian() * 3.0;
+            Endermite mite = new Endermite(EntityType.ENDERMITE, level);
+            mite.moveTo(x, y, z, rand.nextFloat() * 360.0f, 0.0f);
+            if (!level.noCollision(mite)) return;
+            level.addFreshEntity(mite);
+        }
     },
     ICE(0x4E4FDF, null, null, null, 100000, 1000) {
         @Override
@@ -128,6 +221,40 @@ public enum MachineGeneratorType {
 
         @Override
         public String getOnFrontTexture() { return "machine/generator/generator_on_ice"; }
+
+        @Override
+        public void processingTick(Level level, BlockPos pos, int speedLevel) {
+            var rand = level.getRandom();
+            int n = 1 + speedLevel;
+            for (int i = 0; i < n; i++) {
+                if (rand.nextInt(1024) != 0) continue;
+                for (int attempt = 0; attempt < 40; attempt++) {
+                    BlockPos target = pos.offset(
+                            rand.nextInt(19) - 9,
+                            rand.nextInt(19) - 9,
+                            rand.nextInt(19) - 9);
+                    if (target.distSqr(pos) > 81) continue;
+                    BlockState state = level.getBlockState(target);
+                    if (state.isAir()) {
+                        if (Blocks.SNOW.defaultBlockState().canSurvive(level, target)) {
+                            level.setBlock(target, Blocks.SNOW.defaultBlockState(), 3);
+                            break;
+                        }
+                    } else if (state.is(Blocks.WATER)) {
+                        level.setBlock(target, Blocks.ICE.defaultBlockState(), 3);
+                        break;
+                    } else if (state.is(Blocks.SNOW)) {
+                        int layers = state.getValue(SnowLayerBlock.LAYERS);
+                        double dist = Math.sqrt(target.distSqr(pos));
+                        if (layers < 8 && (9.0 - dist) * 1.25 > layers) {
+                            level.setBlock(target, state.setValue(
+                                    SnowLayerBlock.LAYERS, layers + 1), 3);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     },
     DEATH(0xD8A63C, "machine/generator/generator_death", null, null, 100000, 1000) {
         @Override
@@ -137,6 +264,19 @@ public enum MachineGeneratorType {
             if (stack.is(Items.ROTTEN_FLESH)) return new FuelResult(8000, 1000f);
             if (stack.is(Items.WITHER_SKELETON_SKULL)) return new FuelResult(60000, 1000f);
             return null;
+        }
+
+        @Override
+        public void processingTick(Level level, BlockPos pos, int speedLevel) {
+            AABB area = new AABB(pos).inflate(1.0);
+            for (Player player : level.getEntitiesOfClass(Player.class, area)) {
+                if (!player.hasEffect(ModMobEffects.DOOM)) {
+                    player.addEffect(new MobEffectInstance(ModMobEffects.DOOM, 1200, 0));
+                }
+            }
+            if (level instanceof ServerLevel serverLevel) {
+                spawnEffectParticles(serverLevel, area, 4, 0.7f, 0.1f, 0.1f);
+            }
         }
     },
     ENCHANT(0x3C3F76, "machine/generator/generator_enchant", null, null, 100000, 1000) {
@@ -157,6 +297,11 @@ public enum MachineGeneratorType {
 
         @Override
         public boolean needsSecondarySlot() { return true; }
+
+        @Override
+        public String getPreviewBaseTexture() {
+            return "machine/generator/machine_base_slime_bottom";
+        }
     };
 
     public final int color;
@@ -181,6 +326,19 @@ public enum MachineGeneratorType {
     public boolean usesFluid() { return false; }
     public boolean needsSecondarySlot() { return false; }
     public String getOnFrontTexture() { return "machine/generator_on"; }
+    public String getPreviewBaseTexture() { return "machine/machine_base_white"; }
+    public void processingTick(Level level, BlockPos pos, int speedLevel) {}
+
+    protected static void spawnEffectParticles(ServerLevel level, AABB area, int count, float r, float g, float b) {
+        var rand = level.getRandom();
+        var particle = ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, r, g, b);
+        for (int i = 0; i < count; i++) {
+            double x = area.minX + (area.maxX - area.minX) * rand.nextFloat();
+            double y = area.minY + (area.maxY - area.minY) * rand.nextFloat();
+            double z = area.minZ + (area.maxZ - area.minZ) * rand.nextFloat();
+            level.sendParticles(particle, x, y, z, 1, 0, 0, 0, 0);
+        }
+    }
 
     public record FuelResult(int totalEnergy, float gpRate) {}
 }

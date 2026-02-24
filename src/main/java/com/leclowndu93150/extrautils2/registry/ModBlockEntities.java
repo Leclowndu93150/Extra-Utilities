@@ -1,6 +1,7 @@
 package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.generator.GeneratorTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.HandCrankTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.MachineGeneratorTile;
@@ -64,6 +65,17 @@ public class ModBlockEntities {
                 };
                 return BlockEntityType.Builder.<MachineGeneratorTile>of(
                     (pos, state) -> new MachineGeneratorTile(ModBlockEntities.MACHINE_GENERATOR.get(), pos, state), blocks).build(null);
+            });
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TrashCanBlockEntity>> TRASH_CAN =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("trash_can", () -> {
+                Block[] blocks = {
+                        ModBlocks.TRASH_CAN.get(),
+                        ModBlocks.TRASH_CAN_FLUID.get(),
+                        ModBlocks.TRASH_CAN_ENERGY.get()
+                };
+                return BlockEntityType.Builder.<TrashCanBlockEntity>of(
+                        (pos, state) -> new TrashCanBlockEntity(ModBlockEntities.TRASH_CAN.get(), pos, state), blocks).build(null);
             });
 
     public static void init() {}

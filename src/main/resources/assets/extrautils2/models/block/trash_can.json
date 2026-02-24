@@ -1,0 +1,50 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "side": "extrautils2:block/trashcan",
+    "top": "extrautils2:block/trashcan_top",
+    "bottom": "extrautils2:block/trashcan_bottom",
+    "particle": "extrautils2:block/trashcan"
+  },
+  "elements": [
+    {
+      "name": "body",
+      "from": [2, 0, 2],
+      "to": [14, 10, 14],
+      "faces": {
+        "down":  { "texture": "#bottom", "cullface": "down" },
+        "up":    { "texture": "#top" },
+        "north": { "texture": "#side", "cullface": "north" },
+        "south": { "texture": "#side", "cullface": "south" },
+        "west":  { "texture": "#side", "cullface": "west" },
+        "east":  { "texture": "#side", "cullface": "east" }
+      }
+    },
+    {
+      "name": "rim",
+      "from": [1, 10, 1],
+      "to": [15, 14, 15],
+      "faces": {
+        "down":  { "texture": "#bottom" },
+        "up":    { "texture": "#top" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    },
+    {
+      "name": "handle",
+      "from": [5, 14, 7],
+      "to": [11, 15, 9],
+      "faces": {
+        "up":    { "texture": "#top" },
+        "down":  { "texture": "#bottom" },
+        "north": { "texture": "#side" },
+        "south": { "texture": "#side" },
+        "west":  { "texture": "#side" },
+        "east":  { "texture": "#side" }
+      }
+    }
+  ]
+}
