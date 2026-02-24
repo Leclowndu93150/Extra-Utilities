@@ -11,6 +11,8 @@ import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModItems;
 import com.leclowndu93150.extrautils2.registry.ModMenus;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
@@ -25,6 +27,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterSpriteSourceTypesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -83,6 +87,25 @@ public final class ClientModEvents {
             if (!(state.getBlock() instanceof MachineGeneratorBlock mgb)) return -1;
             return mgb.generatorType.color | 0xFF000000;
         }, machineGenerators);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+        Item[] opiniumCores = new Item[9];
+        for (int i = 0; i <= 8; i++) {
+            opiniumCores[i] = ModItems.getOpiniumCore(i).get();
+        }
+        event.registerItem(new IClientItemExtensions() {
+            private OpiniumCoreRenderer renderer;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (renderer == null) {
+                    renderer = new OpiniumCoreRenderer();
+                }
+                return renderer;
+            }
+        }, opiniumCores);
     }
 
     @SubscribeEvent

@@ -125,6 +125,11 @@ public class XUItemModelProvider extends ItemModelProvider {
         handheld("upgrade_speed_super", itemTex("upgrade_speed_super"));
         handheld("upgrade_stack_size", itemTex("upgrade_stack_size"));
         handheld("upgrade_mining", itemTex("upgrade_mining"));
+
+        for (int i = 0; i <= 8; i++) {
+            getBuilder("opinium_core_" + i)
+                    .parent(new ModelFile.UncheckedModelFile("minecraft:builtin/entity"));
+        }
     }
 
     private void blockItem(Block block) {

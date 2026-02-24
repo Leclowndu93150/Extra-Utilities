@@ -127,6 +127,16 @@ public class XULanguageProvider extends LanguageProvider {
         addItem(ModItems.UPGRADE_STACK_SIZE, "Stack Size Upgrade");
         addItem(ModItems.UPGRADE_MINING, "Mining Upgrade");
 
+        addItem(ModItems.OPINIUM_CORE_0, "Opinium Core (Pathetic)");
+        addItem(ModItems.OPINIUM_CORE_1, "Opinium Core (Mediocre)");
+        addItem(ModItems.OPINIUM_CORE_2, "Opinium Core (Passable)");
+        addItem(ModItems.OPINIUM_CORE_3, "Opinium Core (Decent)");
+        addItem(ModItems.OPINIUM_CORE_4, "Opinium Core (Good)");
+        addItem(ModItems.OPINIUM_CORE_5, "Opinium Core (Damn Good)");
+        addItem(ModItems.OPINIUM_CORE_6, "Opinium Core (Amazing)");
+        addItem(ModItems.OPINIUM_CORE_7, "Opinium Core (Inspiring)");
+        addItem(ModItems.OPINIUM_CORE_8, "Opinium Core (Perfected)");
+
         add("tooltip.extrautils2.compressed", "%s Blocks");
         add("tooltip.extrautils2.drum.empty", "Drum: Empty");
         add("tooltip.extrautils2.drum", "Drum: %s (%s / %s)");

@@ -2,6 +2,7 @@ package com.leclowndu93150.extrautils2.datagen;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
+import com.leclowndu93150.extrautils2.registry.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -10,7 +11,9 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
@@ -107,6 +110,44 @@ public class XURecipeProvider extends RecipeProvider {
         compressedRecipe(output, ModBlocks.COMPRESSED_NETHERRACK_4.get(), ModBlocks.COMPRESSED_NETHERRACK_3.get().asItem());
         compressedRecipe(output, ModBlocks.COMPRESSED_NETHERRACK_5.get(), ModBlocks.COMPRESSED_NETHERRACK_4.get().asItem());
         compressedRecipe(output, ModBlocks.COMPRESSED_NETHERRACK_6.get(), ModBlocks.COMPRESSED_NETHERRACK_5.get().asItem());
+
+        opiniumRecipes(output);
+    }
+
+    private void opiniumRecipes(RecipeOutput output) {
+        ItemLike[] tierMaterials = {
+                Items.CHARCOAL,
+                Items.IRON_BLOCK,
+                Items.GOLD_BLOCK,
+                Items.DIAMOND_BLOCK,
+                Items.EMERALD_BLOCK,
+                Items.CHORUS_FLOWER,
+                Items.EXPERIENCE_BOTTLE,
+                Items.ELYTRA,
+                Items.NETHER_STAR,
+                Items.IRON_INGOT
+        };
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.OPINIUM_CORE_0.get())
+                .pattern(" o ")
+                .pattern("oio")
+                .pattern(" o ")
+                .define('o', tierMaterials[0])
+                .define('i', tierMaterials[1])
+                .unlockedBy("has_iron_block", has(Items.IRON_BLOCK))
+                .save(output);
+
+        for (int i = 1; i <= 8; i++) {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.getOpiniumCore(i).get())
+                    .pattern(" o ")
+                    .pattern("mim")
+                    .pattern(" o ")
+                    .define('o', ModItems.getOpiniumCore(i - 1).get())
+                    .define('m', tierMaterials[i])
+                    .define('i', tierMaterials[i + 1])
+                    .unlockedBy("has_prev_core", has(ModItems.getOpiniumCore(i - 1).get()))
+                    .save(output);
+        }
     }
 
     private void compressedRecipe(RecipeOutput output, net.minecraft.world.level.block.Block result, net.minecraft.world.item.Item ingredient) {

@@ -162,7 +162,7 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
                     + NumberFormat.getPercentInstance(Locale.UK).format((double) elapsed / (double) total)
                     + ChatFormatting.RESET));
         }
-        lines.add(Component.translatable("jei.tooltip.show.recipes").withStyle(ChatFormatting.GRAY));
+        lines.add(Component.translatable("jei.tooltip.show.recipes").withStyle(ChatFormatting.BLUE));
         return lines;
     }
 
