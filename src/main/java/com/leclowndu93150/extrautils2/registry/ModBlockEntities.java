@@ -1,6 +1,7 @@
 package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.SoundMufflerBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.generator.GeneratorTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.HandCrankTile;
@@ -77,6 +78,12 @@ public class ModBlockEntities {
                 return BlockEntityType.Builder.<TrashCanBlockEntity>of(
                         (pos, state) -> new TrashCanBlockEntity(ModBlockEntities.TRASH_CAN.get(), pos, state), blocks).build(null);
             });
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SoundMufflerBlockEntity>> SOUND_MUFFLER =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("sound_muffler", () ->
+                    BlockEntityType.Builder.<SoundMufflerBlockEntity>of(
+                            (pos, state) -> new SoundMufflerBlockEntity(ModBlockEntities.SOUND_MUFFLER.get(), pos, state),
+                            ModBlocks.SOUND_MUFFLER.get()).build(null));
 
     public static void init() {}
 }

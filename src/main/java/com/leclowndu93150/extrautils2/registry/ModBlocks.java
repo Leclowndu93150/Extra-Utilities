@@ -1,8 +1,10 @@
 package com.leclowndu93150.extrautils2.registry;
 
+import com.leclowndu93150.extrautils2.block.AngelBlock;
 import com.leclowndu93150.extrautils2.block.CompressedBlock;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
+import com.leclowndu93150.extrautils2.block.SoundMufflerBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
 import com.leclowndu93150.extrautils2.block.TrashCanBlock;
 import com.leclowndu93150.extrautils2.block.XUBlock;
@@ -12,6 +14,7 @@ import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -86,8 +89,8 @@ public class ModBlocks {
     public static final DeferredBlock<CompressedBlock> COMPRESSED_NETHERRACK_6 = registerCompressed("compressed_netherrack_6", 6, Blocks.NETHERRACK);
 
     // --- Decorative ---
-    public static final DeferredBlock<XUBlock> ANGEL_BLOCK = ModRegistries.registerBlock(
-            "angel_block", () -> new XUBlock(BlockBehaviour.Properties.of().strength(0.5f, 6f)));
+    public static final DeferredBlock<AngelBlock> ANGEL_BLOCK = ModRegistries.registerBlockNoItem(
+            "angel_block", () -> new AngelBlock(BlockBehaviour.Properties.of().strength(0.5f, 6f)));
     public static final DeferredBlock<XUBlock> CURSED_EARTH = ModRegistries.registerBlock(
             "cursed_earth", () -> new XUBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)));
     public static final DeferredBlock<XUBlock> DECORATIVE_SOLID_WOOD = ModRegistries.registerBlock(
@@ -146,8 +149,8 @@ public class ModBlocks {
             "screen", () -> new XUBlock.Facing(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> SPOTLIGHT = ModRegistries.registerBlock(
             "spotlight", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> SOUND_MUFFLER = ModRegistries.registerBlock(
-            "sound_muffler", () -> new XUBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<SoundMufflerBlock> SOUND_MUFFLER = ModRegistries.registerBlock(
+            "sound_muffler", () -> new SoundMufflerBlock(BlockBehaviour.Properties.of().strength(0.8f).sound(SoundType.WOOL)));
     public static final DeferredBlock<RedstoneClockBlock> REDSTONE_CLOCK = ModRegistries.registerBlock(
             "redstone_clock", () -> new RedstoneClockBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> REDSTONE_LANTERN = ModRegistries.registerBlock(
