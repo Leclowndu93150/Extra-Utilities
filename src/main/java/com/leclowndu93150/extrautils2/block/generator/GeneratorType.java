@@ -108,7 +108,7 @@ public enum GeneratorType {
         @Override
         public float computeGp(GeneratorTile tile, Level level) {
             if (!(tile instanceof HandCrankTile crank)) return 0f;
-            return baseGp * Math.min(crank.getCrankTime(), 0.5f) * 30f;
+            return Math.min(crank.getCrankTime(), 0.5f) * 30f;
         }
     },
 

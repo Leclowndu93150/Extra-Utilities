@@ -153,7 +153,7 @@ public class XUBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.GENERATOR_WATER.get(), models().getExistingFile(modLoc("block/generator_water")));
         simpleBlock(ModBlocks.GENERATOR_WIND.get(), models().getExistingFile(modLoc("block/generator_wind")));
         simpleBlock(ModBlocks.GENERATOR_FIRE.get(), models().getExistingFile(modLoc("block/generator_fire")));
-        cubeBottomTopGenerator(ModBlocks.GENERATOR_PLAYER_WIND_UP.get(), "panel_stone_side", "panel_stone_base");
+        simpleBlock(ModBlocks.GENERATOR_PLAYER_WIND_UP.get(), models().getExistingFile(modLoc("block/manual_mill_base")));
         cubeBottomTopGenerator(ModBlocks.GENERATOR_DRAGON_EGG.get(), "panel_egg_side", "panel_egg");
         cubeBottomTopGenerator(ModBlocks.GENERATOR_CREATIVE.get(), "panel_creative", "panel_creative_top");
     }

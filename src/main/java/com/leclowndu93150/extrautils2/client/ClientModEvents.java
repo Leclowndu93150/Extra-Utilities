@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
+import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.api.distmarker.Dist;
@@ -39,6 +40,11 @@ public final class ClientModEvents {
     @SubscribeEvent
     public static void onRegisterSpriteSourceTypes(RegisterSpriteSourceTypesEvent event) {
         event.register(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "compressed"), ModSpriteSourceTypes.COMPRESSED);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(ModBlockEntities.HAND_CRANK.get(), HandCrankRenderer::new);
     }
 
     @SubscribeEvent

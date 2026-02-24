@@ -3,6 +3,7 @@ package com.leclowndu93150.extrautils2.block.generator;
 import com.leclowndu93150.extrautils2.block.XUEntityBlock;
 import com.leclowndu93150.extrautils2.blockentity.generator.GeneratorTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.HandCrankTile;
+import com.leclowndu93150.extrautils2.client.ConstantRightClickHandler;
 import com.leclowndu93150.extrautils2.power.GpManager;
 import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -22,9 +23,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class GeneratorBlock extends XUEntityBlock {
     private static final VoxelShape PANEL_SHAPE = Shapes.box(0, 0, 0, 1, 0.25, 1);
+    private static final VoxelShape MILL_SHAPE = Shapes.box(0, 0, 0, 1, 0.625, 1);
 
     public final GeneratorType generatorType;
 
@@ -38,9 +42,11 @@ public class GeneratorBlock extends XUEntityBlock {
         if (generatorType == GeneratorType.SOLAR || generatorType == GeneratorType.LUNAR) {
             return PANEL_SHAPE;
         }
+        if (generatorType == GeneratorType.PLAYER_WIND_UP) {
+            return MILL_SHAPE;
+        }
         return Shapes.block();
     }
-
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -71,9 +77,18 @@ public class GeneratorBlock extends XUEntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (generatorType == GeneratorType.PLAYER_WIND_UP) {
             if (level.getBlockEntity(pos) instanceof HandCrankTile crank) {
-                return crank.onUse(player);
+                InteractionResult result = crank.onUse(player);
+                if (level.isClientSide) {
+                    handleClientRightClick(pos, state);
+                }
+                return result;
             }
         }
         return super.useWithoutItem(state, level, pos, player, hit);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void handleClientRightClick(BlockPos pos, BlockState state) {
+        ConstantRightClickHandler.setPlayerRightClicking(pos, state);
     }
 }

@@ -85,7 +85,7 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.GENERATOR_WATER.get());
         blockItem(ModBlocks.GENERATOR_WIND.get());
         blockItem(ModBlocks.GENERATOR_FIRE.get());
-        blockItem(ModBlocks.GENERATOR_PLAYER_WIND_UP.get());
+        withExistingParent("generator_player_wind_up", ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "block/manual_mill"));
         blockItem(ModBlocks.GENERATOR_DRAGON_EGG.get());
         blockItem(ModBlocks.GENERATOR_CREATIVE.get());
 

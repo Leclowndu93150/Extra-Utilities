@@ -1,0 +1,23 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "side": "extrautils2:block/panel_stone_side",
+    "top": "extrautils2:block/panel_stone_base",
+    "bottom": "extrautils2:block/panel_stone_base",
+    "particle": "extrautils2:block/panel_stone_side"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 6, 16],
+      "faces": {
+        "down":  { "texture": "#bottom", "cullface": "down" },
+        "up":    { "texture": "#top" },
+        "north": { "texture": "#side", "cullface": "north" },
+        "south": { "texture": "#side", "cullface": "south" },
+        "west":  { "texture": "#side", "cullface": "west" },
+        "east":  { "texture": "#side", "cullface": "east" }
+      }
+    }
+  ]
+}

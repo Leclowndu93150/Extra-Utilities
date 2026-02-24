@@ -1,0 +1,85 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "side": "extrautils2:block/panel_stone_side",
+    "top": "extrautils2:block/panel_stone_base",
+    "bottom": "extrautils2:block/panel_stone_base",
+    "gear": "extrautils2:block/redstone_gear",
+    "particle": "extrautils2:block/panel_stone_side"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 6, 16],
+      "faces": {
+        "down":  { "texture": "#bottom", "cullface": "down" },
+        "up":    { "texture": "#top" },
+        "north": { "texture": "#side", "cullface": "north" },
+        "south": { "texture": "#side", "cullface": "south" },
+        "west":  { "texture": "#side", "cullface": "west" },
+        "east":  { "texture": "#side", "cullface": "east" }
+      }
+    },
+    {
+      "from": [6, 6, 6],
+      "to": [10, 10, 10],
+      "faces": {
+        "down":  { "texture": "#gear" },
+        "up":    { "texture": "#gear" },
+        "north": { "texture": "#gear" },
+        "south": { "texture": "#gear" },
+        "west":  { "texture": "#gear" },
+        "east":  { "texture": "#gear" }
+      }
+    },
+    {
+      "from": [2, 7, 7],
+      "to": [14, 9, 9],
+      "faces": {
+        "down":  { "texture": "#gear" },
+        "up":    { "texture": "#gear" },
+        "north": { "texture": "#gear" },
+        "south": { "texture": "#gear" },
+        "west":  { "texture": "#gear" },
+        "east":  { "texture": "#gear" }
+      }
+    },
+    {
+      "from": [7, 7, 2],
+      "to": [9, 9, 14],
+      "faces": {
+        "down":  { "texture": "#gear" },
+        "up":    { "texture": "#gear" },
+        "north": { "texture": "#gear" },
+        "south": { "texture": "#gear" },
+        "west":  { "texture": "#gear" },
+        "east":  { "texture": "#gear" }
+      }
+    },
+    {
+      "from": [1, 7, 1],
+      "to": [15, 9, 15],
+      "faces": {
+        "down":  { "texture": "#gear", "uv": [0, 0, 16, 16] },
+        "up":    { "texture": "#gear", "uv": [0, 0, 16, 16] }
+      }
+    },
+    {
+      "from": [1, 6, 7],
+      "to": [15, 10, 9],
+      "faces": {
+        "north": { "texture": "#gear", "uv": [0, 0, 16, 16] },
+        "south": { "texture": "#gear", "uv": [0, 0, 16, 16] }
+      }
+    },
+    {
+      "from": [7, 6, 1],
+      "to": [9, 10, 15],
+      "faces": {
+        "east":  { "texture": "#gear", "uv": [0, 0, 16, 16] },
+        "west":  { "texture": "#gear", "uv": [0, 0, 16, 16] }
+      }
+    }
+  ]
+}
