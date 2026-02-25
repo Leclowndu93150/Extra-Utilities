@@ -137,6 +137,8 @@ public class XULanguageProvider extends LanguageProvider {
         addItem(ModItems.OPINIUM_CORE_7, "Opinium Core (Inspiring)");
         addItem(ModItems.OPINIUM_CORE_8, "Opinium Core (Perfected)");
 
+        addItem(ModItems.KIKOKU, "Kikoku");
+
         add("tooltip.extrautils2.compressed", "%s Blocks");
         add("tooltip.extrautils2.drum.empty", "Drum: Empty");
         add("tooltip.extrautils2.drum", "Drum: %s (%s / %s)");

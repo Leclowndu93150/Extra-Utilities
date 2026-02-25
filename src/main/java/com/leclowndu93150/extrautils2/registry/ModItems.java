@@ -3,6 +3,7 @@ package com.leclowndu93150.extrautils2.registry;
 import com.leclowndu93150.extrautils2.item.AngelBlockItem;
 import com.leclowndu93150.extrautils2.item.AngelRingItem;
 import com.leclowndu93150.extrautils2.item.GoldenBagItem;
+import com.leclowndu93150.extrautils2.item.KikokuItem;
 import com.leclowndu93150.extrautils2.item.UpgradeItem;
 import net.minecraft.world.item.Item;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeType;
@@ -39,6 +40,9 @@ public class ModItems {
 
     public static final DeferredItem<AngelBlockItem> ANGEL_BLOCK = ModRegistries.registerItem(
             "angel_block", () -> new AngelBlockItem(ModBlocks.ANGEL_BLOCK.get(), new Item.Properties()));
+
+    public static final DeferredItem<KikokuItem> KIKOKU = ModRegistries.registerItem(
+            "kikoku", KikokuItem::new);
 
     public static final DeferredItem<Item> OPINIUM_CORE_0 = registerOpinium(0);
     public static final DeferredItem<Item> OPINIUM_CORE_1 = registerOpinium(1);
