@@ -4,6 +4,7 @@ import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.client.gui.MachineGeneratorScreen;
+import com.leclowndu93150.extrautils2.client.gui.ResonatorScreen;
 import com.leclowndu93150.extrautils2.client.gui.TrashCanScreen;
 import com.leclowndu93150.extrautils2.client.sprite.ModSpriteSourceTypes;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
@@ -39,6 +40,7 @@ public final class ClientModEvents {
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenus.MACHINE_GENERATOR.get(), MachineGeneratorScreen::new);
         event.register(ModMenus.TRASH_CAN.get(), TrashCanScreen::new);
+        event.register(ModMenus.RESONATOR.get(), ResonatorScreen::new);
     }
 
     @SubscribeEvent

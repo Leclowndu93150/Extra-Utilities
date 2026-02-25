@@ -1,6 +1,7 @@
 package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.ResonatorBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.SoundMufflerBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.generator.GeneratorTile;
@@ -84,6 +85,12 @@ public class ModBlockEntities {
                     BlockEntityType.Builder.<SoundMufflerBlockEntity>of(
                             (pos, state) -> new SoundMufflerBlockEntity(ModBlockEntities.SOUND_MUFFLER.get(), pos, state),
                             ModBlocks.SOUND_MUFFLER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonatorBlockEntity>> RESONATOR =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("resonator", () ->
+                    BlockEntityType.Builder.<ResonatorBlockEntity>of(
+                            ResonatorBlockEntity::new,
+                            ModBlocks.RESONATOR.get()).build(null));
 
     public static void init() {}
 }

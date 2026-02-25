@@ -4,6 +4,7 @@ import com.leclowndu93150.extrautils2.block.AngelBlock;
 import com.leclowndu93150.extrautils2.block.CompressedBlock;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
+import com.leclowndu93150.extrautils2.block.ResonatorBlock;
 import com.leclowndu93150.extrautils2.block.SoundMufflerBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
 import com.leclowndu93150.extrautils2.block.TrashCanBlock;
@@ -113,8 +114,8 @@ public class ModBlocks {
             "trash_can_energy", () -> new TrashCanBlock(XUBlock.defaultProps().noOcclusion(), TrashCanBlock.TrashType.ENERGY));
     public static final DeferredBlock<Block> CRAFTER = ModRegistries.registerBlock(
             "crafter", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> RESONATOR = ModRegistries.registerBlock(
-            "resonator", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
+    public static final DeferredBlock<ResonatorBlock> RESONATOR = ModRegistries.registerBlock(
+            "resonator", () -> new ResonatorBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> POWER_TRANSMITTER = ModRegistries.registerBlock(
             "power_transmitter", () -> new XUBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> POWER_BATTERY = ModRegistries.registerBlock(

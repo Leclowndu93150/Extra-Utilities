@@ -53,6 +53,7 @@ public class ModRegistries {
         ModBlockEntities.init();
         ModMenus.register(bus);
         ModMobEffects.register(bus);
+        ModRecipeTypes.register(bus);
         BLOCKS.register(bus);
         ITEMS.register(bus);
         BLOCK_ENTITY_TYPES.register(bus);

@@ -1,6 +1,5 @@
 package com.leclowndu93150.extrautils2.datagen;
 
-import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModItems;
 import net.minecraft.core.HolderLookup;
@@ -13,7 +12,9 @@ import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
@@ -112,6 +113,7 @@ public class XURecipeProvider extends RecipeProvider {
         compressedRecipe(output, ModBlocks.COMPRESSED_NETHERRACK_6.get(), ModBlocks.COMPRESSED_NETHERRACK_5.get().asItem());
 
         opiniumRecipes(output);
+        resonatorRecipes(output);
     }
 
     private void opiniumRecipes(RecipeOutput output) {
@@ -148,6 +150,13 @@ public class XURecipeProvider extends RecipeProvider {
                     .unlockedBy("has_prev_core", has(ModItems.getOpiniumCore(i - 1).get()))
                     .save(output);
         }
+    }
+
+    private void resonatorRecipes(RecipeOutput output) {
+        ResonatorRecipeBuilder.resonator(
+                Ingredient.of(Items.STONE),
+                ModBlocks.MOON_STONE.get(), 800
+        ).save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "resonator/moon_stone"));
     }
 
     private void compressedRecipe(RecipeOutput output, net.minecraft.world.level.block.Block result, net.minecraft.world.item.Item ingredient) {

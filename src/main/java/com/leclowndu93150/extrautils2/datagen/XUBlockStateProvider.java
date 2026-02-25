@@ -167,8 +167,7 @@ public class XUBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.TRASH_CAN.get(), models().getExistingFile(modLoc("block/trash_can")));
         simpleBlock(ModBlocks.TRASH_CAN_FLUID.get(), models().getExistingFile(modLoc("block/trash_can_fluid")));
         simpleBlock(ModBlocks.TRASH_CAN_ENERGY.get(), models().getExistingFile(modLoc("block/trash_can_energy")));
-        simpleBlock(ModBlocks.RESONATOR.get(), models().cubeBottomTop(name(ModBlocks.RESONATOR.get()),
-                tex("resonator_side"), tex("resonator_bottom"), tex("resonator_top")));
+        simpleBlock(ModBlocks.RESONATOR.get(), models().getExistingFile(modLoc("block/resonator")));
         simpleBlock(ModBlocks.CRAFTER.get(), models().cubeAll(name(ModBlocks.CRAFTER.get()), tex("autocraft")));
         simpleBlock(ModBlocks.ANALOG_CRAFTER.get(), models().cubeAll(name(ModBlocks.ANALOG_CRAFTER.get()), tex("analog_crafter")));
         drumBlock(ModBlocks.DRUM_16.get(), "stone");

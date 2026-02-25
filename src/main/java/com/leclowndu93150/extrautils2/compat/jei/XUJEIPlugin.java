@@ -3,9 +3,13 @@ package com.leclowndu93150.extrautils2.compat.jei;
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.client.gui.MachineGeneratorScreen;
+import com.leclowndu93150.extrautils2.client.gui.ResonatorScreen;
 import com.leclowndu93150.extrautils2.gui.HasProgressArrow;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
+import com.leclowndu93150.extrautils2.gui.ResonatorMenu;
+import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
+import com.leclowndu93150.extrautils2.registry.ModRecipeTypes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
@@ -13,12 +17,14 @@ import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.runtime.IRecipesGui;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -29,6 +35,10 @@ import java.util.Map;
 
 @JeiPlugin
 public class XUJEIPlugin implements IModPlugin {
+
+    @SuppressWarnings("unchecked")
+    public static final RecipeType<RecipeHolder<ResonatorRecipe>> RESONATOR =
+            (RecipeType<RecipeHolder<ResonatorRecipe>>) (RecipeType<?>) RecipeType.create(ExtraUtilities.MODID, "resonator", RecipeHolder.class);
 
     private static final Map<MachineGeneratorType, RecipeType<GeneratorFuelRecipe>> RECIPE_TYPES = new EnumMap<>(MachineGeneratorType.class);
 
@@ -51,6 +61,7 @@ public class XUJEIPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         var guiHelper = registration.getJeiHelpers().getGuiHelper();
+        registration.addRecipeCategories(new ResonatorCategory(RESONATOR, guiHelper));
         for (var entry : RECIPE_TYPES.entrySet()) {
             Block block = getBlock(entry.getKey());
             if (block != null) {
@@ -61,6 +72,12 @@ public class XUJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        var level = Minecraft.getInstance().level;
+        if (level != null) {
+            List<RecipeHolder<ResonatorRecipe>> resonatorRecipes =
+                    level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.RESONATOR.get());
+            registration.addRecipes(RESONATOR, resonatorRecipes);
+        }
         for (var entry : RECIPE_TYPES.entrySet()) {
             List<GeneratorFuelRecipe> recipes = GeneratorFuelRecipe.getRecipesFor(entry.getKey());
             if (!recipes.isEmpty()) {
@@ -71,6 +88,7 @@ public class XUJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(ModBlocks.RESONATOR.get().asItem().getDefaultInstance(), RESONATOR);
         for (var entry : RECIPE_TYPES.entrySet()) {
             Block block = getBlock(entry.getKey());
             if (block != null) {
@@ -81,6 +99,17 @@ public class XUJEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGuiContainerHandler(ResonatorScreen.class, new IGuiContainerHandler<>() {
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(ResonatorScreen screen, double mouseX, double mouseY) {
+                if (screen.getMenu() instanceof HasProgressArrow arrow) {
+                    return List.of(IGuiClickableArea.createBasic(
+                            arrow.getArrowX(), arrow.getArrowY(), 22, 16, RESONATOR));
+                }
+                return List.of();
+            }
+        });
+
         registration.addGuiContainerHandler(MachineGeneratorScreen.class, new IGuiContainerHandler<>() {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(MachineGeneratorScreen screen, double mouseX, double mouseY) {
