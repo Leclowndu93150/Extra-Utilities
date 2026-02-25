@@ -7,6 +7,7 @@ import com.leclowndu93150.extrautils2.gui.HasProgressArrow;
 import com.leclowndu93150.extrautils2.gui.HasRedstoneControl;
 import com.leclowndu93150.extrautils2.util.RedstoneState;
 import com.leclowndu93150.extrautils2.util.StringHelper;
+import net.minecraft.ChatFormatting;
 import com.leclowndu93150.extrautils2.gui.XUBaseMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -102,19 +103,22 @@ public abstract class XUBaseScreen<T extends AbstractContainerMenu> extends Abst
         }
     }
 
+    private static final Component SHOW_RECIPES_HINT = Component.translatable("jei.tooltip.show.recipes").withStyle(ChatFormatting.BLUE);
+
     protected void renderProgressArrowTooltipIfPresent(GuiGraphics graphics, int mouseX, int mouseY) {
         if (!(menu instanceof HasProgressArrow arrow)) return;
         int x = leftPos + arrow.getArrowX();
         int y = topPos + arrow.getArrowY();
         if (mouseX < x || mouseX >= x + ARROW_W || mouseY < y || mouseY >= y + ARROW_H) return;
+        List<Component> lines;
         if (arrow.isArrowOverloaded()) {
-            graphics.renderTooltip(font, arrow.getArrowErrorTooltip(), Optional.empty(), mouseX, mouseY);
+            lines = new ArrayList<>(arrow.getArrowErrorTooltip());
         } else {
-            var tooltip = arrow.getArrowTooltip();
-            if (tooltip != null && !tooltip.isEmpty()) {
-                graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
-            }
+            var base = arrow.getArrowTooltip();
+            lines = base != null ? new ArrayList<>(base) : new ArrayList<>();
         }
+        lines.add(SHOW_RECIPES_HINT);
+        graphics.renderTooltip(font, lines, Optional.empty(), mouseX, mouseY);
     }
 
     protected void drawRedstoneControlIfPresent(GuiGraphics graphics, int mouseX, int mouseY) {

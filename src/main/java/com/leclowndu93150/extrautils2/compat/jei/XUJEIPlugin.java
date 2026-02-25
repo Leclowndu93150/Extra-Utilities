@@ -103,8 +103,7 @@ public class XUJEIPlugin implements IModPlugin {
             @Override
             public Collection<IGuiClickableArea> getGuiClickableAreas(ResonatorScreen screen, double mouseX, double mouseY) {
                 if (screen.getMenu() instanceof HasProgressArrow arrow) {
-                    return List.of(IGuiClickableArea.createBasic(
-                            arrow.getArrowX(), arrow.getArrowY(), 22, 16, RESONATOR));
+                    return List.of(createClickableArea(arrow, RESONATOR));
                 }
                 return List.of();
             }
@@ -117,28 +116,31 @@ public class XUJEIPlugin implements IModPlugin {
                     MachineGeneratorType type = menu.getGeneratorType();
                     RecipeType<GeneratorFuelRecipe> rt = type != null ? RECIPE_TYPES.get(type) : null;
                     if (rt != null) {
-                        RecipeType<GeneratorFuelRecipe> finalRt = rt;
-                        return List.of(new IGuiClickableArea() {
-                            @Override
-                            public Rect2i getArea() {
-                                return new Rect2i(arrow.getArrowX(), arrow.getArrowY(), 22, 16);
-                            }
-
-                            @Override
-                            public boolean isTooltipEnabled() {
-                                return false;
-                            }
-
-                            @Override
-                            public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
-                                recipesGui.showTypes(List.of(finalRt));
-                            }
-                        });
+                        return List.of(createClickableArea(arrow, rt));
                     }
                 }
                 return List.of();
             }
         });
+    }
+
+    private static IGuiClickableArea createClickableArea(HasProgressArrow arrow, RecipeType<?> recipeType) {
+        return new IGuiClickableArea() {
+            @Override
+            public Rect2i getArea() {
+                return new Rect2i(arrow.getArrowX(), arrow.getArrowY(), 22, 16);
+            }
+
+            @Override
+            public boolean isTooltipEnabled() {
+                return false;
+            }
+
+            @Override
+            public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
+                recipesGui.showTypes(List.of(recipeType));
+            }
+        };
     }
 
     private static Block getBlock(MachineGeneratorType type) {
