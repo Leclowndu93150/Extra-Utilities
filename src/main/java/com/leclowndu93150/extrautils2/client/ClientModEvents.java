@@ -3,6 +3,7 @@ package com.leclowndu93150.extrautils2.client;
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
+import com.leclowndu93150.extrautils2.client.gui.CreativeChestScreen;
 import com.leclowndu93150.extrautils2.client.gui.MachineGeneratorScreen;
 import com.leclowndu93150.extrautils2.client.gui.ResonatorScreen;
 import com.leclowndu93150.extrautils2.client.gui.TrashCanScreen;
@@ -41,6 +42,7 @@ public final class ClientModEvents {
         event.register(ModMenus.MACHINE_GENERATOR.get(), MachineGeneratorScreen::new);
         event.register(ModMenus.TRASH_CAN.get(), TrashCanScreen::new);
         event.register(ModMenus.RESONATOR.get(), ResonatorScreen::new);
+        event.register(ModMenus.CREATIVE_CHEST.get(), CreativeChestScreen::new);
     }
 
     @SubscribeEvent

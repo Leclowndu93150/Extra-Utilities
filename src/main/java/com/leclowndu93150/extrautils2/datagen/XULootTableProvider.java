@@ -116,7 +116,7 @@ public class XULootTableProvider extends LootTableProvider {
             dropSelf(ModBlocks.INDEXER.get());
             dropSelf(ModBlocks.PLAYER_CHEST.get());
             dropSelf(ModBlocks.CREATIVE_CHEST.get());
-            dropSelf(ModBlocks.CREATIVE_HARVEST.get());
+            add(ModBlocks.CREATIVE_HARVEST.get(), noDrop());
             dropSelf(ModBlocks.MINER.get());
             dropSelf(ModBlocks.SCANNER.get());
             dropSelf(ModBlocks.USER.get());

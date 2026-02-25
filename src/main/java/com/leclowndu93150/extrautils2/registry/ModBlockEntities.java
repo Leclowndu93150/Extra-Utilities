@@ -1,5 +1,7 @@
 package com.leclowndu93150.extrautils2.registry;
 
+import com.leclowndu93150.extrautils2.blockentity.CreativeChestBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.CreativeHarvestBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.ResonatorBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.SoundMufflerBlockEntity;
@@ -91,6 +93,18 @@ public class ModBlockEntities {
                     BlockEntityType.Builder.<ResonatorBlockEntity>of(
                             ResonatorBlockEntity::new,
                             ModBlocks.RESONATOR.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CreativeChestBlockEntity>> CREATIVE_CHEST =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("creative_chest", () ->
+                    BlockEntityType.Builder.<CreativeChestBlockEntity>of(
+                            CreativeChestBlockEntity::new,
+                            ModBlocks.CREATIVE_CHEST.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CreativeHarvestBlockEntity>> CREATIVE_HARVEST =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("creative_harvest", () ->
+                    BlockEntityType.Builder.<CreativeHarvestBlockEntity>of(
+                            CreativeHarvestBlockEntity::new,
+                            ModBlocks.CREATIVE_HARVEST.get()).build(null));
 
     public static void init() {}
 }

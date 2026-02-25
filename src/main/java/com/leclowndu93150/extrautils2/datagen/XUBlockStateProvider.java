@@ -183,8 +183,16 @@ public class XUBlockStateProvider extends BlockStateProvider {
                 tex("transfernodes/battery_side"), tex("transfernodes/battery_side"), tex("transfernodes/battery_top")));
         simpleBlock(ModBlocks.INDEXER.get(), cubeAll(ModBlocks.INDEXER.get(), "chest_creative"));
         simpleBlock(ModBlocks.PLAYER_CHEST.get(), cubeAll(ModBlocks.PLAYER_CHEST.get(), "chest_creative"));
-        simpleBlock(ModBlocks.CREATIVE_CHEST.get(), models().cubeBottomTop(name(ModBlocks.CREATIVE_CHEST.get()),
-                tex("chest_creative_side"), tex("chest_creative"), tex("chest_creative")));
+        ModelFile creativeChestModel = models().getExistingFile(modLoc("block/creative_chest"));
+        getVariantBuilder(ModBlocks.CREATIVE_CHEST.get()).forAllStates(state -> {
+            int yRot = switch (state.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING)) {
+                case SOUTH -> 180;
+                case WEST  -> 270;
+                case EAST  -> 90;
+                default    -> 0;
+            };
+            return ConfiguredModel.builder().modelFile(creativeChestModel).rotationY(yRot).build();
+        });
         simpleBlock(ModBlocks.CREATIVE_HARVEST.get(), cubeAll(ModBlocks.CREATIVE_HARVEST.get(), "creative_harvestable"));
         simpleBlock(ModBlocks.MINER.get(), models().orientable(name(ModBlocks.MINER.get()),
                 tex("interact_side"), tex("interact_mine"), tex("interact_side")));

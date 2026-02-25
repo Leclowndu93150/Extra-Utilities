@@ -2,6 +2,8 @@ package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.block.AngelBlock;
 import com.leclowndu93150.extrautils2.block.CompressedBlock;
+import com.leclowndu93150.extrautils2.block.CreativeChestBlock;
+import com.leclowndu93150.extrautils2.block.CreativeHarvestBlock;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.ResonatorBlock;
@@ -166,10 +168,10 @@ public class ModBlocks {
             "teleporter", () -> new XUBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> POWER_OVERLOAD = ModRegistries.registerBlock(
             "power_overload", () -> new XUBlock(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> CREATIVE_CHEST = ModRegistries.registerBlock(
-            "creative_chest", () -> new XUBlock(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> CREATIVE_HARVEST = ModRegistries.registerBlock(
-            "creative_harvest", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
+    public static final DeferredBlock<CreativeChestBlock> CREATIVE_CHEST = ModRegistries.registerBlock(
+            "creative_chest", () -> new CreativeChestBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<CreativeHarvestBlock> CREATIVE_HARVEST = ModRegistries.registerBlock(
+            "creative_harvest", () -> new CreativeHarvestBlock(XUBlock.defaultProps()));
 
     // --- Helpers ---
     private static DeferredBlock<MachineGeneratorBlock> registerMachineGenerator(MachineGeneratorType type) {
