@@ -1,6 +1,8 @@
 package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
+import com.leclowndu93150.extrautils2.recipe.CrusherRecipe;
+import com.leclowndu93150.extrautils2.recipe.EnchanterRecipe;
 import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -25,6 +27,28 @@ public class ModRecipeTypes {
 
     public static final DeferredHolder<RecipeSerializer<?>, ResonatorRecipe.Serializer> RESONATOR_SERIALIZER =
             RECIPE_SERIALIZERS.register("resonator", ResonatorRecipe.Serializer::new);
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<CrusherRecipe>> CRUSHER =
+            RECIPE_TYPES.register("crusher", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return "extrautils2:crusher";
+                }
+            });
+
+    public static final DeferredHolder<RecipeSerializer<?>, CrusherRecipe.Serializer> CRUSHER_SERIALIZER =
+            RECIPE_SERIALIZERS.register("crusher", CrusherRecipe.Serializer::new);
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<EnchanterRecipe>> ENCHANTER =
+            RECIPE_TYPES.register("enchanter", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return "extrautils2:enchanter";
+                }
+            });
+
+    public static final DeferredHolder<RecipeSerializer<?>, EnchanterRecipe.Serializer> ENCHANTER_SERIALIZER =
+            RECIPE_SERIALIZERS.register("enchanter", EnchanterRecipe.Serializer::new);
 
     public static void register(IEventBus bus) {
         RECIPE_TYPES.register(bus);

@@ -5,12 +5,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-public class SoundMufflerBlockEntity extends BlockEntity {
+public class SoundMufflerBlockEntity extends XUBlockEntity {
 
     private static final int HEARTBEAT_INTERVAL = 100;
 

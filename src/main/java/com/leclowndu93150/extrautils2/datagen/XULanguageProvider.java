@@ -113,6 +113,9 @@ public class XULanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.POWER_OVERLOAD, "Power Overload");
         addBlock(ModBlocks.RAINBOW_GENERATOR, "Rainbow Generator!");
         addBlock(ModBlocks.SYNERGY_UNIT, "Synergy Unit");
+        addBlock(ModBlocks.MACHINE_FURNACE, "Furnace");
+        addBlock(ModBlocks.MACHINE_CRUSHER, "Crusher");
+        addBlock(ModBlocks.MACHINE_ENCHANTER, "Enchanter");
 
         addItem(ModItems.GOLDEN_BAG, "Golden Bag");
 
@@ -170,6 +173,7 @@ public class XULanguageProvider extends LanguageProvider {
         add("tooltip.extrautils2.spike.gold", "Mobs drop experience");
         add("tooltip.extrautils2.spike.diamond", "Mobs drop 'Player-kill only' items");
         add("tooltip.extrautils2.grid_overloaded", "Grid is overloaded");
+        add("tooltip.extrautils2.enchanter.bookshelves", "Bookshelves: %s / %s");
         add("tooltip.extrautils2.redstone.always_on", "Always On");
         add("tooltip.extrautils2.redstone.on", "Redstone On");
         add("tooltip.extrautils2.redstone.off", "Redstone Off");

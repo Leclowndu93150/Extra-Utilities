@@ -3,6 +3,7 @@ package com.leclowndu93150.extrautils2.blockentity.generator;
 import com.leclowndu93150.extrautils2.api.power.IGpSource;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
+import com.leclowndu93150.extrautils2.block.machine.MachineBlock;
 import com.leclowndu93150.extrautils2.blockentity.XUBlockEntity;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
 import com.leclowndu93150.extrautils2.power.GpManager;
@@ -32,7 +33,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider, IGpSource {
+public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider, IGpSource, MachineBlock.IGpMachine, MachineBlock.IDroppableInventory {
 
     private final ItemStackHandler inventory;
     private final @Nullable XUFluidTank fluidTank;
@@ -241,6 +242,11 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
 
     public @Nullable XUFluidTank getFluidTank() {
         return fluidTank;
+    }
+
+    @Override
+    public net.neoforged.neoforge.items.IItemHandler[] getDroppableInventories() {
+        return new net.neoforged.neoforge.items.IItemHandler[]{inventory, upgrades};
     }
 
     public IEnergyStorage getEnergyStorage() { return energyStorage; }

@@ -3,9 +3,11 @@ package com.leclowndu93150.extrautils2.client.gui;
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.gui.HasEnergyBar;
 import com.leclowndu93150.extrautils2.gui.HasFluidBar;
+import com.leclowndu93150.extrautils2.gui.HasMachinePreview;
 import com.leclowndu93150.extrautils2.gui.HasProgressArrow;
 import com.leclowndu93150.extrautils2.gui.HasRedstoneControl;
 import com.leclowndu93150.extrautils2.util.RedstoneState;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.leclowndu93150.extrautils2.util.StringHelper;
 import net.minecraft.ChatFormatting;
 import com.leclowndu93150.extrautils2.gui.XUBaseMenu;
@@ -57,6 +59,43 @@ public abstract class XUBaseScreen<T extends AbstractContainerMenu> extends Abst
         graphics.blit(texture, x + w2, y, (float) (256 - w3), 0f, w3, h2, 256, 256);
         graphics.blit(texture, x, y + h2, 0f, (float) (256 - h3), w2, h3, 256, 256);
         graphics.blit(texture, x + w2, y + h2, (float) (256 - w3), (float) (256 - h3), w3, h3, 256, 256);
+    }
+
+    private static final int PREVIEW_W = 50;
+    private static final int PREVIEW_H = 50;
+    private static final ResourceLocation GUI_BASE_TEX = ResourceLocation.fromNamespaceAndPath(
+            ExtraUtilities.MODID, "textures/block/gui_base.png");
+
+    protected void drawMachinePreviewIfPresent(GuiGraphics graphics) {
+        if (!(menu instanceof HasMachinePreview preview)) return;
+        int x = leftPos + (imageWidth - PREVIEW_W) / 2;
+        int y = topPos + 16;
+
+        var atlas = minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+        TextureAtlasSprite base = atlas.apply(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID,
+                "block/" + preview.getPreviewBaseTexture()));
+        TextureAtlasSprite front = atlas.apply(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID,
+                "block/" + preview.getPreviewFrontTexture()));
+
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+
+        int tint = preview.getPreviewTint();
+        if (tint != -1) {
+            float r = ((tint >> 16) & 0xFF) / 255f;
+            float g = ((tint >> 8) & 0xFF) / 255f;
+            float b = (tint & 0xFF) / 255f;
+            graphics.setColor(r, g, b, 1f);
+        }
+        graphics.blit(x, y, 0, PREVIEW_W, PREVIEW_H, base);
+        graphics.setColor(1f, 1f, 1f, 1f);
+        graphics.blit(x, y, 0, PREVIEW_W, PREVIEW_H, front);
+
+        graphics.setColor(1f, 1f, 1f, 0.9f);
+        graphics.blit(GUI_BASE_TEX, x, y, 103f, 103f, PREVIEW_W, PREVIEW_H, 256, 256);
+        graphics.setColor(1f, 1f, 1f, 1f);
+
+        RenderSystem.disableBlend();
     }
 
     protected void drawPlayerInventorySlotBackgrounds(GuiGraphics graphics, ResourceLocation widgetsTexture, int invX, int invY) {

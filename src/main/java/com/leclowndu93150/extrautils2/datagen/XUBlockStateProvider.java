@@ -5,6 +5,7 @@ import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
+import com.leclowndu93150.extrautils2.block.machine.MachineBlock;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
@@ -17,6 +18,7 @@ import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder;
+import org.jetbrains.annotations.Nullable;
 import net.neoforged.neoforge.client.model.generators.loaders.ObjModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -209,6 +211,14 @@ public class XUBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.POWER_OVERLOAD.get(), cubeAll(ModBlocks.POWER_OVERLOAD.get(), "enchanted_block"));
         simpleBlock(ModBlocks.RAINBOW_GENERATOR.get(), cubeAll(ModBlocks.RAINBOW_GENERATOR.get(), "connected/rainbow"));
         simpleBlock(ModBlocks.SYNERGY_UNIT.get(), cubeAll(ModBlocks.SYNERGY_UNIT.get(), "synergy/synergy_side"));
+
+        processingMachine(ModBlocks.MACHINE_FURNACE.get(), "machine/furnace_off", "machine/furnace_on",
+                "machine/machine_base_side", "machine/machine_base", "machine/machine_base_bottom");
+        processingMachine(ModBlocks.MACHINE_CRUSHER.get(), "machine/crusher_off", "machine/crusher_on",
+                "machine/machine_base_side", "machine/machine_base", "machine/machine_base_bottom");
+        processingMachine(ModBlocks.MACHINE_ENCHANTER.get(), "machine/enchanter_off", "machine/enchanter_on",
+                "machine/enchanter_side", "machine/machine_base_bottom", "machine/machine_base_bottom",
+                "machine/enchanter_top");
     }
 
     private void machineGenerator(MachineGeneratorBlock block, MachineGeneratorType type) {
@@ -298,6 +308,76 @@ public class XUBlockStateProvider extends BlockStateProvider {
                     .child("overlay", typeOverlay)
                     .itemRenderOrder("base", "front", "overlay")
                 .end();
+    }
+
+    private void processingMachine(Block block, String frontOff, String frontOn, String side, String top, String bottom) {
+        processingMachine(block, frontOff, frontOn, side, top, bottom, null);
+    }
+
+    private void processingMachine(Block block, String frontOff, String frontOn, String side, String top, String bottom, @Nullable String topOverlay) {
+        String n = name(block);
+        ModelFile modelOff = processingMachineModel(n + "_off", frontOff, side, top, bottom, topOverlay);
+        ModelFile modelOn = processingMachineModel(n + "_on", frontOn, side, top, bottom, topOverlay);
+        getVariantBuilder(block).forAllStates(state -> {
+            ModelFile model = state.getValue(MachineBlock.ACTIVE) ? modelOn : modelOff;
+            int yRot = switch (state.getValue(MachineBlock.FACING)) {
+                case SOUTH -> 180;
+                case WEST  -> 270;
+                case EAST  -> 90;
+                default    -> 0;
+            };
+            return ConfiguredModel.builder().modelFile(model).rotationY(yRot).uvLock(true).build();
+        });
+    }
+
+    private ModelFile processingMachineModel(String name, String front, String side, String top, String bottom, @Nullable String topOverlay) {
+        BlockModelBuilder base = models().getBuilder(name)
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .element()
+                    .from(0, 0, 0).to(16, 16, 16)
+                    .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).end()
+                    .face(Direction.UP).texture("#top").cullface(Direction.UP).end()
+                    .face(Direction.NORTH).texture("#top").cullface(Direction.NORTH).end()
+                    .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).end()
+                    .face(Direction.WEST).texture("#side").cullface(Direction.WEST).end()
+                    .face(Direction.EAST).texture("#side").cullface(Direction.EAST).end()
+                .end()
+                .texture("side", tex(side))
+                .texture("top", tex(top))
+                .texture("bottom", tex(bottom));
+
+        BlockModelBuilder frontOverlay = models().getBuilder(name + "_front")
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .element()
+                    .from(0, 0, 0).to(16, 16, 16)
+                    .face(Direction.NORTH).texture("#front").cullface(Direction.NORTH).end()
+                .end()
+                .texture("front", tex(front))
+                .renderType("minecraft:cutout");
+
+        CompositeModelBuilder composite = models().getBuilder(name + "_composite")
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .texture("particle", tex(side))
+                .customLoader(CompositeModelBuilder::begin)
+                    .child("base", base)
+                    .child("front", frontOverlay);
+
+        if (topOverlay != null) {
+            BlockModelBuilder topOvl = models().getBuilder(name + "_top")
+                    .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                    .element()
+                        .from(0, 0, 0).to(16, 16, 16)
+                        .face(Direction.UP).texture("#top_overlay").cullface(Direction.UP).end()
+                    .end()
+                    .texture("top_overlay", tex(topOverlay))
+                    .renderType("minecraft:cutout");
+            composite.child("top", topOvl);
+            composite.itemRenderOrder("base", "front", "top");
+        } else {
+            composite.itemRenderOrder("base", "front");
+        }
+
+        return composite.end();
     }
 
     private ModelFile cubeAll(Block block, String texture) {

@@ -9,6 +9,9 @@ import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.generator.GeneratorTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.HandCrankTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.MachineGeneratorTile;
+import com.leclowndu93150.extrautils2.blockentity.machine.CrusherBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.machine.EnchanterBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.machine.FurnaceBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -111,6 +114,24 @@ public class ModBlockEntities {
                     BlockEntityType.Builder.<com.leclowndu93150.extrautils2.blockentity.CreativeEnergyBlockEntity>of(
                             com.leclowndu93150.extrautils2.blockentity.CreativeEnergyBlockEntity::new,
                             ModBlocks.CREATIVE_ENERGY.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FurnaceBlockEntity>> MACHINE_FURNACE =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("machine_furnace", () ->
+                    BlockEntityType.Builder.<FurnaceBlockEntity>of(
+                            FurnaceBlockEntity::new,
+                            ModBlocks.MACHINE_FURNACE.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrusherBlockEntity>> MACHINE_CRUSHER =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("machine_crusher", () ->
+                    BlockEntityType.Builder.<CrusherBlockEntity>of(
+                            CrusherBlockEntity::new,
+                            ModBlocks.MACHINE_CRUSHER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnchanterBlockEntity>> MACHINE_ENCHANTER =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("machine_enchanter", () ->
+                    BlockEntityType.Builder.<EnchanterBlockEntity>of(
+                            EnchanterBlockEntity::new,
+                            ModBlocks.MACHINE_ENCHANTER.get()).build(null));
 
     public static void init() {}
 }

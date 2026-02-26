@@ -114,6 +114,8 @@ public class XURecipeProvider extends RecipeProvider {
 
         opiniumRecipes(output);
         resonatorRecipes(output);
+        crusherRecipes(output);
+        enchanterRecipes(output);
     }
 
     private void opiniumRecipes(RecipeOutput output) {
@@ -157,6 +159,70 @@ public class XURecipeProvider extends RecipeProvider {
                 Ingredient.of(Items.STONE),
                 ModBlocks.MOON_STONE.get(), 800
         ).save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "resonator/moon_stone"));
+    }
+
+    private void crusherRecipes(RecipeOutput output) {
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.BLAZE_ROD), Items.BLAZE_POWDER, 2, 4000, 200)
+                .secondary(Items.BLAZE_POWDER, 3, 0.4f)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/blaze_rod"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.BONE), Items.BONE_MEAL, 3, 4000, 200)
+                .secondary(Items.BONE_MEAL, 3, 0.5f)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/bone"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.COBBLESTONE), Items.GRAVEL, 1, 4000, 200)
+                .secondary(Items.SAND, 1, 0.1f)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/cobblestone"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.GRAVEL), Items.SAND, 1, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/gravel"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.GLOWSTONE), Items.GLOWSTONE_DUST, 4, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/glowstone"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.COAL_ORE), Items.COAL, 4, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/coal_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.DIAMOND_ORE), Items.DIAMOND, 1, 4000, 200)
+                .secondary(Items.DIAMOND, 3, 0.2f)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/diamond_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.EMERALD_ORE), Items.EMERALD, 1, 4000, 200)
+                .secondary(Items.EMERALD, 3, 0.2f)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/emerald_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.LAPIS_ORE), Items.LAPIS_LAZULI, 8, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/lapis_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.REDSTONE_ORE), Items.REDSTONE, 8, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/redstone_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.NETHER_QUARTZ_ORE), Items.QUARTZ, 1, 4000, 200)
+                .secondary(Items.QUARTZ, 3, 0.2f)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/quartz_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.IRON_ORE), Items.RAW_IRON, 2, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/iron_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.GOLD_ORE), Items.RAW_GOLD, 2, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/gold_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.COPPER_ORE), Items.RAW_COPPER, 6, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/copper_ore"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(ItemTags.WOOL), Items.STRING, 3, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/wool"));
+
+        CrusherRecipeBuilder.crusher(Ingredient.of(Items.BEETROOT), Items.RED_DYE, 2, 4000, 200)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "crusher/beetroot"));
+    }
+
+    private void enchanterRecipes(RecipeOutput output) {
+        EnchanterRecipeBuilder.enchanter(Ingredient.of(Items.LAPIS_LAZULI), "lowest", 12000, 6000)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/lapis"));
+
+        EnchanterRecipeBuilder.enchanter(Ingredient.of(Items.NETHER_STAR), "highest", 72000, 36000)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/nether_star"));
     }
 
     private void compressedRecipe(RecipeOutput output, net.minecraft.world.level.block.Block result, net.minecraft.world.item.Item ingredient) {

@@ -5,14 +5,13 @@ import com.leclowndu93150.extrautils2.event.SoundMufflerEvents;
 import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SoundMufflerBlock extends XUBlock implements EntityBlock {
+public class SoundMufflerBlock extends XUEntityBlock {
     public SoundMufflerBlock(BlockBehaviour.Properties props) {
         super(props);
     }

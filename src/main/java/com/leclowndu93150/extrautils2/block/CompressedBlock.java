@@ -1,6 +1,5 @@
 package com.leclowndu93150.extrautils2.block;
 
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +11,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class CompressedBlock extends Block {
+public class CompressedBlock extends XUBlock {
     public final int level;
 
     public CompressedBlock(int level, BlockBehaviour.Properties props) {

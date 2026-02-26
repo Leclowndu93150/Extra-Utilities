@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class XUItemModelProvider extends ItemModelProvider {
     public XUItemModelProvider(PackOutput output, ExistingFileHelper efh) {
@@ -115,6 +116,10 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.RAINBOW_GENERATOR.get());
         blockItem(ModBlocks.SYNERGY_UNIT.get());
 
+        machineItem(ModBlocks.MACHINE_FURNACE.get(), "machine/furnace_off", "machine/machine_base_side", "machine/machine_base", "machine/machine_base_bottom");
+        machineItem(ModBlocks.MACHINE_CRUSHER.get(), "machine/crusher_off", "machine/machine_base_side", "machine/machine_base", "machine/machine_base_bottom");
+        machineItem(ModBlocks.MACHINE_ENCHANTER.get(), "machine/enchanter_off", "machine/enchanter_side", "machine/machine_base_bottom", "machine/machine_base_bottom", "machine/enchanter_top");
+
         handheld("golden_bag", tex("bag_of_holding"));
 
         for (String type : AngelRingItem.WING_TYPES) {
@@ -190,6 +195,44 @@ public class XUItemModelProvider extends ItemModelProvider {
                 .from(0, 16, 0).to(16, 16.01f, 16)
                 .face(Direction.UP).texture("#overlay").end()
                 .end();
+    }
+
+    private void machineItem(Block block, String front, String side, String top, String bottom) {
+        machineItem(block, front, side, top, bottom, null);
+    }
+
+    private void machineItem(Block block, String front, String side, String top, String bottom, @Nullable String topOverlay) {
+        String path = block.builtInRegistryHolder().key().location().getPath();
+        var builder = getBuilder(path)
+                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
+                .texture("side", tex(side))
+                .texture("top", tex(top))
+                .texture("bottom", tex(bottom))
+                .texture("front", tex(front))
+                .renderType("minecraft:cutout");
+
+        builder.element()
+                .from(0, 0, 0).to(16, 16, 16)
+                .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).end()
+                .face(Direction.UP).texture("#top").cullface(Direction.UP).end()
+                .face(Direction.NORTH).texture("#top").cullface(Direction.NORTH).end()
+                .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).end()
+                .face(Direction.WEST).texture("#side").cullface(Direction.WEST).end()
+                .face(Direction.EAST).texture("#side").cullface(Direction.EAST).end()
+                .end();
+
+        builder.element()
+                .from(0, 0, -0.01f).to(16, 16, 0)
+                .face(Direction.NORTH).texture("#front").end()
+                .end();
+
+        if (topOverlay != null) {
+            builder.texture("top_overlay", tex(topOverlay));
+            builder.element()
+                    .from(0, 16, 0).to(16, 16.01f, 16)
+                    .face(Direction.UP).texture("#top_overlay").end()
+                    .end();
+        }
     }
 
     private void handheld(String name, ResourceLocation texture) {

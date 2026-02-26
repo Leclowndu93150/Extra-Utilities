@@ -7,6 +7,9 @@ import com.leclowndu93150.extrautils2.client.gui.CreativeChestScreen;
 import com.leclowndu93150.extrautils2.client.gui.MachineGeneratorScreen;
 import com.leclowndu93150.extrautils2.client.gui.ResonatorScreen;
 import com.leclowndu93150.extrautils2.client.gui.TrashCanScreen;
+import com.leclowndu93150.extrautils2.client.gui.machine.CrusherScreen;
+import com.leclowndu93150.extrautils2.client.gui.machine.EnchanterScreen;
+import com.leclowndu93150.extrautils2.client.gui.machine.FurnaceScreen;
 import com.leclowndu93150.extrautils2.client.sprite.ModSpriteSourceTypes;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
@@ -43,6 +46,9 @@ public final class ClientModEvents {
         event.register(ModMenus.TRASH_CAN.get(), TrashCanScreen::new);
         event.register(ModMenus.RESONATOR.get(), ResonatorScreen::new);
         event.register(ModMenus.CREATIVE_CHEST.get(), CreativeChestScreen::new);
+        event.register(ModMenus.MACHINE_FURNACE.get(), FurnaceScreen::new);
+        event.register(ModMenus.MACHINE_CRUSHER.get(), CrusherScreen::new);
+        event.register(ModMenus.MACHINE_ENCHANTER.get(), EnchanterScreen::new);
     }
 
     @SubscribeEvent

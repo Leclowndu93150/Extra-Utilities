@@ -1,6 +1,7 @@
-package com.leclowndu93150.extrautils2.block;
+package com.leclowndu93150.extrautils2.block.machine;
 
-import com.leclowndu93150.extrautils2.blockentity.CreativeEnergyBlockEntity;
+import com.leclowndu93150.extrautils2.block.XUEntityBlock;
+import com.leclowndu93150.extrautils2.blockentity.machine.CrusherBlockEntity;
 import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -9,21 +10,20 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class CreativeEnergyBlock extends XUEntityBlock {
+public class CrusherBlock extends MachineBlock {
 
-    public CreativeEnergyBlock(Properties props) {
-        super(props.strength(-1.0f, 3600000.0f));
+    public CrusherBlock(Properties props) {
+        super(props);
     }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CreativeEnergyBlockEntity(pos, state);
+        return new CrusherBlockEntity(pos, state);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) return null;
-        return type == ModBlockEntities.CREATIVE_ENERGY.get() ? (BlockEntityTicker<T>) (lvl, p, s, be) -> CreativeEnergyBlockEntity.tick(lvl, p, s, (CreativeEnergyBlockEntity) be) : null;
+        return (BlockEntityTicker<T>) XUEntityBlock.createTicker(type, ModBlockEntities.MACHINE_CRUSHER.get(), CrusherBlockEntity::tick);
     }
 }

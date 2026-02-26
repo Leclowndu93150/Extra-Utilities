@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
-public class RedstoneClockBlock extends Block {
+public class RedstoneClockBlock extends XUBlock {
 
     public enum PowerState implements StringRepresentable {
         DISABLED, ENABLED_NOT_POWERED, ENABLED_POWERED;

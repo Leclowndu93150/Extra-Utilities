@@ -19,7 +19,6 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,7 +36,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class DrumBlock extends Block implements EntityBlock {
+public class DrumBlock extends XUEntityBlock {
     public enum Capacity {
         DRUM_16("stone", 16, 0.4f),
         DRUM_256("iron", 256, 0.4f),

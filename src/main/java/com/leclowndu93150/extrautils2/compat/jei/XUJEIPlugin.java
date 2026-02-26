@@ -4,9 +4,14 @@ import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.client.gui.MachineGeneratorScreen;
 import com.leclowndu93150.extrautils2.client.gui.ResonatorScreen;
+import com.leclowndu93150.extrautils2.client.gui.machine.CrusherScreen;
+import com.leclowndu93150.extrautils2.client.gui.machine.EnchanterScreen;
+import com.leclowndu93150.extrautils2.client.gui.machine.FurnaceScreen;
 import com.leclowndu93150.extrautils2.gui.HasProgressArrow;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
 import com.leclowndu93150.extrautils2.gui.ResonatorMenu;
+import com.leclowndu93150.extrautils2.recipe.CrusherRecipe;
+import com.leclowndu93150.extrautils2.recipe.EnchanterRecipe;
 import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModRecipeTypes;
@@ -40,6 +45,14 @@ public class XUJEIPlugin implements IModPlugin {
     public static final RecipeType<RecipeHolder<ResonatorRecipe>> RESONATOR =
             (RecipeType<RecipeHolder<ResonatorRecipe>>) (RecipeType<?>) RecipeType.create(ExtraUtilities.MODID, "resonator", RecipeHolder.class);
 
+    @SuppressWarnings("unchecked")
+    public static final RecipeType<RecipeHolder<CrusherRecipe>> CRUSHER =
+            (RecipeType<RecipeHolder<CrusherRecipe>>) (RecipeType<?>) RecipeType.create(ExtraUtilities.MODID, "crusher", RecipeHolder.class);
+
+    @SuppressWarnings("unchecked")
+    public static final RecipeType<RecipeHolder<EnchanterRecipe>> ENCHANTER =
+            (RecipeType<RecipeHolder<EnchanterRecipe>>) (RecipeType<?>) RecipeType.create(ExtraUtilities.MODID, "enchanter", RecipeHolder.class);
+
     private static final Map<MachineGeneratorType, RecipeType<GeneratorFuelRecipe>> RECIPE_TYPES = new EnumMap<>(MachineGeneratorType.class);
 
     static {
@@ -62,6 +75,8 @@ public class XUJEIPlugin implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration registration) {
         var guiHelper = registration.getJeiHelpers().getGuiHelper();
         registration.addRecipeCategories(new ResonatorCategory(RESONATOR, guiHelper));
+        registration.addRecipeCategories(new CrusherCategory(CRUSHER, guiHelper));
+        registration.addRecipeCategories(new EnchanterCategory(ENCHANTER, guiHelper));
         for (var entry : RECIPE_TYPES.entrySet()) {
             Block block = getBlock(entry.getKey());
             if (block != null) {
@@ -77,6 +92,14 @@ public class XUJEIPlugin implements IModPlugin {
             List<RecipeHolder<ResonatorRecipe>> resonatorRecipes =
                     level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.RESONATOR.get());
             registration.addRecipes(RESONATOR, resonatorRecipes);
+
+            List<RecipeHolder<CrusherRecipe>> crusherRecipes =
+                    level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.CRUSHER.get());
+            registration.addRecipes(CRUSHER, crusherRecipes);
+
+            List<RecipeHolder<EnchanterRecipe>> enchanterRecipes =
+                    level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.ENCHANTER.get());
+            registration.addRecipes(ENCHANTER, enchanterRecipes);
         }
         for (var entry : RECIPE_TYPES.entrySet()) {
             List<GeneratorFuelRecipe> recipes = GeneratorFuelRecipe.getRecipesFor(entry.getKey());
@@ -89,6 +112,9 @@ public class XUJEIPlugin implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(ModBlocks.RESONATOR.get().asItem().getDefaultInstance(), RESONATOR);
+        registration.addRecipeCatalyst(ModBlocks.MACHINE_FURNACE.get().asItem().getDefaultInstance(), mezz.jei.api.constants.RecipeTypes.SMELTING);
+        registration.addRecipeCatalyst(ModBlocks.MACHINE_CRUSHER.get().asItem().getDefaultInstance(), CRUSHER);
+        registration.addRecipeCatalyst(ModBlocks.MACHINE_ENCHANTER.get().asItem().getDefaultInstance(), ENCHANTER);
         for (var entry : RECIPE_TYPES.entrySet()) {
             Block block = getBlock(entry.getKey());
             if (block != null) {
@@ -104,6 +130,36 @@ public class XUJEIPlugin implements IModPlugin {
             public Collection<IGuiClickableArea> getGuiClickableAreas(ResonatorScreen screen, double mouseX, double mouseY) {
                 if (screen.getMenu() instanceof HasProgressArrow arrow) {
                     return List.of(createClickableArea(arrow, RESONATOR));
+                }
+                return List.of();
+            }
+        });
+
+        registration.addGuiContainerHandler(FurnaceScreen.class, new IGuiContainerHandler<>() {
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(FurnaceScreen screen, double mouseX, double mouseY) {
+                if (screen.getMenu() instanceof HasProgressArrow arrow) {
+                    return List.of(createClickableArea(arrow, mezz.jei.api.constants.RecipeTypes.SMELTING));
+                }
+                return List.of();
+            }
+        });
+
+        registration.addGuiContainerHandler(CrusherScreen.class, new IGuiContainerHandler<>() {
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(CrusherScreen screen, double mouseX, double mouseY) {
+                if (screen.getMenu() instanceof HasProgressArrow arrow) {
+                    return List.of(createClickableArea(arrow, CRUSHER));
+                }
+                return List.of();
+            }
+        });
+
+        registration.addGuiContainerHandler(EnchanterScreen.class, new IGuiContainerHandler<>() {
+            @Override
+            public Collection<IGuiClickableArea> getGuiClickableAreas(EnchanterScreen screen, double mouseX, double mouseY) {
+                if (screen.getMenu() instanceof HasProgressArrow arrow) {
+                    return List.of(createClickableArea(arrow, ENCHANTER));
                 }
                 return List.of();
             }

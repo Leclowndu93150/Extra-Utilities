@@ -1,25 +1,24 @@
-package com.leclowndu93150.extrautils2.client.gui;
+package com.leclowndu93150.extrautils2.client.gui.machine;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
-import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
+import com.leclowndu93150.extrautils2.client.gui.XUBaseScreen;
+import com.leclowndu93150.extrautils2.gui.machine.EnchanterMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
+public class EnchanterScreen extends XUBaseScreen<EnchanterMenu> {
 
-    private static final ResourceLocation GUI_BASE    = ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "textures/block/gui_base.png");
+    private static final ResourceLocation GUI_BASE = ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "textures/block/gui_base.png");
     private static final ResourceLocation GUI_WIDGETS = ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "textures/block/gui_widget.png");
 
     private static final int GUI_W = 176;
     private static final int GUI_H = 166;
 
-    private static final int SLOT_U  = 0,   SLOT_V  = 0,  SLOT_W  = 18, SLOT_H  = 18;
-
-    public MachineGeneratorScreen(MachineGeneratorMenu menu, Inventory inv, Component title) {
+    public EnchanterScreen(EnchanterMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
-        this.imageWidth  = GUI_W;
+        this.imageWidth = GUI_W;
         this.imageHeight = GUI_H;
         this.inventoryLabelX = menu.getPlayerInvX();
         this.inventoryLabelY = GUI_H - 95;
@@ -30,23 +29,14 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
         drawBasicBackground(graphics, GUI_BASE, leftPos, topPos, GUI_W, GUI_H);
         drawMachinePreviewIfPresent(graphics);
 
-        int slots = menu.tile.getInventory().getSlots();
-        int slotStartX = leftPos + menu.getSlotStartX();
-        int slotY = topPos + menu.getSlotY();
-
-        drawEnergyBarIfPresent(graphics, GUI_WIDGETS);
-        if (menu.getGeneratorType() != null && menu.getGeneratorType().usesFluid()) {
-            drawFluidBarIfPresent(graphics, GUI_WIDGETS);
-        }
-
-        for (int i = 0; i < slots; i++) {
-            graphics.blit(GUI_WIDGETS, slotStartX + i * (SLOT_W + 2), slotY, (float) SLOT_U, (float) SLOT_V, SLOT_W, SLOT_H, 256, 256);
-        }
+        drawSlotBackground(graphics, GUI_WIDGETS, 34, 32);
+        drawSlotBackground(graphics, GUI_WIDGETS, 56, 32);
+        drawSlotBackground(graphics, GUI_WIDGETS, 110, 32);
 
         drawUpgradeSlotBackgroundIfPresent(graphics, GUI_WIDGETS);
         drawPlayerInventorySlotBackgrounds(graphics, GUI_WIDGETS, menu.getPlayerInvX(), menu.getPlayerInvY());
-        drawUpgradeSlotBackgroundIfPresent(graphics, GUI_WIDGETS);
         drawRedstoneControlIfPresent(graphics, mouseX, mouseY);
+        drawEnergyBarIfPresent(graphics, GUI_WIDGETS);
         drawProgressArrowIfPresent(graphics, GUI_WIDGETS);
     }
 
@@ -65,12 +55,8 @@ public class MachineGeneratorScreen extends XUBaseScreen<MachineGeneratorMenu> {
     @Override
     protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderTooltip(graphics, mouseX, mouseY);
-        renderEnergyBarTooltipIfPresent(graphics, mouseX, mouseY);
-        if (menu.getGeneratorType() != null && menu.getGeneratorType().usesFluid()) {
-            renderFluidBarTooltipIfPresent(graphics, mouseX, mouseY);
-        }
         renderRedstoneControlTooltipIfPresent(graphics, mouseX, mouseY);
+        renderEnergyBarTooltipIfPresent(graphics, mouseX, mouseY);
         renderProgressArrowTooltipIfPresent(graphics, mouseX, mouseY);
     }
-
 }

@@ -1,5 +1,6 @@
 package com.leclowndu93150.extrautils2.gui;
 
+import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.blockentity.generator.MachineGeneratorTile;
 import com.leclowndu93150.extrautils2.util.RedstoneState;
@@ -23,7 +24,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, HasProgressArrow, HasRedstoneControl, HasEnergyBar, HasFluidBar {
+public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, HasProgressArrow, HasRedstoneControl, HasEnergyBar, HasFluidBar, HasMachinePreview {
 
     public final MachineGeneratorTile tile;
     private final ContainerData data;
@@ -135,6 +136,26 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
     }
     public boolean hasRedstonePulseMode() { return true; }
     public void cycleRedstone() { tile.cycleRedstoneState(hasRedstonePulseMode()); }
+
+    @Override
+    public String getPreviewBaseTexture() {
+        MachineGeneratorType type = tile.getGeneratorType();
+        return type != null ? type.getPreviewBaseTexture() : "machine/machine_base_white";
+    }
+
+    @Override
+    public String getPreviewFrontTexture() {
+        MachineGeneratorType type = tile.getGeneratorType();
+        if (type == null) return "machine/generator_off";
+        boolean powered = tile.getBlockState().getValue(MachineGeneratorBlock.POWERED);
+        return powered ? type.getOnFrontTexture() : "machine/generator_off";
+    }
+
+    @Override
+    public int getPreviewTint() {
+        MachineGeneratorType type = tile.getGeneratorType();
+        return type != null ? type.color : -1;
+    }
 
     @Override
     public float getArrowProgress() {

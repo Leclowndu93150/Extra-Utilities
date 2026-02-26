@@ -16,6 +16,9 @@ import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorType;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
+import com.leclowndu93150.extrautils2.block.machine.CrusherBlock;
+import com.leclowndu93150.extrautils2.block.machine.EnchanterBlock;
+import com.leclowndu93150.extrautils2.block.machine.FurnaceBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -175,6 +178,14 @@ public class ModBlocks {
             "creative_harvest", () -> new CreativeHarvestBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<CreativeEnergyBlock> CREATIVE_ENERGY = ModRegistries.registerBlock(
             "creative_energy", () -> new CreativeEnergyBlock(XUBlock.defaultProps()));
+
+    // --- Processing Machines ---
+    public static final DeferredBlock<FurnaceBlock> MACHINE_FURNACE = ModRegistries.registerBlock(
+            "machine_furnace", () -> new FurnaceBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<CrusherBlock> MACHINE_CRUSHER = ModRegistries.registerBlock(
+            "machine_crusher", () -> new CrusherBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<EnchanterBlock> MACHINE_ENCHANTER = ModRegistries.registerBlock(
+            "machine_enchanter", () -> new EnchanterBlock(XUBlock.defaultProps()));
 
     // --- Helpers ---
     private static DeferredBlock<MachineGeneratorBlock> registerMachineGenerator(MachineGeneratorType type) {

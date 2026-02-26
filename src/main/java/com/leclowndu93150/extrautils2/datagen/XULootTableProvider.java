@@ -128,6 +128,9 @@ public class XULootTableProvider extends LootTableProvider {
             dropSelf(ModBlocks.POWER_OVERLOAD.get());
             dropSelf(ModBlocks.RAINBOW_GENERATOR.get());
             dropSelf(ModBlocks.SYNERGY_UNIT.get());
+            dropSelf(ModBlocks.MACHINE_FURNACE.get());
+            dropSelf(ModBlocks.MACHINE_CRUSHER.get());
+            dropSelf(ModBlocks.MACHINE_ENCHANTER.get());
         }
 
         @Override

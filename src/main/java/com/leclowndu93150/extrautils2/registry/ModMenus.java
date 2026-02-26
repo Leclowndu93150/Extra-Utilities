@@ -5,6 +5,9 @@ import com.leclowndu93150.extrautils2.gui.CreativeChestMenu;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
 import com.leclowndu93150.extrautils2.gui.ResonatorMenu;
 import com.leclowndu93150.extrautils2.gui.TrashCanMenu;
+import com.leclowndu93150.extrautils2.gui.machine.CrusherMenu;
+import com.leclowndu93150.extrautils2.gui.machine.EnchanterMenu;
+import com.leclowndu93150.extrautils2.gui.machine.FurnaceMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -26,6 +29,15 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<CreativeChestMenu>> CREATIVE_CHEST =
             MENUS.register("creative_chest", () -> IMenuTypeExtension.create(CreativeChestMenu::fromNetwork));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<FurnaceMenu>> MACHINE_FURNACE =
+            MENUS.register("machine_furnace", () -> IMenuTypeExtension.create(FurnaceMenu::fromNetwork));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<CrusherMenu>> MACHINE_CRUSHER =
+            MENUS.register("machine_crusher", () -> IMenuTypeExtension.create(CrusherMenu::fromNetwork));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<EnchanterMenu>> MACHINE_ENCHANTER =
+            MENUS.register("machine_enchanter", () -> IMenuTypeExtension.create(EnchanterMenu::fromNetwork));
 
     public static void register(IEventBus bus) {
         MENUS.register(bus);

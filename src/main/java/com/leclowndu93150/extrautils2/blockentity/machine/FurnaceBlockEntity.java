@@ -1,15 +1,16 @@
-package com.leclowndu93150.extrautils2.blockentity;
+package com.leclowndu93150.extrautils2.blockentity.machine;
 
 import com.leclowndu93150.extrautils2.api.power.IGpSource;
+import com.leclowndu93150.extrautils2.block.machine.MachineBlock;
+import com.leclowndu93150.extrautils2.blockentity.XUBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.XUEnergyStorage;
 import com.leclowndu93150.extrautils2.data.power.GpFrequency;
-import com.leclowndu93150.extrautils2.gui.ResonatorMenu;
+import com.leclowndu93150.extrautils2.gui.machine.FurnaceMenu;
 import com.leclowndu93150.extrautils2.power.GpManager;
-import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
-import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
-import com.leclowndu93150.extrautils2.registry.ModRecipeTypes;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeStackHandler;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeType;
 import com.leclowndu93150.extrautils2.util.RedstoneState;
+import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -20,10 +21,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import com.leclowndu93150.extrautils2.block.machine.MachineBlock;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
@@ -31,11 +33,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 import java.util.Optional;
 
-public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider, IGpSource, MachineBlock.IGpMachine, MachineBlock.IDroppableInventory {
+public class FurnaceBlockEntity extends XUBlockEntity implements MenuProvider, IGpSource, MachineBlock.IGpMachine, MachineBlock.IDroppableInventory {
+
+    private final XUEnergyStorage energy = new XUEnergyStorage(10000, 80, 0, true, false);
 
     private int progress = 0;
-    private int currentEnergy = 0;
-    private @Nullable ResonatorRecipe currentRecipe = null;
+    private int totalTime = 0;
+    private int energyPerTick = 20;
 
     private int ownerFrequency = 0;
     private boolean registered = false;
@@ -49,20 +53,12 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
             setChanged();
             updateRecipe();
         }
-
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            if (level == null) return true;
-            SingleRecipeInput ri = new SingleRecipeInput(stack);
-            return level.getRecipeManager().getRecipeFor(ModRecipeTypes.RESONATOR.get(), ri, level).isPresent();
-        }
     };
 
     private final ItemStackHandler output = new ItemStackHandler(1) {
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
-            updateRecipe();
         }
 
         @Override
@@ -76,11 +72,13 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
         if (ownerFrequency != 0) GpManager.INSTANCE.markSourceDirty(this);
     });
 
-    public ResonatorBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.RESONATOR.get(), pos, state);
+    private @Nullable SmeltingRecipe currentRecipe = null;
+
+    public FurnaceBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.MACHINE_FURNACE.get(), pos, state);
     }
 
-    public static void tick(Level level, BlockPos pos, BlockState state, ResonatorBlockEntity tile) {
+    public static void tick(Level level, BlockPos pos, BlockState state, FurnaceBlockEntity tile) {
         if (level.isClientSide) return;
 
         if (!tile.registered && tile.ownerFrequency != 0) {
@@ -90,25 +88,36 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
 
         tile.updateRedstoneState(level, pos);
 
-        if (!tile.isGpPowered() || !tile.canRunByRedstone()) return;
-        if (tile.currentRecipe == null) return;
+        boolean active = false;
+        if (tile.isGpPowered() && tile.canRunByRedstone() && tile.currentRecipe != null) {
+            int speedFactor = 1 + tile.getSpeedLevel();
+            int cost = tile.energyPerTick * speedFactor;
+            if (tile.energy.getEnergyStored() >= cost) {
+                tile.energy.extractEnergy(cost, false);
+                tile.progress += speedFactor;
+                active = true;
+                tile.setChanged();
 
-        int speedLevel = tile.getSpeedLevel();
-        int increment = 4 * (1 + speedLevel);
-        tile.progress += increment;
-        tile.setChanged();
-
-        if (tile.progress >= tile.currentEnergy) {
-            ItemStack result = tile.currentRecipe.output().copy();
-            tile.input.extractItem(0, 1, false);
-            ItemStack existing = tile.output.getStackInSlot(0);
-            if (existing.isEmpty()) {
-                tile.output.setStackInSlot(0, result);
-            } else {
-                existing.grow(result.getCount());
+                if (tile.progress >= tile.totalTime) {
+                    ItemStack result = tile.currentRecipe.getResultItem(level.registryAccess()).copy();
+                    tile.input.extractItem(0, 1, false);
+                    ItemStack existing = tile.output.getStackInSlot(0);
+                    if (existing.isEmpty()) {
+                        tile.output.setStackInSlot(0, result);
+                    } else {
+                        existing.grow(result.getCount());
+                    }
+                    tile.progress = 0;
+                    tile.updateRecipe();
+                }
             }
+        } else if (tile.currentRecipe == null) {
             tile.progress = 0;
-            tile.setChanged();
+        }
+
+        boolean wasActive = state.getValue(MachineBlock.ACTIVE);
+        if (wasActive != active) {
+            level.setBlock(pos, state.setValue(MachineBlock.ACTIVE, active), 3);
         }
     }
 
@@ -117,44 +126,40 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
         ItemStack inputStack = input.getStackInSlot(0);
         if (inputStack.isEmpty()) {
             currentRecipe = null;
-            currentEnergy = 0;
-            progress = 0;
+            totalTime = 0;
             return;
         }
         SingleRecipeInput ri = new SingleRecipeInput(inputStack);
-        Optional<RecipeHolder<ResonatorRecipe>> found = level.getRecipeManager().getRecipeFor(ModRecipeTypes.RESONATOR.get(), ri, level);
+        Optional<RecipeHolder<SmeltingRecipe>> found = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, ri, level);
         if (found.isPresent()) {
-            ResonatorRecipe recipe = found.get().value();
+            SmeltingRecipe recipe = found.get().value();
+            ItemStack result = recipe.getResultItem(level.registryAccess());
             ItemStack outputStack = output.getStackInSlot(0);
-            ItemStack recipeResult = recipe.output();
-            if (!outputStack.isEmpty() && (!ItemStack.isSameItemSameComponents(outputStack, recipeResult)
-                    || outputStack.getCount() + recipeResult.getCount() > outputStack.getMaxStackSize())) {
+            if (!outputStack.isEmpty() && (!ItemStack.isSameItemSameComponents(outputStack, result)
+                    || outputStack.getCount() + result.getCount() > outputStack.getMaxStackSize())) {
                 currentRecipe = null;
-                currentEnergy = 0;
-                progress = 0;
+                totalTime = 0;
                 return;
             }
             currentRecipe = recipe;
-            currentEnergy = recipe.energy();
+            totalTime = 100;
         } else {
             currentRecipe = null;
-            currentEnergy = 0;
-            progress = 0;
+            totalTime = 0;
         }
     }
 
     public ItemStackHandler getInput() { return input; }
     public ItemStackHandler getOutput() { return output; }
     public UpgradeStackHandler getUpgrades() { return upgrades; }
-
-    @Override
-    public IItemHandler[] getDroppableInventories() {
-        return new IItemHandler[]{input, output, upgrades};
-    }
+    public XUEnergyStorage getEnergyStorage() { return energy; }
     public int getProgress() { return progress; }
-    public int getCurrentEnergy() { return currentEnergy; }
+    public int getTotalTime() { return totalTime; }
+    public int getEnergyStored() { return energy.getEnergyStored(); }
+    public int getEnergyCapacity() { return energy.getMaxEnergyStored(); }
     public int getSpeedLevel() { return upgrades.getLevel(UpgradeType.SPEED); }
 
+    @Override
     public void setOwnerFrequency(int freq) {
         this.ownerFrequency = freq;
         setChanged();
@@ -185,37 +190,27 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
     }
 
     @Override
+    public IItemHandler[] getDroppableInventories() {
+        return new IItemHandler[]{input, output, upgrades};
+    }
+
+    @Override
     public float getGp() {
         int speedLevel = getSpeedLevel();
-        float base = progress * 0.01f * (1 + speedLevel);
-        if (speedLevel > 0) base += UpgradeType.SPEED.getPowerUse(speedLevel);
-        return base;
+        if (speedLevel <= 0) return 0;
+        return UpgradeType.SPEED.getPowerUse(speedLevel);
     }
 
-    @Override
-    public int frequency() { return ownerFrequency; }
-
-    @Override
-    public void onPowerChanged(boolean powered) {}
-
-    @Override
-    public boolean isLoaded() {
-        return level != null && !level.isClientSide && !isRemoved();
-    }
-
-    @Override
-    public @Nullable Level level() { return level; }
-
-    @Override
-    public @Nullable BlockPos getPos() { return worldPosition; }
+    @Override public int frequency() { return ownerFrequency; }
+    @Override public void onPowerChanged(boolean powered) {}
+    @Override public boolean isLoaded() { return level != null && !level.isClientSide && !isRemoved(); }
+    @Override public @Nullable Level level() { return level; }
+    @Override public @Nullable BlockPos getPos() { return worldPosition; }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (registered) {
-            GpManager.INSTANCE.removeSource(this);
-            registered = false;
-        }
+        if (registered) { GpManager.INSTANCE.removeSource(this); registered = false; }
     }
 
     @Override
@@ -230,12 +225,12 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.extrautils2.resonator");
+        return Component.translatable("block.extrautils2.machine_furnace");
     }
 
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory playerInv, Player player) {
-        return new ResonatorMenu(id, playerInv, this);
+        return new FurnaceMenu(id, playerInv, this);
     }
 
     @Override
@@ -245,6 +240,8 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
         tag.put("Output", output.serializeNBT(provider));
         tag.put("Upgrades", upgrades.serializeNBT(provider));
         tag.putInt("Progress", progress);
+        tag.putInt("TotalTime", totalTime);
+        tag.putInt("Energy", energy.getEnergyStored());
         tag.putInt("OwnerFreq", ownerFrequency);
         tag.putInt("RedstoneState", redstoneState.ordinal());
         tag.putBoolean("RedstonePowered", redstonePowered);
@@ -258,6 +255,8 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
         output.deserializeNBT(provider, tag.getCompound("Output"));
         if (tag.contains("Upgrades")) upgrades.deserializeNBT(provider, tag.getCompound("Upgrades"));
         progress = tag.getInt("Progress");
+        totalTime = tag.getInt("TotalTime");
+        energy.setEnergy(tag.getInt("Energy"));
         ownerFrequency = tag.getInt("OwnerFreq");
         int rs = tag.getInt("RedstoneState");
         RedstoneState[] values = RedstoneState.values();
@@ -279,9 +278,7 @@ public class ResonatorBlockEntity extends XUBlockEntity implements MenuProvider,
         boolean newPower = level.hasNeighborSignal(pos);
         if (newPower != redstonePowered) {
             redstonePowered = newPower;
-            if (newPower && redstoneState == RedstoneState.OPERATE_REDSTONE_PULSE) {
-                redstonePulses++;
-            }
+            if (newPower && redstoneState == RedstoneState.OPERATE_REDSTONE_PULSE) redstonePulses++;
             setChanged();
         }
     }

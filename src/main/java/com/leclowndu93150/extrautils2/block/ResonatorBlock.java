@@ -1,5 +1,6 @@
 package com.leclowndu93150.extrautils2.block;
 
+import com.leclowndu93150.extrautils2.block.machine.MachineBlock;
 import com.leclowndu93150.extrautils2.blockentity.ResonatorBlockEntity;
 import com.leclowndu93150.extrautils2.power.GpManager;
 import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class ResonatorBlock extends XUEntityBlock {
 
@@ -48,9 +50,9 @@ public class ResonatorBlock extends XUEntityBlock {
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        if (placer instanceof ServerPlayer sp && level.getBlockEntity(pos) instanceof ResonatorBlockEntity tile) {
+        if (placer instanceof ServerPlayer sp && level.getBlockEntity(pos) instanceof MachineBlock.IGpMachine gp) {
             int freq = GpManager.INSTANCE.assignFrequency(sp);
-            tile.setOwnerFrequency(freq);
+            gp.setOwnerFrequency(freq);
         }
     }
 
@@ -65,15 +67,11 @@ public class ResonatorBlock extends XUEntityBlock {
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
-            if (level.getBlockEntity(pos) instanceof ResonatorBlockEntity tile) {
-                for (int i = 0; i < tile.getInput().getSlots(); i++) {
-                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), tile.getInput().getStackInSlot(i));
-                }
-                for (int i = 0; i < tile.getOutput().getSlots(); i++) {
-                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), tile.getOutput().getStackInSlot(i));
-                }
-                for (int i = 0; i < tile.getUpgrades().getSlots(); i++) {
-                    Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), tile.getUpgrades().getStackInSlot(i));
+            if (level.getBlockEntity(pos) instanceof MachineBlock.IDroppableInventory droppable) {
+                for (IItemHandler handler : droppable.getDroppableInventories()) {
+                    for (int i = 0; i < handler.getSlots(); i++) {
+                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), handler.getStackInSlot(i));
+                    }
                 }
             }
         }
