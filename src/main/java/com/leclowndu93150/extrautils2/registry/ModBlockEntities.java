@@ -106,5 +106,11 @@ public class ModBlockEntities {
                             CreativeHarvestBlockEntity::new,
                             ModBlocks.CREATIVE_HARVEST.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.leclowndu93150.extrautils2.blockentity.CreativeEnergyBlockEntity>> CREATIVE_ENERGY =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("creative_energy", () ->
+                    BlockEntityType.Builder.<com.leclowndu93150.extrautils2.blockentity.CreativeEnergyBlockEntity>of(
+                            com.leclowndu93150.extrautils2.blockentity.CreativeEnergyBlockEntity::new,
+                            ModBlocks.CREATIVE_ENERGY.get()).build(null));
+
     public static void init() {}
 }

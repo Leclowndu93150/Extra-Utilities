@@ -103,6 +103,7 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.PLAYER_CHEST.get());
         blockItem(ModBlocks.CREATIVE_CHEST.get());
         blockItem(ModBlocks.CREATIVE_HARVEST.get());
+        blockItem(ModBlocks.CREATIVE_ENERGY.get());
         blockItem(ModBlocks.MINER.get());
         blockItem(ModBlocks.SCANNER.get());
         blockItem(ModBlocks.USER.get());
@@ -140,25 +141,39 @@ public class XUItemModelProvider extends ItemModelProvider {
     private void machineGeneratorItem(Block block) {
         MachineGeneratorType type = ((MachineGeneratorBlock) block).generatorType;
         String path = block.builtInRegistryHolder().key().location().getPath();
-        String side   = type.sideTex   != null ? type.sideTex   : "machine/machine_base_white_side";
-        String bottom = type.bottomTex != null ? type.bottomTex : "machine/machine_base_white_bottom";
+        boolean vanilla = type == MachineGeneratorType.SURVIVALIST;
+        ResourceLocation sideLoc = vanilla ? ResourceLocation.withDefaultNamespace("block/furnace_side")
+                : tex(type.sideTex != null ? type.sideTex : "machine/machine_base_white_side");
+        ResourceLocation bottomLoc = vanilla ? ResourceLocation.withDefaultNamespace("block/furnace_top")
+                : tex(type.bottomTex != null ? type.bottomTex : "machine/machine_base_white_bottom");
 
         var builder = getBuilder(path)
                 .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
-                .texture("bottom", tex(bottom))
-                .texture("side", tex(side))
+                .texture("bottom", bottomLoc)
+                .texture("side", sideLoc)
                 .texture("front", tex("machine/generator_off"))
                 .renderType("minecraft:cutout");
 
-        builder.element()
-                .from(0, 0, 0).to(16, 16, 16)
-                .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(1).end()
-                .face(Direction.UP).texture("#bottom").cullface(Direction.UP).tintindex(1).end()
-                .face(Direction.NORTH).texture("#bottom").cullface(Direction.NORTH).tintindex(1).end()
-                .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).tintindex(1).end()
-                .face(Direction.WEST).texture("#side").cullface(Direction.WEST).tintindex(1).end()
-                .face(Direction.EAST).texture("#side").cullface(Direction.EAST).tintindex(1).end()
-                .end();
+        var element = builder.element()
+                .from(0, 0, 0).to(16, 16, 16);
+        if (vanilla) {
+            element
+                    .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).end()
+                    .face(Direction.UP).texture("#bottom").cullface(Direction.UP).end()
+                    .face(Direction.NORTH).texture("#bottom").cullface(Direction.NORTH).end()
+                    .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).end()
+                    .face(Direction.WEST).texture("#side").cullface(Direction.WEST).end()
+                    .face(Direction.EAST).texture("#side").cullface(Direction.EAST).end();
+        } else {
+            element
+                    .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(1).end()
+                    .face(Direction.UP).texture("#bottom").cullface(Direction.UP).tintindex(1).end()
+                    .face(Direction.NORTH).texture("#bottom").cullface(Direction.NORTH).tintindex(1).end()
+                    .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).tintindex(1).end()
+                    .face(Direction.WEST).texture("#side").cullface(Direction.WEST).tintindex(1).end()
+                    .face(Direction.EAST).texture("#side").cullface(Direction.EAST).tintindex(1).end();
+        }
+        element.end();
 
         // Slightly in front of the north face to avoid z-fighting in item renders.
         builder.element()

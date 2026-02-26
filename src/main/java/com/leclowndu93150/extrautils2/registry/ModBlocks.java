@@ -3,6 +3,7 @@ package com.leclowndu93150.extrautils2.registry;
 import com.leclowndu93150.extrautils2.block.AngelBlock;
 import com.leclowndu93150.extrautils2.block.CompressedBlock;
 import com.leclowndu93150.extrautils2.block.CreativeChestBlock;
+import com.leclowndu93150.extrautils2.block.CreativeEnergyBlock;
 import com.leclowndu93150.extrautils2.block.CreativeHarvestBlock;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
@@ -172,6 +173,8 @@ public class ModBlocks {
             "creative_chest", () -> new CreativeChestBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<CreativeHarvestBlock> CREATIVE_HARVEST = ModRegistries.registerBlock(
             "creative_harvest", () -> new CreativeHarvestBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<CreativeEnergyBlock> CREATIVE_ENERGY = ModRegistries.registerBlock(
+            "creative_energy", () -> new CreativeEnergyBlock(XUBlock.defaultProps()));
 
     // --- Helpers ---
     private static DeferredBlock<MachineGeneratorBlock> registerMachineGenerator(MachineGeneratorType type) {

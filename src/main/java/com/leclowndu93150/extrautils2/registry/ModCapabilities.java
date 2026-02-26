@@ -3,6 +3,7 @@ package com.leclowndu93150.extrautils2.registry;
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.TrashCanBlock;
 import com.leclowndu93150.extrautils2.blockentity.CreativeChestBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.CreativeEnergyBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.ResonatorBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
@@ -30,6 +31,9 @@ public final class ModCapabilities {
 
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.CREATIVE_CHEST.get(),
                 (CreativeChestBlockEntity be, Direction side) -> be.getHandler());
+
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ModBlockEntities.CREATIVE_ENERGY.get(),
+                (CreativeEnergyBlockEntity be, Direction side) -> CreativeEnergyBlockEntity.INFINITE_ENERGY);
 
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.TRASH_CAN.get(),
                 (TrashCanBlockEntity be, Direction side) -> be.getTrashType() == TrashCanBlock.TrashType.ITEM ? be.itemHandler : null);

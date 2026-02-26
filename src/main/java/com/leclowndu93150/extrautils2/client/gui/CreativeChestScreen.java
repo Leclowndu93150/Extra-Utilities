@@ -27,8 +27,8 @@ public class CreativeChestScreen extends XUBaseScreen<CreativeChestMenu> {
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         drawBasicBackground(graphics, GUI_BASE, leftPos, topPos, GUI_W, GUI_H);
         drawSlotBackground(graphics, GUI_WIDGETS, 50, 32);
-        graphics.fill(leftPos + 103, topPos + 33, leftPos + 117, topPos + 47, 0x80000000);
         drawSlotBackground(graphics, GUI_WIDGETS, 102, 32);
+        graphics.fill(leftPos + 103, topPos + 33, leftPos + 119, topPos + 49, 0x80000000);
         drawProgressArrowIfPresent(graphics, GUI_WIDGETS);
         drawPlayerInventorySlotBackgrounds(graphics, GUI_WIDGETS, menu.getPlayerInvX(), menu.getPlayerInvY());
     }
