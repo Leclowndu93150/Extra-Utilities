@@ -44,6 +44,53 @@ public class ModItems {
     public static final DeferredItem<KikokuItem> KIKOKU = ModRegistries.registerItem(
             "kikoku", KikokuItem::new);
 
+    // --- Crafting Ingredients ---
+    public static final DeferredItem<Item> REDSTONE_CRYSTAL = registerSimple("redstone_crystal");
+    public static final DeferredItem<Item> REDSTONE_GEAR = registerSimple("redstone_gear");
+    public static final DeferredItem<Item> EYE_REDSTONE = registerSimple("eye_redstone");
+    public static final DeferredItem<Item> DYE_POWDER_LUNAR = registerSimple("dye_powder_lunar");
+    public static final DeferredItem<Item> RED_COAL = registerSimple("red_coal");
+    public static final DeferredItem<Item> UPGRADE_BASE = registerSimple("upgrade_base");
+    public static final DeferredItem<Item> EVIL_DROP = registerSimple("evil_drop");
+    public static final DeferredItem<Item> DEMON_INGOT = registerSimple("demon_ingot");
+    public static final DeferredItem<Item> ENCHANTED_INGOT = registerSimple("enchanted_ingot");
+    public static final DeferredItem<Item> REDSTONE_COIL = registerSimple("redstone_coil");
+    public static final DeferredItem<Item> EVIL_INFUSED_INGOT = registerSimple("evil_infused_ingot");
+    public static final DeferredItem<Item> DYE_POWDER_BLUE = registerSimple("dye_powder_blue");
+
+    // --- Tools ---
+    public static final DeferredItem<Item> BUILDERS_WAND = registerSimple("builders_wand");
+    public static final DeferredItem<Item> CREATIVE_BUILDERS_WAND = registerSimple("creative_builders_wand");
+    public static final DeferredItem<Item> DESTRUCTION_WAND = registerSimple("destruction_wand");
+    public static final DeferredItem<Item> CREATIVE_DESTRUCTION_WAND = registerSimple("creative_destruction_wand");
+    public static final DeferredItem<Item> WRENCH = registerSimple("wrench");
+    public static final DeferredItem<Item> GLASS_CUTTER = registerSimple("glass_cutter");
+    public static final DeferredItem<Item> TROWEL = registerSimple("trowel");
+    public static final DeferredItem<Item> WATERING_CAN = registerSimple("watering_can");
+    public static final DeferredItem<Item> GOLDEN_LASSO = registerSimple("golden_lasso");
+    public static final DeferredItem<Item> CURSED_LASSO = registerSimple("cursed_lasso");
+    public static final DeferredItem<Item> BOOMERANG = registerSimple("boomerang");
+    public static final DeferredItem<Item> FIRE_AXE = registerSimple("fire_axe");
+    public static final DeferredItem<Item> FIRE_EXTINGUISHER = registerSimple("fire_extinguisher");
+    public static final DeferredItem<Item> COMPOUND_BOW = registerSimple("compound_bow");
+    public static final DeferredItem<Item> LUX_SABER = registerSimple("lux_saber");
+    public static final DeferredItem<Item> BIOME_MARKER = registerSimple("biome_marker");
+    public static final DeferredItem<Item> INDEXER_REMOTE = registerSimple("indexer_remote");
+    public static final DeferredItem<Item> POWER_MANAGER = registerSimple("power_manager");
+
+    // --- Rings ---
+    public static final DeferredItem<Item> CHICKEN_RING = registerSimple("chicken_ring");
+    public static final DeferredItem<Item> SQUID_RING = registerSimple("squid_ring");
+
+    // --- Misc ---
+    public static final DeferredItem<Item> SUN_CRYSTAL = registerSimple("sun_crystal");
+    public static final DeferredItem<Item> UNSTABLE_INGOT = registerSimple("unstable_ingot");
+    public static final DeferredItem<Item> CONTRACT = registerSimple("contract");
+    public static final DeferredItem<Item> MAGIC_APPLE = registerSimple("magic_apple");
+    public static final DeferredItem<Item> FILTER_ITEM = registerSimple("filter_item");
+    public static final DeferredItem<Item> FILTER_FLUID = registerSimple("filter_fluid");
+    public static final DeferredItem<Item> SNOW_GLOBE = registerSimple("snow_globe");
+
     public static final DeferredItem<Item> OPINIUM_CORE_0 = registerOpinium(0);
     public static final DeferredItem<Item> OPINIUM_CORE_1 = registerOpinium(1);
     public static final DeferredItem<Item> OPINIUM_CORE_2 = registerOpinium(2);
@@ -53,6 +100,10 @@ public class ModItems {
     public static final DeferredItem<Item> OPINIUM_CORE_6 = registerOpinium(6);
     public static final DeferredItem<Item> OPINIUM_CORE_7 = registerOpinium(7);
     public static final DeferredItem<Item> OPINIUM_CORE_8 = registerOpinium(8);
+
+    private static DeferredItem<Item> registerSimple(String name) {
+        return ModRegistries.registerItem(name, () -> new Item(new Item.Properties()));
+    }
 
     private static DeferredItem<Item> registerOpinium(int tier) {
         return ModRegistries.registerItem("opinium_core_" + tier, () -> new Item(new Item.Properties()));

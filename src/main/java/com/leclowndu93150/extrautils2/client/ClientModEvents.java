@@ -10,6 +10,7 @@ import com.leclowndu93150.extrautils2.client.gui.TrashCanScreen;
 import com.leclowndu93150.extrautils2.client.gui.machine.CrusherScreen;
 import com.leclowndu93150.extrautils2.client.gui.machine.EnchanterScreen;
 import com.leclowndu93150.extrautils2.client.gui.machine.FurnaceScreen;
+import com.leclowndu93150.extrautils2.client.ctm.CTMModelLoader;
 import com.leclowndu93150.extrautils2.client.sprite.ModSpriteSourceTypes;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
@@ -24,6 +25,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import com.leclowndu93150.extrautils2.registry.ModBlockEntities;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -54,6 +56,12 @@ public final class ClientModEvents {
     @SubscribeEvent
     public static void onRegisterSpriteSourceTypes(RegisterSpriteSourceTypesEvent event) {
         event.register(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "compressed"), ModSpriteSourceTypes.COMPRESSED);
+        event.register(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "ctm"), ModSpriteSourceTypes.CTM);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "ctm_glass"), CTMModelLoader.INSTANCE);
     }
 
     @SubscribeEvent

@@ -131,6 +131,16 @@
       "base": "minecraft:block/netherrack",
       "level": 6,
       "max_level": 6
-    }
+    },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/glass" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/glass_border" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/glass_diamonds" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/darkglass" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/glass_glowstone" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/glass_redstone" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/strange_glass_normal" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/strange_glass_reverse" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/strange_glass_clear" },
+    { "type": "extrautils2:ctm", "base": "extrautils2:block/connected/strange_glass_dark" }
   ]
 }

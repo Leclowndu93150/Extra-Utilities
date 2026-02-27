@@ -21,7 +21,7 @@ public class XULanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.DECORATIVE_SOLID, "Decorative Stone");
         addBlock(ModBlocks.DECORATIVE_SOLID_WOOD, "Decorative Wood");
         addBlock(ModBlocks.DECORATIVE_BEDROCK, "Bedrock Bricks");
-        addBlock(ModBlocks.OPINIUM_BLOCK, "Block of Demon Metal");
+        addBlock(ModBlocks.OPINIUM_BLOCK, "Opinium Block");
         addBlock(ModBlocks.REDSTONE_LANTERN, "Redstone Lantern");
         addBlock(ModBlocks.SOUND_MUFFLER, "Sound Muffler");
         addBlock(ModBlocks.REDSTONE_CLOCK, "Redstone Clock");
@@ -117,6 +117,26 @@ public class XULanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.MACHINE_CRUSHER, "Crusher");
         addBlock(ModBlocks.MACHINE_ENCHANTER, "Enchanter");
 
+        addBlock(ModBlocks.DECORATIVE_GLASS, "Thickened Glass");
+        addBlock(ModBlocks.DECORATIVE_GLASS_BORDERED, "Thickened Glass (Bordered)");
+        addBlock(ModBlocks.DECORATIVE_GLASS_DIAMONDS, "Thickened Glass (Patterned)");
+        addBlock(ModBlocks.DARK_GLASS, "Dark Glass");
+        addBlock(ModBlocks.GLOWSTONE_GLASS, "Glowing Glass");
+        addBlock(ModBlocks.REDSTONE_GLASS, "Redstone Glass");
+        addBlock(ModBlocks.INEFFABLE_GLASS, "Ethereal Glass");
+        addBlock(ModBlocks.INEFFABLE_GLASS_REVERSE, "Reverse Ethereal Glass");
+        addBlock(ModBlocks.INEFFABLE_GLASS_CLEAR, "Ineffable Glass");
+        addBlock(ModBlocks.INEFFABLE_GLASS_DARK, "Ineffable Glass (Dark)");
+
+        addBlock(ModBlocks.ENCHANTED_BLOCK, "Block of Enchanted Metal");
+        addBlock(ModBlocks.DEMON_BLOCK, "Block of Demon Metal");
+        addBlock(ModBlocks.EVIL_INFUSED_INGOT_BLOCK, "Block of Evil Infused Iron");
+
+        addBlock(ModBlocks.LARGISH_CHEST, "Slightly-Larger Chest");
+        addBlock(ModBlocks.MINI_CHEST, "Mini Chest");
+        addBlock(ModBlocks.TRASH_CHEST, "Trash Chest");
+        addBlock(ModBlocks.KLEIN_BOTTLE, "Klein Flask");
+
         addItem(ModItems.GOLDEN_BAG, "Golden Bag");
 
         addItem(ModItems.ANGEL_RING_BASE, "Angel Ring");
@@ -142,6 +162,49 @@ public class XULanguageProvider extends LanguageProvider {
         addItem(ModItems.OPINIUM_CORE_8, "Opinium Core (Perfected)");
 
         addItem(ModItems.KIKOKU, "Kikoku");
+
+        addItem(ModItems.REDSTONE_CRYSTAL, "Redstone Crystal");
+        addItem(ModItems.REDSTONE_GEAR, "Redstone Gear");
+        addItem(ModItems.EYE_REDSTONE, "Eye of Redstone");
+        addItem(ModItems.DYE_POWDER_LUNAR, "Lunar Reactive Dust");
+        addItem(ModItems.RED_COAL, "Red Coal");
+        addItem(ModItems.UPGRADE_BASE, "Upgrade Base");
+        addItem(ModItems.EVIL_DROP, "Drop of Evil");
+        addItem(ModItems.DEMON_INGOT, "Demon Ingot");
+        addItem(ModItems.ENCHANTED_INGOT, "Enchanted Ingot");
+        addItem(ModItems.REDSTONE_COIL, "Wireless RF Heating Coil");
+        addItem(ModItems.EVIL_INFUSED_INGOT, "Evil Infused Iron Ingot");
+        addItem(ModItems.DYE_POWDER_BLUE, "Blue Dye");
+
+        addItem(ModItems.BUILDERS_WAND, "Builders Wand");
+        addItem(ModItems.CREATIVE_BUILDERS_WAND, "Creative Builders Wand");
+        addItem(ModItems.DESTRUCTION_WAND, "Destruction Wand");
+        addItem(ModItems.CREATIVE_DESTRUCTION_WAND, "Creative Destruction Wand");
+        addItem(ModItems.WRENCH, "Wrench");
+        addItem(ModItems.GLASS_CUTTER, "Glass Cutter");
+        addItem(ModItems.TROWEL, "Trowel");
+        addItem(ModItems.WATERING_CAN, "Watering Can");
+        addItem(ModItems.GOLDEN_LASSO, "Golden Lasso");
+        addItem(ModItems.CURSED_LASSO, "Cursed Lasso");
+        addItem(ModItems.BOOMERANG, "Magical Boomerang");
+        addItem(ModItems.FIRE_AXE, "Fire Axe");
+        addItem(ModItems.FIRE_EXTINGUISHER, "Fire Extinguisher");
+        addItem(ModItems.COMPOUND_BOW, "Compound Bow");
+        addItem(ModItems.LUX_SABER, "Lux Saber");
+        addItem(ModItems.BIOME_MARKER, "Biome Marker");
+        addItem(ModItems.INDEXER_REMOTE, "Indexer Remote");
+        addItem(ModItems.POWER_MANAGER, "Power Manager");
+
+        addItem(ModItems.CHICKEN_RING, "Chicken Wing Ring");
+        addItem(ModItems.SQUID_RING, "Ring of the Flying Squid");
+
+        addItem(ModItems.SUN_CRYSTAL, "Sun Crystal");
+        addItem(ModItems.UNSTABLE_INGOT, "Unstable Ingot");
+        addItem(ModItems.CONTRACT, "Contract");
+        addItem(ModItems.MAGIC_APPLE, "Magical Apple");
+        addItem(ModItems.FILTER_ITEM, "Item Filter");
+        addItem(ModItems.FILTER_FLUID, "Fluid Filter");
+        addItem(ModItems.SNOW_GLOBE, "Magical Snow Globe");
 
         add("tooltip.extrautils2.compressed", "%s Blocks");
         add("tooltip.extrautils2.drum.empty", "Drum: Empty");
@@ -178,6 +241,12 @@ public class XULanguageProvider extends LanguageProvider {
         add("tooltip.extrautils2.redstone.on", "Redstone On");
         add("tooltip.extrautils2.redstone.off", "Redstone Off");
         add("tooltip.extrautils2.redstone.pulse", "Redstone Pulse");
+
+        add("tooltip.extrautils2.glass.dark", "Blocks light");
+        add("tooltip.extrautils2.glass.glowing", "Emits light");
+        add("tooltip.extrautils2.glass.redstone", "Emits a redstone signal");
+        add("tooltip.extrautils2.glass.ethereal", "Players can walk through, mobs cannot");
+        add("tooltip.extrautils2.glass.ethereal.reverse", "Mobs can walk through, players cannot");
 
         add("death.attack.spike", "%1$s walked on a pointy spike (ouchies)");
         add("death.attack.spike.item", "%1$s walked on a pointy spike (ouchies)");

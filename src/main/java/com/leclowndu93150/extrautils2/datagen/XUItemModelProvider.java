@@ -5,6 +5,7 @@ import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.item.AngelRingItem;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
+import com.leclowndu93150.extrautils2.registry.ModItems;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -116,6 +117,26 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.RAINBOW_GENERATOR.get());
         blockItem(ModBlocks.SYNERGY_UNIT.get());
 
+        blockItem(ModBlocks.DECORATIVE_GLASS.get());
+        blockItem(ModBlocks.DECORATIVE_GLASS_BORDERED.get());
+        blockItem(ModBlocks.DECORATIVE_GLASS_DIAMONDS.get());
+        blockItem(ModBlocks.DARK_GLASS.get());
+        blockItem(ModBlocks.GLOWSTONE_GLASS.get());
+        blockItem(ModBlocks.REDSTONE_GLASS.get());
+        blockItem(ModBlocks.INEFFABLE_GLASS.get());
+        blockItem(ModBlocks.INEFFABLE_GLASS_REVERSE.get());
+        blockItem(ModBlocks.INEFFABLE_GLASS_CLEAR.get());
+        blockItem(ModBlocks.INEFFABLE_GLASS_DARK.get());
+
+        blockItem(ModBlocks.ENCHANTED_BLOCK.get());
+        blockItem(ModBlocks.DEMON_BLOCK.get());
+        blockItem(ModBlocks.EVIL_INFUSED_INGOT_BLOCK.get());
+
+        blockItem(ModBlocks.LARGISH_CHEST.get());
+        blockItem(ModBlocks.MINI_CHEST.get());
+        blockItem(ModBlocks.TRASH_CHEST.get());
+        blockItem(ModBlocks.KLEIN_BOTTLE.get());
+
         machineItem(ModBlocks.MACHINE_FURNACE.get(), "machine/furnace_off", "machine/machine_base_side", "machine/machine_base", "machine/machine_base_bottom");
         machineItem(ModBlocks.MACHINE_CRUSHER.get(), "machine/crusher_off", "machine/machine_base_side", "machine/machine_base", "machine/machine_base_bottom");
         machineItem(ModBlocks.MACHINE_ENCHANTER.get(), "machine/enchanter_off", "machine/enchanter_side", "machine/machine_base_bottom", "machine/machine_base_bottom", "machine/enchanter_top");
@@ -136,6 +157,49 @@ public class XUItemModelProvider extends ItemModelProvider {
             getBuilder("opinium_core_" + i)
                     .parent(new ModelFile.UncheckedModelFile("minecraft:builtin/entity"));
         }
+
+        basicItem("redstone_crystal");
+        basicItem("redstone_gear");
+        basicItem("eye_redstone");
+        basicItem("dye_powder_lunar");
+        basicItem("red_coal");
+        basicItem("upgrade_base");
+        basicItem("evil_drop");
+        basicItem("demon_ingot");
+        basicItem("enchanted_ingot");
+        basicItem("redstone_coil");
+        basicItem("evil_infused_ingot");
+        basicItem("dye_powder_blue");
+
+        handheld("builders_wand", tex("builderswand0"));
+        handheld("creative_builders_wand", tex("creativebuilderswand0"));
+        handheld("destruction_wand", tex("destructionwand0"));
+        handheld("creative_destruction_wand", tex("creativedestructionwand0"));
+        handheld("wrench", tex("pipe_wrench"));
+        handheld("glass_cutter", tex("glasscutter"));
+        handheld("trowel", tex("trowel"));
+        handheld("watering_can", tex("watering_can"));
+        handheld("golden_lasso", tex("golden_lasso"));
+        handheld("cursed_lasso", tex("dark_lasso"));
+        handheld("boomerang", tex("boomerang"));
+        handheld("fire_axe", tex("fire_axe"));
+        handheld("fire_extinguisher", tex("fire_extinguisher"));
+        handheld("compound_bow", tex("compound_bow"));
+        handheld("lux_saber", tex("luxsaber"));
+        handheld("biome_marker", tex("biome_marker"));
+        handheld("indexer_remote", tex("indexer_remote"));
+        handheld("power_manager", tex("power_scanner"));
+
+        basicItem("chicken_ring", tex("chickenring"));
+        basicItem("squid_ring", tex("flyingsquidring"));
+
+        basicItem("sun_crystal", tex("sun_crystal"));
+        basicItem("unstable_ingot", tex("unstable_ingot_interior"));
+        basicItem("contract", tex("contract"));
+        basicItem("magic_apple", tex("reroll_apple"));
+        basicItem("filter_item", tex("filter_item"));
+        basicItem("filter_fluid", tex("filter_fluid"));
+        basicItem("snow_globe", tex("globe_side"));
     }
 
     private void blockItem(Block block) {
@@ -233,6 +297,15 @@ public class XUItemModelProvider extends ItemModelProvider {
                     .face(Direction.UP).texture("#top_overlay").end()
                     .end();
         }
+    }
+
+    private void basicItem(String name) {
+        basicItem(name, tex(name));
+    }
+
+    private void basicItem(String name, ResourceLocation texture) {
+        withExistingParent(name, ResourceLocation.withDefaultNamespace("item/generated"))
+                .texture("layer0", texture);
     }
 
     private void handheld(String name, ResourceLocation texture) {

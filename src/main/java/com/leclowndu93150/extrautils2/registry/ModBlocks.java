@@ -5,6 +5,7 @@ import com.leclowndu93150.extrautils2.block.CompressedBlock;
 import com.leclowndu93150.extrautils2.block.CreativeChestBlock;
 import com.leclowndu93150.extrautils2.block.CreativeEnergyBlock;
 import com.leclowndu93150.extrautils2.block.CreativeHarvestBlock;
+import com.leclowndu93150.extrautils2.block.DecorativeGlassBlock;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.ResonatorBlock;
@@ -186,6 +187,50 @@ public class ModBlocks {
             "machine_crusher", () -> new CrusherBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<EnchanterBlock> MACHINE_ENCHANTER = ModRegistries.registerBlock(
             "machine_enchanter", () -> new EnchanterBlock(XUBlock.defaultProps()));
+
+    // --- Decorative Glass ---
+    public static final DeferredBlock<DecorativeGlassBlock> DECORATIVE_GLASS = ModRegistries.registerBlock(
+            "decorative_glass", () -> new DecorativeGlassBlock(DecorativeGlassBlock.glassProps()));
+    public static final DeferredBlock<DecorativeGlassBlock> DECORATIVE_GLASS_BORDERED = ModRegistries.registerBlock(
+            "decorative_glass_bordered", () -> new DecorativeGlassBlock(DecorativeGlassBlock.glassProps()));
+    public static final DeferredBlock<DecorativeGlassBlock> DECORATIVE_GLASS_DIAMONDS = ModRegistries.registerBlock(
+            "decorative_glass_diamonds", () -> new DecorativeGlassBlock(DecorativeGlassBlock.glassProps()));
+    public static final DeferredBlock<DecorativeGlassBlock.Dark> DARK_GLASS = ModRegistries.registerBlock(
+            "dark_glass", () -> new DecorativeGlassBlock.Dark(DecorativeGlassBlock.glassProps()));
+    public static final DeferredBlock<DecorativeGlassBlock.Glowstone> GLOWSTONE_GLASS = ModRegistries.registerBlock(
+            "glowstone_glass", () -> new DecorativeGlassBlock.Glowstone(DecorativeGlassBlock.glassProps().lightLevel(s -> 15)));
+    public static final DeferredBlock<DecorativeGlassBlock.Redstone> REDSTONE_GLASS = ModRegistries.registerBlock(
+            "redstone_glass", () -> new DecorativeGlassBlock.Redstone(DecorativeGlassBlock.glassProps()));
+
+    // --- Ineffable Glass ---
+    public static final DeferredBlock<DecorativeGlassBlock.Ineffable> INEFFABLE_GLASS = ModRegistries.registerBlock(
+            "ineffable_glass", () -> new DecorativeGlassBlock.Ineffable(DecorativeGlassBlock.glassProps(), false));
+    public static final DeferredBlock<DecorativeGlassBlock.Ineffable> INEFFABLE_GLASS_REVERSE = ModRegistries.registerBlock(
+            "ineffable_glass_reverse", () -> new DecorativeGlassBlock.Ineffable(DecorativeGlassBlock.glassProps(), true));
+    public static final DeferredBlock<DecorativeGlassBlock.Ineffable> INEFFABLE_GLASS_CLEAR = ModRegistries.registerBlock(
+            "ineffable_glass_clear", () -> new DecorativeGlassBlock.Ineffable(DecorativeGlassBlock.glassProps(), false));
+    public static final DeferredBlock<DecorativeGlassBlock.IneffableDark> INEFFABLE_GLASS_DARK = ModRegistries.registerBlock(
+            "ineffable_glass_dark", () -> new DecorativeGlassBlock.IneffableDark(DecorativeGlassBlock.glassProps(), false));
+
+    // --- Metal/Decorative Blocks ---
+    public static final DeferredBlock<Block> ENCHANTED_BLOCK = ModRegistries.registerBlock(
+            "enchanted_block", () -> new XUBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<Block> DEMON_BLOCK = ModRegistries.registerBlock(
+            "demon_block", () -> new XUBlock(XUBlock.defaultProps()));
+    public static final DeferredBlock<Block> EVIL_INFUSED_INGOT_BLOCK = ModRegistries.registerBlock(
+            "evil_infused_ingot_block", () -> new XUBlock(XUBlock.defaultProps()));
+
+    // --- Storage Blocks ---
+    public static final DeferredBlock<Block> LARGISH_CHEST = ModRegistries.registerBlock(
+            "largish_chest", () -> new XUBlock.Facing(XUBlock.defaultProps()));
+    public static final DeferredBlock<Block> MINI_CHEST = ModRegistries.registerBlock(
+            "mini_chest", () -> new XUBlock.Facing(XUBlock.defaultProps()));
+    public static final DeferredBlock<Block> TRASH_CHEST = ModRegistries.registerBlock(
+            "trash_chest", () -> new XUBlock.Facing(XUBlock.defaultProps()));
+
+    // --- Misc ---
+    public static final DeferredBlock<Block> KLEIN_BOTTLE = ModRegistries.registerBlock(
+            "klein_bottle", () -> new XUBlock(BlockBehaviour.Properties.of().strength(0.3f).noOcclusion().noCollission()));
 
     // --- Helpers ---
     private static DeferredBlock<MachineGeneratorBlock> registerMachineGenerator(MachineGeneratorType type) {

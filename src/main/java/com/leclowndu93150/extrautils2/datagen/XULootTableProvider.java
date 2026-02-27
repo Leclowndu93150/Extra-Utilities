@@ -131,6 +131,26 @@ public class XULootTableProvider extends LootTableProvider {
             dropSelf(ModBlocks.MACHINE_FURNACE.get());
             dropSelf(ModBlocks.MACHINE_CRUSHER.get());
             dropSelf(ModBlocks.MACHINE_ENCHANTER.get());
+
+            dropWhenSilkTouch(ModBlocks.DECORATIVE_GLASS.get());
+            dropWhenSilkTouch(ModBlocks.DECORATIVE_GLASS_BORDERED.get());
+            dropWhenSilkTouch(ModBlocks.DECORATIVE_GLASS_DIAMONDS.get());
+            dropWhenSilkTouch(ModBlocks.DARK_GLASS.get());
+            dropWhenSilkTouch(ModBlocks.GLOWSTONE_GLASS.get());
+            dropWhenSilkTouch(ModBlocks.REDSTONE_GLASS.get());
+            dropWhenSilkTouch(ModBlocks.INEFFABLE_GLASS.get());
+            dropWhenSilkTouch(ModBlocks.INEFFABLE_GLASS_REVERSE.get());
+            dropWhenSilkTouch(ModBlocks.INEFFABLE_GLASS_CLEAR.get());
+            dropWhenSilkTouch(ModBlocks.INEFFABLE_GLASS_DARK.get());
+
+            dropSelf(ModBlocks.ENCHANTED_BLOCK.get());
+            dropSelf(ModBlocks.DEMON_BLOCK.get());
+            dropSelf(ModBlocks.EVIL_INFUSED_INGOT_BLOCK.get());
+
+            dropSelf(ModBlocks.LARGISH_CHEST.get());
+            dropSelf(ModBlocks.MINI_CHEST.get());
+            dropSelf(ModBlocks.TRASH_CHEST.get());
+            dropSelf(ModBlocks.KLEIN_BOTTLE.get());
         }
 
         @Override

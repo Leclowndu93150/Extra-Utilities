@@ -1,5 +1,6 @@
 package com.leclowndu93150.extrautils2.datagen;
 
+import com.google.gson.JsonObject;
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
@@ -197,6 +198,12 @@ public class XUBlockStateProvider extends BlockStateProvider {
         });
         simpleBlock(ModBlocks.CREATIVE_HARVEST.get(), cubeAll(ModBlocks.CREATIVE_HARVEST.get(), "creative_harvestable"));
         simpleBlock(ModBlocks.CREATIVE_ENERGY.get(), cubeAll(ModBlocks.CREATIVE_ENERGY.get(), "creative_energy"));
+
+        glassBlocks();
+        metalBlocks();
+        storageBlocks();
+        simpleBlock(ModBlocks.KLEIN_BOTTLE.get(), cubeAll(ModBlocks.KLEIN_BOTTLE.get(), "klein_lighting"));
+
         simpleBlock(ModBlocks.MINER.get(), models().orientable(name(ModBlocks.MINER.get()),
                 tex("interact_side"), tex("interact_mine"), tex("interact_side")));
         simpleBlock(ModBlocks.SCANNER.get(), models().orientable(name(ModBlocks.SCANNER.get()),
@@ -219,6 +226,68 @@ public class XUBlockStateProvider extends BlockStateProvider {
         processingMachine(ModBlocks.MACHINE_ENCHANTER.get(), "machine/enchanter_off", "machine/enchanter_on",
                 "machine/enchanter_side", "machine/machine_base_bottom", "machine/machine_base_bottom",
                 "machine/enchanter_top");
+    }
+
+    private void glassBlocks() {
+        glassBlock(ModBlocks.DECORATIVE_GLASS.get(), "connected/glass", false);
+        glassBlock(ModBlocks.DECORATIVE_GLASS_BORDERED.get(), "connected/glass_border", false);
+        glassBlock(ModBlocks.DECORATIVE_GLASS_DIAMONDS.get(), "connected/glass_diamonds", false);
+        glassBlock(ModBlocks.DARK_GLASS.get(), "connected/darkglass", true);
+        glassBlock(ModBlocks.GLOWSTONE_GLASS.get(), "connected/glass_glowstone", false);
+        glassBlock(ModBlocks.REDSTONE_GLASS.get(), "connected/glass_redstone", false);
+        glassBlock(ModBlocks.INEFFABLE_GLASS.get(), "connected/strange_glass_normal", false);
+        glassBlock(ModBlocks.INEFFABLE_GLASS_REVERSE.get(), "connected/strange_glass_reverse", false);
+        glassBlock(ModBlocks.INEFFABLE_GLASS_CLEAR.get(), "connected/strange_glass_clear", false);
+        glassBlock(ModBlocks.INEFFABLE_GLASS_DARK.get(), "connected/strange_glass_dark", true);
+    }
+
+    private void glassBlock(Block block, String texture, boolean translucent) {
+        ModelFile model = models().getBuilder(name(block)).customLoader((builder, efh) ->
+                new net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder<>(
+                        ResourceLocation.fromNamespaceAndPath("extrautils2", "ctm_glass"), builder, efh, false) {
+                    @Override
+                    public JsonObject toJson(JsonObject jsonObject) {
+                        jsonObject = super.toJson(jsonObject);
+                        jsonObject.addProperty("texture", "extrautils2:" + texture);
+                        if (translucent) {
+                            jsonObject.addProperty("translucent", true);
+                        }
+                        return jsonObject;
+                    }
+                }
+        ).end();
+        simpleBlock(block, model);
+    }
+
+    private void metalBlocks() {
+        simpleBlock(ModBlocks.ENCHANTED_BLOCK.get(), cubeAll(ModBlocks.ENCHANTED_BLOCK.get(), "enchanted_block"));
+        simpleBlock(ModBlocks.DEMON_BLOCK.get(), cubeAll(ModBlocks.DEMON_BLOCK.get(), "demon_block"));
+        simpleBlock(ModBlocks.EVIL_INFUSED_INGOT_BLOCK.get(), cubeAll(ModBlocks.EVIL_INFUSED_INGOT_BLOCK.get(), "evil_infused_ingot_block"));
+    }
+
+    private void storageBlocks() {
+        orientedBlock(ModBlocks.LARGISH_CHEST.get(), "large_chest_front", "large_chest_side", "large_chest");
+        orientedBlock(ModBlocks.MINI_CHEST.get(), "minichest_front", "minichest_side", "minichest_top", "minichest_bottom");
+        orientedBlock(ModBlocks.TRASH_CHEST.get(), "trashchest_front", "trashchest_side", "trashchest_top", "trashchest_bottom");
+    }
+
+    private void orientedBlock(Block block, String front, String side, String topBottom) {
+        orientedBlock(block, front, side, topBottom, topBottom);
+    }
+
+    private void orientedBlock(Block block, String front, String side, String top, String bottom) {
+        String n = name(block);
+        ModelFile model = models().cube(n, tex(bottom), tex(top), tex(front), tex(side), tex(side), tex(side))
+                .texture("particle", tex(side));
+        getVariantBuilder(block).forAllStates(state -> {
+            int yRot = switch (state.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
+                case SOUTH -> 180;
+                case WEST  -> 270;
+                case EAST  -> 90;
+                default    -> 0;
+            };
+            return ConfiguredModel.builder().modelFile(model).rotationY(yRot).build();
+        });
     }
 
     private void machineGenerator(MachineGeneratorBlock block, MachineGeneratorType type) {
