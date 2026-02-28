@@ -14,8 +14,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -112,10 +115,29 @@ public class XURecipeProvider extends RecipeProvider {
         compressedRecipe(output, ModBlocks.COMPRESSED_NETHERRACK_5.get(), ModBlocks.COMPRESSED_NETHERRACK_4.get().asItem());
         compressedRecipe(output, ModBlocks.COMPRESSED_NETHERRACK_6.get(), ModBlocks.COMPRESSED_NETHERRACK_5.get().asItem());
 
+        lassoRecipes(output);
         opiniumRecipes(output);
         resonatorRecipes(output);
         crusherRecipes(output);
         enchanterRecipes(output);
+        generatorFuelRecipes(output);
+    }
+
+    private void lassoRecipes(RecipeOutput output) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.GOLDEN_LASSO.get())
+                .pattern("GSG")
+                .pattern("S S")
+                .pattern("GSG")
+                .define('G', Items.GOLD_NUGGET)
+                .define('S', Items.STRING)
+                .unlockedBy("has_gold_nugget", has(Items.GOLD_NUGGET))
+                .save(output);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, ModItems.CURSED_LASSO.get())
+                .requires(ModItems.GOLDEN_LASSO.get())
+                .requires(ModItems.EVIL_DROP.get())
+                .unlockedBy("has_golden_lasso", has(ModItems.GOLDEN_LASSO.get()))
+                .save(output);
     }
 
     private void opiniumRecipes(RecipeOutput output) {
@@ -223,6 +245,53 @@ public class XURecipeProvider extends RecipeProvider {
 
         EnchanterRecipeBuilder.enchanter(Ingredient.of(Items.NETHER_STAR), "highest", 72000, 36000)
                 .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/nether_star"));
+    }
+
+    private void generatorFuelRecipes(RecipeOutput output) {
+        GeneratorFuelRecipeBuilder.fuel("tnt", Ingredient.of(Blocks.TNT), 512000, 160)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/tnt/tnt_block"));
+        GeneratorFuelRecipeBuilder.fuel("tnt", Ingredient.of(Items.GUNPOWDER), 64000, 160)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/tnt/gunpowder"));
+
+        GeneratorFuelRecipeBuilder.fluidFuel("lava", new FluidStack(Fluids.LAVA, 50), 5000, 40)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/lava/lava"));
+
+        GeneratorFuelRecipeBuilder.fuel("netherstar", Ingredient.of(Items.NETHER_STAR), 9600000, 4000)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/netherstar/nether_star"));
+
+        GeneratorFuelRecipeBuilder.fuel("ender", Ingredient.of(Items.ENDER_PEARL), 64000, 40)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/ender/ender_pearl"));
+        GeneratorFuelRecipeBuilder.fuel("ender", Ingredient.of(Items.ENDER_EYE), 256000, 80)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/ender/ender_eye"));
+
+        GeneratorFuelRecipeBuilder.fuel("redstone", Ingredient.of(Items.REDSTONE), 20000, 160)
+                .withFluid(new FluidStack(Fluids.LAVA, 50))
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/redstone/redstone_lava"));
+
+        GeneratorFuelRecipeBuilder.fuel("dragon", Ingredient.of(Items.DRAGON_BREATH), 480000, 40)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/dragon/dragon_breath"));
+
+        GeneratorFuelRecipeBuilder.fuel("ice", Ingredient.of(Blocks.ICE), 1600, 40)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/ice/ice"));
+        GeneratorFuelRecipeBuilder.fuel("ice", Ingredient.of(Blocks.PACKED_ICE), 1600, 40)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/ice/packed_ice"));
+        GeneratorFuelRecipeBuilder.fuel("ice", Ingredient.of(Items.SNOWBALL), 200, 40)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/ice/snowball"));
+        GeneratorFuelRecipeBuilder.fuel("ice", Ingredient.of(Blocks.SNOW_BLOCK), 800, 40)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/ice/snow_block"));
+
+        GeneratorFuelRecipeBuilder.fuel("death", Ingredient.of(Items.BONE), 16000, 1000)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/death/bone"));
+        GeneratorFuelRecipeBuilder.fuel("death", Ingredient.of(Blocks.BONE_BLOCK), 48000, 1000)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/death/bone_block"));
+        GeneratorFuelRecipeBuilder.fuel("death", Ingredient.of(Items.ROTTEN_FLESH), 8000, 1000)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/death/rotten_flesh"));
+        GeneratorFuelRecipeBuilder.fuel("death", Ingredient.of(Items.WITHER_SKELETON_SKULL), 60000, 1000)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/death/wither_skull"));
+
+        GeneratorFuelRecipeBuilder.dualFuel("slime", Ingredient.of(Items.SLIME_BALL), 4,
+                        Ingredient.of(Items.MILK_BUCKET), 1, 192000, 400)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/slime/slimeball_milk"));
     }
 
     private void compressedRecipe(RecipeOutput output, net.minecraft.world.level.block.Block result, net.minecraft.world.item.Item ingredient) {

@@ -248,6 +248,15 @@ public class XULanguageProvider extends LanguageProvider {
         add("tooltip.extrautils2.glass.ethereal", "Players can walk through, mobs cannot");
         add("tooltip.extrautils2.glass.ethereal.reverse", "Mobs can walk through, players cannot");
 
+        add("tooltip.extrautils2.lasso.empty", "Right-click a passive mob to capture it");
+        add("tooltip.extrautils2.lasso.cursed.empty", "Right-click a weakened hostile mob to capture it");
+        add("message.extrautils2.lasso.hostile", "%s is a hostile mob.");
+        add("message.extrautils2.lasso.not_hostile", "%s is not a hostile mob.");
+        add("message.extrautils2.lasso.attacking", "%s is too busy attacking someone.");
+        add("message.extrautils2.lasso.too_powerful", "%s is too powerful.");
+        add("message.extrautils2.lasso.too_much_health", "%s has too much health (%s hearts). Reduce to %s hearts.");
+        add("message.extrautils2.lasso.peaceful", "Cannot release hostile mobs in Peaceful difficulty.");
+
         add("death.attack.spike", "%1$s walked on a pointy spike (ouchies)");
         add("death.attack.spike.item", "%1$s walked on a pointy spike (ouchies)");
         add("death.attack.spike_creative", "%1$s failed to become the guy");

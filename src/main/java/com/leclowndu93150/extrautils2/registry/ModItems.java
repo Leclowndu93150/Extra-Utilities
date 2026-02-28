@@ -3,6 +3,7 @@ package com.leclowndu93150.extrautils2.registry;
 import com.leclowndu93150.extrautils2.item.AngelBlockItem;
 import com.leclowndu93150.extrautils2.item.AngelRingItem;
 import com.leclowndu93150.extrautils2.item.GoldenBagItem;
+import com.leclowndu93150.extrautils2.item.GoldenLassoItem;
 import com.leclowndu93150.extrautils2.item.KikokuItem;
 import com.leclowndu93150.extrautils2.item.UpgradeItem;
 import net.minecraft.world.item.Item;
@@ -67,8 +68,10 @@ public class ModItems {
     public static final DeferredItem<Item> GLASS_CUTTER = registerSimple("glass_cutter");
     public static final DeferredItem<Item> TROWEL = registerSimple("trowel");
     public static final DeferredItem<Item> WATERING_CAN = registerSimple("watering_can");
-    public static final DeferredItem<Item> GOLDEN_LASSO = registerSimple("golden_lasso");
-    public static final DeferredItem<Item> CURSED_LASSO = registerSimple("cursed_lasso");
+    public static final DeferredItem<GoldenLassoItem> GOLDEN_LASSO = ModRegistries.registerItem(
+            "golden_lasso", () -> new GoldenLassoItem(false));
+    public static final DeferredItem<GoldenLassoItem> CURSED_LASSO = ModRegistries.registerItem(
+            "cursed_lasso", () -> new GoldenLassoItem(true));
     public static final DeferredItem<Item> BOOMERANG = registerSimple("boomerang");
     public static final DeferredItem<Item> FIRE_AXE = registerSimple("fire_axe");
     public static final DeferredItem<Item> FIRE_EXTINGUISHER = registerSimple("fire_extinguisher");

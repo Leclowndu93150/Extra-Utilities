@@ -179,8 +179,8 @@ public class XUItemModelProvider extends ItemModelProvider {
         handheld("glass_cutter", tex("glasscutter"));
         handheld("trowel", tex("trowel"));
         handheld("watering_can", tex("watering_can"));
-        handheld("golden_lasso", tex("golden_lasso"));
-        handheld("cursed_lasso", tex("dark_lasso"));
+        lassoItem("golden_lasso", tex("golden_lasso"));
+        lassoItem("cursed_lasso", tex("dark_lasso"));
         handheld("boomerang", tex("boomerang"));
         handheld("fire_axe", tex("fire_axe"));
         handheld("fire_extinguisher", tex("fire_extinguisher"));
@@ -311,5 +311,19 @@ public class XUItemModelProvider extends ItemModelProvider {
     private void handheld(String name, ResourceLocation texture) {
         withExistingParent(name, ResourceLocation.withDefaultNamespace("item/handheld"))
                 .texture("layer0", texture);
+    }
+
+    private void lassoItem(String name, ResourceLocation baseTexture) {
+        var filled = withExistingParent(name + "_filled", ResourceLocation.withDefaultNamespace("item/handheld"))
+                .texture("layer0", baseTexture)
+                .texture("layer1", tex("lasso_internal_1"))
+                .texture("layer2", tex("lasso_internal_2"));
+
+        withExistingParent(name, ResourceLocation.withDefaultNamespace("item/handheld"))
+                .texture("layer0", baseTexture)
+                .override()
+                    .predicate(ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "filled"), 1.0F)
+                    .model(filled)
+                    .end();
     }
 }

@@ -3,6 +3,7 @@ package com.leclowndu93150.extrautils2.registry;
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.recipe.CrusherRecipe;
 import com.leclowndu93150.extrautils2.recipe.EnchanterRecipe;
+import com.leclowndu93150.extrautils2.recipe.GeneratorFuelRecipe;
 import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -49,6 +50,17 @@ public class ModRecipeTypes {
 
     public static final DeferredHolder<RecipeSerializer<?>, EnchanterRecipe.Serializer> ENCHANTER_SERIALIZER =
             RECIPE_SERIALIZERS.register("enchanter", EnchanterRecipe.Serializer::new);
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<GeneratorFuelRecipe>> GENERATOR_FUEL =
+            RECIPE_TYPES.register("generator_fuel", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return "extrautils2:generator_fuel";
+                }
+            });
+
+    public static final DeferredHolder<RecipeSerializer<?>, GeneratorFuelRecipe.Serializer> GENERATOR_FUEL_SERIALIZER =
+            RECIPE_SERIALIZERS.register("generator_fuel", GeneratorFuelRecipe.Serializer::new);
 
     public static void register(IEventBus bus) {
         RECIPE_TYPES.register(bus);

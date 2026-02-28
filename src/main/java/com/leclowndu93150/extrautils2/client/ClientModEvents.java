@@ -14,11 +14,15 @@ import com.leclowndu93150.extrautils2.client.ctm.CTMModelLoader;
 import com.leclowndu93150.extrautils2.client.sprite.ModSpriteSourceTypes;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
+import com.leclowndu93150.extrautils2.item.GoldenLassoItem;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModItems;
 import com.leclowndu93150.extrautils2.registry.ModMenus;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
@@ -31,6 +35,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterSpriteSourceTypesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -42,6 +47,23 @@ import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = ExtraUtilities.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientModEvents {
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            ResourceLocation filledProp = ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "filled");
+            ItemProperties.register(ModItems.GOLDEN_LASSO.get(), filledProp,
+                    (stack, level, entity, seed) -> {
+                        CustomData data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+                        return data.contains(GoldenLassoItem.TAG_ENTITY) ? 1.0F : 0.0F;
+                    });
+            ItemProperties.register(ModItems.CURSED_LASSO.get(), filledProp,
+                    (stack, level, entity, seed) -> {
+                        CustomData data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+                        return data.contains(GoldenLassoItem.TAG_ENTITY) ? 1.0F : 0.0F;
+                    });
+        });
+    }
+
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenus.MACHINE_GENERATOR.get(), MachineGeneratorScreen::new);

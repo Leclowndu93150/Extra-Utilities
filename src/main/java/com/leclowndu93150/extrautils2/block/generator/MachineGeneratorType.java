@@ -73,11 +73,10 @@ public enum MachineGeneratorType {
     },
     TNT(0xDB591A, "machine/generator/generator_tnt", null, null, 100000, 1000) {
         @Override
-        public FuelResult getFuelResult(ItemStack stack) {
-            if (stack.is(Blocks.TNT.asItem())) return new FuelResult(512000, 160f);
-            if (stack.is(Items.GUNPOWDER)) return new FuelResult(64000, 160f);
-            return null;
-        }
+        public FuelResult getFuelResult(ItemStack stack) { return null; }
+
+        @Override
+        public boolean usesRecipes() { return true; }
 
         @Override
         public void processingTick(Level level, BlockPos pos, int speedLevel) {
@@ -109,6 +108,9 @@ public enum MachineGeneratorType {
 
         @Override
         public boolean usesFluid() { return true; }
+
+        @Override
+        public boolean usesRecipes() { return true; }
     },
     PINK(0xFF9DB0, "machine/generator/generator_pink", null, null, 100000, 100) {
         private volatile Set<Item> pinkItems;
@@ -137,10 +139,10 @@ public enum MachineGeneratorType {
     NETHERSTAR(0xFFFFFF, "machine/generator/generator_netherstar",
             "machine/generator/machine_base_netherstar_side", "machine/generator/machine_base_netherstar_bottom", 400000, 400000) {
         @Override
-        public FuelResult getFuelResult(ItemStack stack) {
-            if (stack.is(Items.NETHER_STAR)) return new FuelResult(9600000, 4000f);
-            return null;
-        }
+        public FuelResult getFuelResult(ItemStack stack) { return null; }
+
+        @Override
+        public boolean usesRecipes() { return true; }
 
         @Override
         public String getPreviewBaseTexture() {
@@ -164,21 +166,20 @@ public enum MachineGeneratorType {
     },
     ENDER(0x2596B4, "machine/generator/generator_ender", null, null, 100000, 4000) {
         @Override
-        public FuelResult getFuelResult(ItemStack stack) {
-            if (stack.is(Items.ENDER_PEARL)) return new FuelResult(64000, 40f);
-            if (stack.is(Items.ENDER_EYE)) return new FuelResult(256000, 80f);
-            return null;
-        }
+        public FuelResult getFuelResult(ItemStack stack) { return null; }
+
+        @Override
+        public boolean usesRecipes() { return true; }
     },
     REDSTONE(0xAA6E23, "machine/generator/generator_redstone", null, null, 100000, 1600) {
         @Override
-        public FuelResult getFuelResult(ItemStack stack) {
-            if (stack.is(Items.REDSTONE)) return new FuelResult(20000, 160f);
-            return null;
-        }
+        public FuelResult getFuelResult(ItemStack stack) { return null; }
 
         @Override
         public boolean usesFluid() { return true; }
+
+        @Override
+        public boolean usesRecipes() { return true; }
     },
     OVERCLOCK(0x1B0B90, "machine/generator/generator_overclock", null, null, 1000000, 1000000) {
         @Override
@@ -190,10 +191,10 @@ public enum MachineGeneratorType {
     },
     DRAGON(0xA74BA7, null, null, null, 1000000, 8000) {
         @Override
-        public FuelResult getFuelResult(ItemStack stack) {
-            if (stack.is(Items.DRAGON_BREATH)) return new FuelResult(480000, 40f);
-            return null;
-        }
+        public FuelResult getFuelResult(ItemStack stack) { return null; }
+
+        @Override
+        public boolean usesRecipes() { return true; }
 
         @Override
         public void processingTick(Level level, BlockPos pos, int speedLevel) {
@@ -211,13 +212,10 @@ public enum MachineGeneratorType {
     },
     ICE(0x4E4FDF, null, null, null, 100000, 1000) {
         @Override
-        public FuelResult getFuelResult(ItemStack stack) {
-            if (stack.is(Blocks.ICE.asItem())) return new FuelResult(1600, 40f);
-            if (stack.is(Blocks.PACKED_ICE.asItem())) return new FuelResult(1600, 40f);
-            if (stack.is(Items.SNOWBALL)) return new FuelResult(200, 40f);
-            if (stack.is(Blocks.SNOW_BLOCK.asItem())) return new FuelResult(800, 40f);
-            return null;
-        }
+        public FuelResult getFuelResult(ItemStack stack) { return null; }
+
+        @Override
+        public boolean usesRecipes() { return true; }
 
         @Override
         public String getOnFrontTexture() { return "machine/generator/generator_on_ice"; }
@@ -258,13 +256,10 @@ public enum MachineGeneratorType {
     },
     DEATH(0xD8A63C, "machine/generator/generator_death", null, null, 100000, 1000) {
         @Override
-        public FuelResult getFuelResult(ItemStack stack) {
-            if (stack.is(Items.BONE)) return new FuelResult(16000, 1000f);
-            if (stack.is(Blocks.BONE_BLOCK.asItem())) return new FuelResult(48000, 1000f);
-            if (stack.is(Items.ROTTEN_FLESH)) return new FuelResult(8000, 1000f);
-            if (stack.is(Items.WITHER_SKELETON_SKULL)) return new FuelResult(60000, 1000f);
-            return null;
-        }
+        public FuelResult getFuelResult(ItemStack stack) { return null; }
+
+        @Override
+        public boolean usesRecipes() { return true; }
 
         @Override
         public void processingTick(Level level, BlockPos pos, int speedLevel) {
@@ -299,6 +294,9 @@ public enum MachineGeneratorType {
         public boolean needsSecondarySlot() { return true; }
 
         @Override
+        public boolean usesRecipes() { return true; }
+
+        @Override
         public String getPreviewBaseTexture() {
             return "machine/generator/machine_base_slime_bottom";
         }
@@ -325,6 +323,7 @@ public enum MachineGeneratorType {
 
     public boolean usesFluid() { return false; }
     public boolean needsSecondarySlot() { return false; }
+    public boolean usesRecipes() { return false; }
     public String getOnFrontTexture() { return "machine/generator_on"; }
     public String getPreviewBaseTexture() { return "machine/machine_base_white"; }
     public void processingTick(Level level, BlockPos pos, int speedLevel) {}

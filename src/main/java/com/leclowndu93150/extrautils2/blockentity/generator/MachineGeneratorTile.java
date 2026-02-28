@@ -20,7 +20,11 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import com.leclowndu93150.extrautils2.recipe.GeneratorFuelRecipe;
+import com.leclowndu93150.extrautils2.registry.ModRecipeTypes;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -136,22 +140,8 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         int newTotalEnergy = 0;
         int newTotalTicks = 0;
 
-        if (type == MachineGeneratorType.LAVA) {
-            FuelValues v = tryConsumeLava();
-            if (v != null) {
-                newTotalEnergy = v.totalEnergy;
-                newRate = v.energyPerTick;
-                newTotalTicks = v.totalTicks;
-            }
-        } else if (type == MachineGeneratorType.REDSTONE) {
-            FuelValues v = tryConsumeRedstone();
-            if (v != null) {
-                newTotalEnergy = v.totalEnergy;
-                newRate = v.energyPerTick;
-                newTotalTicks = v.totalTicks;
-            }
-        } else if (type == MachineGeneratorType.SLIME) {
-            FuelValues v = tryConsumeSlime();
+        if (type.usesRecipes()) {
+            FuelValues v = tryConsumeRecipeFuel(type);
             if (v != null) {
                 newTotalEnergy = v.totalEnergy;
                 newRate = v.energyPerTick;
@@ -164,7 +154,9 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
             MachineGeneratorType.FuelResult result = type.getFuelResult(input);
             if (result == null) return false;
 
+            Item itemBefore = input.getItem();
             inventory.extractItem(0, 1, false);
+            handleCraftingRemainder(0, itemBefore);
             newTotalEnergy = result.totalEnergy();
             newRate = Math.max(1, Math.round(result.gpRate()));
             newTotalTicks = newTotalEnergy / newRate;
@@ -182,33 +174,45 @@ public class MachineGeneratorTile extends XUBlockEntity implements MenuProvider,
         return true;
     }
 
-    private @Nullable FuelValues tryConsumeLava() {
-        if (fluidTank == null) return null;
-        FluidStack lava = fluidTank.getFluid();
-        if (lava.isEmpty() || lava.getAmount() < 50) return null;
-        fluidTank.drain(50, IFluidHandler.FluidAction.EXECUTE);
-        return FuelValues.of(5000, 40);
+    private @Nullable FuelValues tryConsumeRecipeFuel(MachineGeneratorType type) {
+        if (level == null) return null;
+        String genTypeName = type.name().toLowerCase();
+        ItemStack primary = inventory.getStackInSlot(0);
+        ItemStack secondary = inventory.getSlots() > 1 ? inventory.getStackInSlot(1) : ItemStack.EMPTY;
+        FluidStack fluid = fluidTank != null ? fluidTank.getFluid() : FluidStack.EMPTY;
+
+        for (RecipeHolder<GeneratorFuelRecipe> holder : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.GENERATOR_FUEL.get())) {
+            GeneratorFuelRecipe recipe = holder.value();
+            if (!recipe.matchesGeneratorAndInputs(genTypeName, primary, secondary, fluid)) continue;
+
+            if (recipe.input() != null && !recipe.input().isEmpty()) {
+                Item itemBefore = primary.getItem();
+                inventory.extractItem(0, recipe.inputCount(), false);
+                handleCraftingRemainder(0, itemBefore);
+            }
+            if (recipe.secondaryInput() != null && !recipe.secondaryInput().isEmpty()) {
+                Item itemBefore = secondary.getItem();
+                inventory.extractItem(1, recipe.secondaryCount(), false);
+                handleCraftingRemainder(1, itemBefore);
+            }
+            if (!recipe.fluidInput().isEmpty() && fluidTank != null) {
+                fluidTank.drain(recipe.fluidInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            }
+            return FuelValues.of(recipe.totalEnergy(), recipe.energyPerTick());
+        }
+        return null;
     }
 
-    private @Nullable FuelValues tryConsumeRedstone() {
-        if (fluidTank == null) return null;
-        ItemStack dust = inventory.getStackInSlot(0);
-        if (!dust.is(net.minecraft.world.item.Items.REDSTONE)) return null;
-        FluidStack lava = fluidTank.getFluid();
-        if (lava.isEmpty() || lava.getAmount() < 50) return null;
-        inventory.extractItem(0, 1, false);
-        fluidTank.drain(50, IFluidHandler.FluidAction.EXECUTE);
-        return FuelValues.of(20000, 160);
-    }
-
-    private @Nullable FuelValues tryConsumeSlime() {
-        ItemStack slimeballs = inventory.getStackInSlot(0);
-        ItemStack milk = inventory.getStackInSlot(1);
-        if (!slimeballs.is(Items.SLIME_BALL) || slimeballs.getCount() < 4) return null;
-        if (!milk.is(Items.MILK_BUCKET)) return null;
-        inventory.extractItem(0, 4, false);
-        inventory.setStackInSlot(1, new ItemStack(Items.BUCKET));
-        return FuelValues.of(192000, 400);
+    private void handleCraftingRemainder(int slot, Item consumedItem) {
+        if (inventory.getStackInSlot(slot).isEmpty()) {
+            ItemStack fakeStack = new ItemStack(consumedItem);
+            if (consumedItem.hasCraftingRemainingItem(fakeStack)) {
+                ItemStack remainder = consumedItem.getCraftingRemainingItem(fakeStack);
+                if (!remainder.isEmpty()) {
+                    inventory.setStackInSlot(slot, remainder);
+                }
+            }
+        }
     }
 
     private void pushEnergy() {

@@ -9,9 +9,9 @@ import com.leclowndu93150.extrautils2.client.gui.machine.EnchanterScreen;
 import com.leclowndu93150.extrautils2.client.gui.machine.FurnaceScreen;
 import com.leclowndu93150.extrautils2.gui.HasProgressArrow;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
-import com.leclowndu93150.extrautils2.gui.ResonatorMenu;
 import com.leclowndu93150.extrautils2.recipe.CrusherRecipe;
 import com.leclowndu93150.extrautils2.recipe.EnchanterRecipe;
+import com.leclowndu93150.extrautils2.recipe.GeneratorFuelRecipe;
 import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModRecipeTypes;
@@ -28,11 +28,15 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
@@ -53,17 +57,17 @@ public class XUJEIPlugin implements IModPlugin {
     public static final RecipeType<RecipeHolder<EnchanterRecipe>> ENCHANTER =
             (RecipeType<RecipeHolder<EnchanterRecipe>>) (RecipeType<?>) RecipeType.create(ExtraUtilities.MODID, "enchanter", RecipeHolder.class);
 
-    private static final Map<MachineGeneratorType, RecipeType<GeneratorFuelRecipe>> RECIPE_TYPES = new EnumMap<>(MachineGeneratorType.class);
+    private static final Map<MachineGeneratorType, RecipeType<GeneratorFuelDisplay>> GENERATOR_TYPES = new EnumMap<>(MachineGeneratorType.class);
 
     static {
         for (MachineGeneratorType type : MachineGeneratorType.values()) {
-            RECIPE_TYPES.put(type, RecipeType.create(ExtraUtilities.MODID,
-                    "generator_" + type.name().toLowerCase(), GeneratorFuelRecipe.class));
+            GENERATOR_TYPES.put(type, RecipeType.create(ExtraUtilities.MODID,
+                    "generator_" + type.name().toLowerCase(), GeneratorFuelDisplay.class));
         }
     }
 
-    public static RecipeType<GeneratorFuelRecipe> getRecipeType(MachineGeneratorType type) {
-        return RECIPE_TYPES.get(type);
+    public static RecipeType<GeneratorFuelDisplay> getGeneratorRecipeType(MachineGeneratorType type) {
+        return GENERATOR_TYPES.get(type);
     }
 
     @Override
@@ -77,7 +81,7 @@ public class XUJEIPlugin implements IModPlugin {
         registration.addRecipeCategories(new ResonatorCategory(RESONATOR, guiHelper));
         registration.addRecipeCategories(new CrusherCategory(CRUSHER, guiHelper));
         registration.addRecipeCategories(new EnchanterCategory(ENCHANTER, guiHelper));
-        for (var entry : RECIPE_TYPES.entrySet()) {
+        for (var entry : GENERATOR_TYPES.entrySet()) {
             Block block = getBlock(entry.getKey());
             if (block != null) {
                 registration.addRecipeCategories(new GeneratorFuelCategory(entry.getValue(), block, guiHelper));
@@ -100,13 +104,52 @@ public class XUJEIPlugin implements IModPlugin {
             List<RecipeHolder<EnchanterRecipe>> enchanterRecipes =
                     level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.ENCHANTER.get());
             registration.addRecipes(ENCHANTER, enchanterRecipes);
-        }
-        for (var entry : RECIPE_TYPES.entrySet()) {
-            List<GeneratorFuelRecipe> recipes = GeneratorFuelRecipe.getRecipesFor(entry.getKey());
-            if (!recipes.isEmpty()) {
-                registration.addRecipes(entry.getValue(), recipes);
+
+            Map<String, List<GeneratorFuelDisplay>> recipeDisplays = new java.util.HashMap<>();
+            for (RecipeHolder<GeneratorFuelRecipe> holder : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.GENERATOR_FUEL.get())) {
+                GeneratorFuelRecipe recipe = holder.value();
+                List<ItemStack> inputs = new ArrayList<>();
+                if (recipe.input() != null && !recipe.input().isEmpty()) {
+                    ItemStack stack = new ItemStack(recipe.input().getItems()[0].getItem(), recipe.inputCount());
+                    inputs.add(stack);
+                }
+                if (recipe.secondaryInput() != null && !recipe.secondaryInput().isEmpty()) {
+                    ItemStack stack = new ItemStack(recipe.secondaryInput().getItems()[0].getItem(), recipe.secondaryCount());
+                    inputs.add(stack);
+                }
+                recipeDisplays.computeIfAbsent(recipe.generatorType(), k -> new ArrayList<>())
+                        .add(new GeneratorFuelDisplay(null, inputs, recipe.fluidInput(), recipe.totalEnergy(), recipe.energyPerTick()));
+            }
+
+            for (var entry : GENERATOR_TYPES.entrySet()) {
+                MachineGeneratorType genType = entry.getKey();
+                String typeName = genType.name().toLowerCase();
+                List<GeneratorFuelDisplay> displays;
+
+                if (genType.usesRecipes()) {
+                    displays = recipeDisplays.getOrDefault(typeName, List.of());
+                } else {
+                    displays = scanDynamicFuels(genType);
+                }
+
+                if (!displays.isEmpty()) {
+                    registration.addRecipes(entry.getValue(), displays);
+                }
             }
         }
+    }
+
+    private List<GeneratorFuelDisplay> scanDynamicFuels(MachineGeneratorType type) {
+        List<GeneratorFuelDisplay> displays = new ArrayList<>();
+        for (var item : BuiltInRegistries.ITEM) {
+            ItemStack stack = new ItemStack(item);
+            var result = type.getFuelResult(stack);
+            if (result != null) {
+                displays.add(new GeneratorFuelDisplay(type, List.of(stack),
+                        FluidStack.EMPTY, result.totalEnergy(), Math.max(1, Math.round(result.gpRate()))));
+            }
+        }
+        return displays;
     }
 
     @Override
@@ -115,7 +158,7 @@ public class XUJEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(ModBlocks.MACHINE_FURNACE.get().asItem().getDefaultInstance(), mezz.jei.api.constants.RecipeTypes.SMELTING);
         registration.addRecipeCatalyst(ModBlocks.MACHINE_CRUSHER.get().asItem().getDefaultInstance(), CRUSHER);
         registration.addRecipeCatalyst(ModBlocks.MACHINE_ENCHANTER.get().asItem().getDefaultInstance(), ENCHANTER);
-        for (var entry : RECIPE_TYPES.entrySet()) {
+        for (var entry : GENERATOR_TYPES.entrySet()) {
             Block block = getBlock(entry.getKey());
             if (block != null) {
                 registration.addRecipeCatalyst(block.asItem().getDefaultInstance(), entry.getValue());
@@ -170,7 +213,7 @@ public class XUJEIPlugin implements IModPlugin {
             public Collection<IGuiClickableArea> getGuiClickableAreas(MachineGeneratorScreen screen, double mouseX, double mouseY) {
                 if (screen.getMenu() instanceof MachineGeneratorMenu menu && menu instanceof HasProgressArrow arrow) {
                     MachineGeneratorType type = menu.getGeneratorType();
-                    RecipeType<GeneratorFuelRecipe> rt = type != null ? RECIPE_TYPES.get(type) : null;
+                    RecipeType<GeneratorFuelDisplay> rt = type != null ? GENERATOR_TYPES.get(type) : null;
                     if (rt != null) {
                         return List.of(createClickableArea(arrow, rt));
                     }
