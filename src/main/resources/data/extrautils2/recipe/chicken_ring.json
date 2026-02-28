@@ -1,0 +1,28 @@
+{
+  "type": "extrautils2:lasso_recipe",
+  "category": "misc",
+  "pattern": [
+    "FIF",
+    "ILI",
+    "RIR"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "extrautils2:golden_lasso"
+    },
+    "R": {
+      "item": "extrautils2:redstone_crystal"
+    }
+  },
+  "result": {
+    "id": "extrautils2:chicken_ring",
+    "count": 1
+  },
+  "required_entity": "minecraft:chicken"
+}

@@ -138,6 +138,7 @@ public class XURecipeProvider extends RecipeProvider {
                 .requires(ModItems.EVIL_DROP.get())
                 .unlockedBy("has_golden_lasso", has(ModItems.GOLDEN_LASSO.get()))
                 .save(output);
+
     }
 
     private void opiniumRecipes(RecipeOutput output) {

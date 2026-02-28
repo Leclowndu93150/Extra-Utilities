@@ -14,6 +14,7 @@ import com.leclowndu93150.extrautils2.recipe.EnchanterRecipe;
 import com.leclowndu93150.extrautils2.recipe.GeneratorFuelRecipe;
 import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
+import com.leclowndu93150.extrautils2.registry.ModItems;
 import com.leclowndu93150.extrautils2.registry.ModRecipeTypes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -28,6 +29,7 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -137,6 +139,11 @@ public class XUJEIPlugin implements IModPlugin {
                 }
             }
         }
+
+        registration.addItemStackInfo(new ItemStack(ModItems.GOLDEN_LASSO.get()),
+                Component.literal("Right-click a passive mob to capture it. Used in crafting recipes that require a specific captured mob. The lasso is returned after crafting."));
+        registration.addItemStackInfo(new ItemStack(ModItems.CURSED_LASSO.get()),
+                Component.literal("Right-click a weakened hostile mob to capture it. The mob must be reduced to 1/4 health first."));
     }
 
     private List<GeneratorFuelDisplay> scanDynamicFuels(MachineGeneratorType type) {

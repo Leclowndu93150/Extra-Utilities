@@ -4,6 +4,7 @@ import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.recipe.CrusherRecipe;
 import com.leclowndu93150.extrautils2.recipe.EnchanterRecipe;
 import com.leclowndu93150.extrautils2.recipe.GeneratorFuelRecipe;
+import com.leclowndu93150.extrautils2.recipe.LassoRecipe;
 import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -61,6 +62,9 @@ public class ModRecipeTypes {
 
     public static final DeferredHolder<RecipeSerializer<?>, GeneratorFuelRecipe.Serializer> GENERATOR_FUEL_SERIALIZER =
             RECIPE_SERIALIZERS.register("generator_fuel", GeneratorFuelRecipe.Serializer::new);
+
+    public static final DeferredHolder<RecipeSerializer<?>, LassoRecipe.Serializer> LASSO_RECIPE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("lasso_recipe", LassoRecipe.Serializer::new);
 
     public static void register(IEventBus bus) {
         RECIPE_TYPES.register(bus);

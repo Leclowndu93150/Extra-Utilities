@@ -2,9 +2,11 @@ package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.item.AngelBlockItem;
 import com.leclowndu93150.extrautils2.item.AngelRingItem;
+import com.leclowndu93150.extrautils2.item.ChickenRingItem;
 import com.leclowndu93150.extrautils2.item.GoldenBagItem;
 import com.leclowndu93150.extrautils2.item.GoldenLassoItem;
 import com.leclowndu93150.extrautils2.item.KikokuItem;
+import com.leclowndu93150.extrautils2.item.SquidRingItem;
 import com.leclowndu93150.extrautils2.item.UpgradeItem;
 import net.minecraft.world.item.Item;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeType;
@@ -82,8 +84,10 @@ public class ModItems {
     public static final DeferredItem<Item> POWER_MANAGER = registerSimple("power_manager");
 
     // --- Rings ---
-    public static final DeferredItem<Item> CHICKEN_RING = registerSimple("chicken_ring");
-    public static final DeferredItem<Item> SQUID_RING = registerSimple("squid_ring");
+    public static final DeferredItem<ChickenRingItem> CHICKEN_RING = ModRegistries.registerItem(
+            "chicken_ring", ChickenRingItem::new);
+    public static final DeferredItem<SquidRingItem> SQUID_RING = ModRegistries.registerItem(
+            "squid_ring", SquidRingItem::new);
 
     // --- Misc ---
     public static final DeferredItem<Item> SUN_CRYSTAL = registerSimple("sun_crystal");
