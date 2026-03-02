@@ -171,8 +171,8 @@ public class XUBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.TRASH_CAN_FLUID.get(), models().getExistingFile(modLoc("block/trash_can_fluid")));
         simpleBlock(ModBlocks.TRASH_CAN_ENERGY.get(), models().getExistingFile(modLoc("block/trash_can_energy")));
         simpleBlock(ModBlocks.RESONATOR.get(), models().getExistingFile(modLoc("block/resonator")));
-        simpleBlock(ModBlocks.CRAFTER.get(), models().cubeAll(name(ModBlocks.CRAFTER.get()), tex("autocraft")));
-        simpleBlock(ModBlocks.ANALOG_CRAFTER.get(), models().cubeAll(name(ModBlocks.ANALOG_CRAFTER.get()), tex("analog_crafter")));
+        nonDirectionalMachine(ModBlocks.CRAFTER.get(), "autocraft_side", "autocraft", "interact_back");
+        nonDirectionalMachine(ModBlocks.ANALOG_CRAFTER.get(), "analog_crafter_side", "analog_crafter", "analog_crafter_bottom");
         drumBlock(ModBlocks.DRUM_16.get(), "stone");
         drumBlock(ModBlocks.DRUM_256.get(), "iron");
         drumBlock(ModBlocks.DRUM_4096.get(), "highcapacity");
@@ -447,6 +447,13 @@ public class XUBlockStateProvider extends BlockStateProvider {
         }
 
         return composite.end();
+    }
+
+    private void nonDirectionalMachine(Block block, String side, String top, String bottom) {
+        ModelFile model = models().cubeBottomTop(name(block), tex(side), tex(bottom), tex(top))
+                .texture("particle", tex(side));
+        getVariantBuilder(block).forAllStates(state ->
+                ConfiguredModel.builder().modelFile(model).build());
     }
 
     private ModelFile cubeAll(Block block, String texture) {

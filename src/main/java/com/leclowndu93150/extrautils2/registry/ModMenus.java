@@ -5,6 +5,8 @@ import com.leclowndu93150.extrautils2.gui.CreativeChestMenu;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
 import com.leclowndu93150.extrautils2.gui.ResonatorMenu;
 import com.leclowndu93150.extrautils2.gui.TrashCanMenu;
+import com.leclowndu93150.extrautils2.gui.machine.AnalogCrafterMenu;
+import com.leclowndu93150.extrautils2.gui.machine.CrafterMenu;
 import com.leclowndu93150.extrautils2.gui.machine.CrusherMenu;
 import com.leclowndu93150.extrautils2.gui.machine.EnchanterMenu;
 import com.leclowndu93150.extrautils2.gui.machine.FurnaceMenu;
@@ -38,6 +40,12 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<EnchanterMenu>> MACHINE_ENCHANTER =
             MENUS.register("machine_enchanter", () -> IMenuTypeExtension.create(EnchanterMenu::fromNetwork));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<CrafterMenu>> CRAFTER =
+            MENUS.register("crafter", () -> IMenuTypeExtension.create(CrafterMenu::fromNetwork));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<AnalogCrafterMenu>> ANALOG_CRAFTER =
+            MENUS.register("analog_crafter", () -> IMenuTypeExtension.create(AnalogCrafterMenu::fromNetwork));
 
     public static void register(IEventBus bus) {
         MENUS.register(bus);

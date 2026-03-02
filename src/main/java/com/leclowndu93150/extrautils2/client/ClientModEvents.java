@@ -7,6 +7,8 @@ import com.leclowndu93150.extrautils2.client.gui.CreativeChestScreen;
 import com.leclowndu93150.extrautils2.client.gui.MachineGeneratorScreen;
 import com.leclowndu93150.extrautils2.client.gui.ResonatorScreen;
 import com.leclowndu93150.extrautils2.client.gui.TrashCanScreen;
+import com.leclowndu93150.extrautils2.client.gui.machine.AnalogCrafterScreen;
+import com.leclowndu93150.extrautils2.client.gui.machine.CrafterScreen;
 import com.leclowndu93150.extrautils2.client.gui.machine.CrusherScreen;
 import com.leclowndu93150.extrautils2.client.gui.machine.EnchanterScreen;
 import com.leclowndu93150.extrautils2.client.gui.machine.FurnaceScreen;
@@ -73,6 +75,8 @@ public final class ClientModEvents {
         event.register(ModMenus.MACHINE_FURNACE.get(), FurnaceScreen::new);
         event.register(ModMenus.MACHINE_CRUSHER.get(), CrusherScreen::new);
         event.register(ModMenus.MACHINE_ENCHANTER.get(), EnchanterScreen::new);
+        event.register(ModMenus.CRAFTER.get(), CrafterScreen::new);
+        event.register(ModMenus.ANALOG_CRAFTER.get(), AnalogCrafterScreen::new);
     }
 
     @SubscribeEvent

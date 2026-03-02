@@ -9,6 +9,8 @@ import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.generator.GeneratorTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.HandCrankTile;
 import com.leclowndu93150.extrautils2.blockentity.generator.MachineGeneratorTile;
+import com.leclowndu93150.extrautils2.blockentity.machine.AnalogCrafterBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.machine.CrafterBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.CrusherBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.EnchanterBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.FurnaceBlockEntity;
@@ -132,6 +134,18 @@ public class ModBlockEntities {
                     BlockEntityType.Builder.<EnchanterBlockEntity>of(
                             EnchanterBlockEntity::new,
                             ModBlocks.MACHINE_ENCHANTER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrafterBlockEntity>> CRAFTER =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("crafter", () ->
+                    BlockEntityType.Builder.<CrafterBlockEntity>of(
+                            CrafterBlockEntity::new,
+                            ModBlocks.CRAFTER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AnalogCrafterBlockEntity>> ANALOG_CRAFTER =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("analog_crafter", () ->
+                    BlockEntityType.Builder.<AnalogCrafterBlockEntity>of(
+                            AnalogCrafterBlockEntity::new,
+                            ModBlocks.ANALOG_CRAFTER.get()).build(null));
 
     public static void init() {}
 }

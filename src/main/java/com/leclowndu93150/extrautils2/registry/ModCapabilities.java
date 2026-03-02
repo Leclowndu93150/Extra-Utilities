@@ -8,6 +8,8 @@ import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.ResonatorBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.generator.MachineGeneratorTile;
+import com.leclowndu93150.extrautils2.blockentity.machine.AnalogCrafterBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.machine.CrafterBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.CrusherBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.EnchanterBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.FurnaceBlockEntity;
@@ -67,5 +69,15 @@ public final class ModCapabilities {
                 (EnchanterBlockEntity be, Direction side) -> new MachineItemHandler(
                         new IItemHandlerModifiable[]{be.getInput(), be.getCatalyst()},
                         new IItemHandlerModifiable[]{be.getOutput()}));
+
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ModBlockEntities.CRAFTER.get(),
+                (CrafterBlockEntity be, Direction side) -> be.getEnergyStorage());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.CRAFTER.get(),
+                (CrafterBlockEntity be, Direction side) -> new MachineItemHandler(
+                        new IItemHandlerModifiable[]{be.getInput()},
+                        new IItemHandlerModifiable[]{be.getOutput()}));
+
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.ANALOG_CRAFTER.get(),
+                (AnalogCrafterBlockEntity be, Direction side) -> side != null ? be.getSidedHandler(side) : be.getSidedHandler(Direction.NORTH));
     }
 }

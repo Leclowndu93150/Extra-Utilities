@@ -13,6 +13,8 @@ import com.leclowndu93150.extrautils2.block.SoundMufflerBlock;
 import com.leclowndu93150.extrautils2.block.SpikeBlock;
 import com.leclowndu93150.extrautils2.block.TrashCanBlock;
 import com.leclowndu93150.extrautils2.block.XUBlock;
+import com.leclowndu93150.extrautils2.block.machine.AnalogCrafterBlock;
+import com.leclowndu93150.extrautils2.block.machine.CrafterBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorType;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
@@ -119,8 +121,8 @@ public class ModBlocks {
             "trash_can_fluid", () -> new TrashCanBlock(XUBlock.defaultProps().noOcclusion(), TrashCanBlock.TrashType.FLUID));
     public static final DeferredBlock<TrashCanBlock> TRASH_CAN_ENERGY = ModRegistries.registerBlock(
             "trash_can_energy", () -> new TrashCanBlock(XUBlock.defaultProps().noOcclusion(), TrashCanBlock.TrashType.ENERGY));
-    public static final DeferredBlock<Block> CRAFTER = ModRegistries.registerBlock(
-            "crafter", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
+    public static final DeferredBlock<CrafterBlock> CRAFTER = ModRegistries.registerBlock(
+            "crafter", () -> new CrafterBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<ResonatorBlock> RESONATOR = ModRegistries.registerBlock(
             "resonator", () -> new ResonatorBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> POWER_TRANSMITTER = ModRegistries.registerBlock(
@@ -165,8 +167,8 @@ public class ModBlocks {
             "redstone_lantern", () -> new XUBlock(BlockBehaviour.Properties.of().strength(0.3f).lightLevel(s -> 15)));
     public static final DeferredBlock<Block> SUPER_MOB_SPAWNER = ModRegistries.registerBlock(
             "mob_spawner", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> ANALOG_CRAFTER = ModRegistries.registerBlock(
-            "analog_crafter", () -> new XUBlock.FacingAll(XUBlock.defaultProps()));
+    public static final DeferredBlock<AnalogCrafterBlock> ANALOG_CRAFTER = ModRegistries.registerBlock(
+            "analog_crafter", () -> new AnalogCrafterBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> INDEXER = ModRegistries.registerBlock(
             "indexer", () -> new XUBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<Block> TELEPORTER = ModRegistries.registerBlock(
