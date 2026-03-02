@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.resources.ResourceLocation;
@@ -246,6 +247,31 @@ public class XURecipeProvider extends RecipeProvider {
 
         EnchanterRecipeBuilder.enchanter(Ingredient.of(Items.NETHER_STAR), "highest", 72000, 36000)
                 .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/nether_star"));
+
+        EnchanterRecipeBuilder.transformation(
+                Ingredient.of(Items.LAPIS_LAZULI), Ingredient.of(Items.GOLD_INGOT), 1,
+                ModItems.ENCHANTED_INGOT.get(), 1, 8000, 200
+        ).save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/enchanted_ingot"));
+
+        EnchanterRecipeBuilder.transformation(
+                Ingredient.of(Items.LAPIS_LAZULI), Ingredient.of(Items.GOLD_BLOCK), 1,
+                ModBlocks.ENCHANTED_BLOCK.get(), 1, 24000, 600
+        ).save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/enchanted_block"));
+
+        EnchanterRecipeBuilder.transformation(
+                Ingredient.of(Items.LAPIS_LAZULI), Ingredient.of(Items.APPLE), 16,
+                ModItems.MAGIC_APPLE.get(), 16, 16000, 400
+        ).save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/magic_apple"));
+
+        EnchanterRecipeBuilder.transformation(
+                Ingredient.of(Items.NETHER_STAR), Ingredient.of(Items.IRON_INGOT), 8,
+                ModItems.EVIL_INFUSED_INGOT.get(), 8, 64000, 1600
+        ).save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/evil_infused_ingot"));
+
+        EnchanterRecipeBuilder.transformation(
+                Ingredient.of(Items.NETHER_STAR), Ingredient.of(Items.IRON_BLOCK), 8,
+                ModBlocks.EVIL_INFUSED_INGOT_BLOCK.get(), 8, 192000, 4800
+        ).save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "enchanter/evil_infused_block"));
     }
 
     private void generatorFuelRecipes(RecipeOutput output) {
@@ -295,7 +321,7 @@ public class XURecipeProvider extends RecipeProvider {
                 .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/slime/slimeball_milk"));
     }
 
-    private void compressedRecipe(RecipeOutput output, net.minecraft.world.level.block.Block result, net.minecraft.world.item.Item ingredient) {
+    private void compressedRecipe(RecipeOutput output, Block result, Item ingredient) {
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
                 .pattern("III")
                 .pattern("III")

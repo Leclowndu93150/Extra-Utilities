@@ -16,7 +16,6 @@ import com.leclowndu93150.extrautils2.util.RedstoneState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -31,17 +30,16 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class EnchanterBlockEntity extends XUBlockEntity implements MenuProvider, IGpSource, MachineBlock.IGpMachine, MachineBlock.IDroppableInventory {
 
@@ -68,7 +66,7 @@ public class EnchanterBlockEntity extends XUBlockEntity implements MenuProvider,
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.isEnchantable() || stack.is(Items.BOOK);
+            return true;
         }
     };
 
@@ -119,19 +117,30 @@ public class EnchanterBlockEntity extends XUBlockEntity implements MenuProvider,
                 int speedFactor = 1 + tile.getSpeedLevel();
                 int cost = tile.energyPerTick * speedFactor;
                 if (tile.energy.getEnergyStored() >= cost) {
-                    tile.energy.extractEnergy(cost, false);
+                    tile.energy.setEnergy(tile.energy.getEnergyStored() - cost);
                     tile.progress += speedFactor;
                     active = true;
                     tile.setChanged();
 
                     if (tile.progress >= tile.totalTime) {
-                        boolean lowest = tile.currentRecipe.isLowest();
-                        ItemStack itemToEnchant = tile.input.extractItem(0, 1, false);
-                        tile.catalyst.extractItem(0, 1, false);
-
-                        ItemStack enchanted = applyEnchantments(level, itemToEnchant, lowest);
-                        tile.output.setStackInSlot(0, enchanted);
+                        if (tile.currentRecipe.isTransformation()) {
+                            int inCount = tile.currentRecipe.inputCount();
+                            tile.input.extractItem(0, inCount, false);
+                            tile.catalyst.extractItem(0, 1, false);
+                            ItemStack out = tile.currentRecipe.result().get().copy();
+                            out.setCount(tile.currentRecipe.outputCount());
+                            tile.output.setStackInSlot(0, out);
+                        } else {
+                            boolean lowest = tile.currentRecipe.isLowest();
+                            ItemStack itemToEnchant = tile.input.extractItem(0, 1, false);
+                            tile.catalyst.extractItem(0, 1, false);
+                            ItemStack enchanted = applyEnchantments(level, itemToEnchant, lowest);
+                            tile.output.setStackInSlot(0, enchanted);
+                        }
                         tile.progress = 0;
+                        if (tile.redstoneState == RedstoneState.OPERATE_REDSTONE_PULSE && tile.redstonePulses > 0) {
+                            tile.redstonePulses--;
+                        }
                     }
                 }
             }
@@ -180,16 +189,41 @@ public class EnchanterBlockEntity extends XUBlockEntity implements MenuProvider,
         }
 
         RandomSource random = level.random;
-        Stream<Holder<Enchantment>> enchants = level.registryAccess()
-                .registryOrThrow(Registries.ENCHANTMENT)
-                .getTag(EnchantmentTags.IN_ENCHANTING_TABLE)
-                .map(HolderSet::stream)
-                .orElse(Stream.empty());
-        List<EnchantmentInstance> enchantments = EnchantmentHelper.selectEnchantment(random, stack, 30, enchants);
+        ItemStack target = stack;
 
-        for (EnchantmentInstance inst : enchantments) {
-            int lvl = lowest ? inst.enchantment.value().getMinLevel() : inst.enchantment.value().getMaxLevel();
-            stack.enchant(inst.enchantment, lvl);
+        List<Holder.Reference<Enchantment>> applicable = level.registryAccess()
+                .registryOrThrow(Registries.ENCHANTMENT)
+                .holders()
+                .filter(h -> !h.is(EnchantmentTags.TREASURE))
+                .filter(h -> isBook || h.value().canEnchant(target))
+                .toList();
+
+        if (applicable.isEmpty()) return stack;
+
+        ArrayList<Holder<Enchantment>> pool = new ArrayList<>(applicable);
+        int enchantability = stack.getItem().getEnchantmentValue(stack);
+        if (enchantability <= 0) enchantability = 1;
+
+        int level_ = 1 + random.nextInt(enchantability / 4 + 1) + random.nextInt(enchantability / 4 + 1);
+
+        Holder<Enchantment> picked = pool.get(random.nextInt(pool.size()));
+        int lvl = lowest ? picked.value().getMinLevel() : picked.value().getMaxLevel();
+        stack.enchant(picked, lvl);
+
+        while (random.nextInt(50) <= level_) {
+            ItemStack finalStack = stack;
+            pool.removeIf(h -> {
+                for (var existing : EnchantmentHelper.getEnchantmentsForCrafting(finalStack).keySet()) {
+                    if (!Enchantment.areCompatible(existing, h)) return true;
+                }
+                return false;
+            });
+            if (pool.isEmpty()) break;
+
+            picked = pool.get(random.nextInt(pool.size()));
+            lvl = lowest ? picked.value().getMinLevel() : picked.value().getMaxLevel();
+            stack.enchant(picked, lvl);
+            level_ /= 2;
         }
 
         return stack;

@@ -10,26 +10,49 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
+
 public record EnchanterRecipe(
         Ingredient catalyst,
         String enchantMode,
         int energy,
-        int processingTime
+        int processingTime,
+        Optional<Ingredient> input,
+        Optional<ItemStack> result,
+        int inputCount,
+        int outputCount
 ) implements Recipe<EnchanterRecipe.EnchanterInput> {
+
+    public EnchanterRecipe(Ingredient catalyst, String enchantMode, int energy, int processingTime) {
+        this(catalyst, enchantMode, energy, processingTime, Optional.empty(), Optional.empty(), 1, 1);
+    }
 
     @Override
     public boolean matches(EnchanterInput container, Level level) {
-        return catalyst.test(container.catalyst());
+        if (!catalyst.test(container.catalyst())) return false;
+        ItemStack item = container.item();
+        if (item.isEmpty()) return false;
+
+        if (isTransformation()) {
+            return input.get().test(item) && item.getCount() >= inputCount;
+        }
+        return item.is(Items.BOOK) || item.isEnchantable();
     }
 
     @Override
     public ItemStack assemble(EnchanterInput container, HolderLookup.Provider provider) {
+        if (isTransformation()) {
+            ItemStack out = result.get().copy();
+            out.setCount(outputCount);
+            return out;
+        }
         return container.item().copy();
     }
 
@@ -40,6 +63,11 @@ public record EnchanterRecipe(
 
     @Override
     public ItemStack getResultItem(HolderLookup.Provider provider) {
+        if (isTransformation()) {
+            ItemStack out = result.get().copy();
+            out.setCount(outputCount);
+            return out;
+        }
         return ItemStack.EMPTY;
     }
 
@@ -62,6 +90,10 @@ public record EnchanterRecipe(
         return "lowest".equals(enchantMode);
     }
 
+    public boolean isTransformation() {
+        return input.isPresent() && result.isPresent();
+    }
+
     public record EnchanterInput(ItemStack item, ItemStack catalyst) implements net.minecraft.world.item.crafting.RecipeInput {
         @Override
         public ItemStack getItem(int index) {
@@ -79,16 +111,39 @@ public record EnchanterRecipe(
                 Ingredient.CODEC_NONEMPTY.fieldOf("catalyst").forGetter(EnchanterRecipe::catalyst),
                 Codec.STRING.fieldOf("enchant_mode").forGetter(EnchanterRecipe::enchantMode),
                 Codec.INT.fieldOf("energy").forGetter(EnchanterRecipe::energy),
-                Codec.INT.fieldOf("processing_time").forGetter(EnchanterRecipe::processingTime)
+                Codec.INT.fieldOf("processing_time").forGetter(EnchanterRecipe::processingTime),
+                Ingredient.CODEC.optionalFieldOf("input").forGetter(EnchanterRecipe::input),
+                ItemStack.OPTIONAL_CODEC.optionalFieldOf("result").forGetter(EnchanterRecipe::result),
+                Codec.INT.optionalFieldOf("input_count", 1).forGetter(EnchanterRecipe::inputCount),
+                Codec.INT.optionalFieldOf("output_count", 1).forGetter(EnchanterRecipe::outputCount)
         ).apply(inst, EnchanterRecipe::new));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, EnchanterRecipe> STREAM_CODEC = StreamCodec.composite(
-                Ingredient.CONTENTS_STREAM_CODEC, EnchanterRecipe::catalyst,
-                ByteBufCodecs.STRING_UTF8, EnchanterRecipe::enchantMode,
-                ByteBufCodecs.INT, EnchanterRecipe::energy,
-                ByteBufCodecs.INT, EnchanterRecipe::processingTime,
-                EnchanterRecipe::new
-        );
+        public static final StreamCodec<RegistryFriendlyByteBuf, EnchanterRecipe> STREAM_CODEC = new StreamCodec<>() {
+            @Override
+            public EnchanterRecipe decode(RegistryFriendlyByteBuf buf) {
+                Ingredient catalyst = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+                String enchantMode = ByteBufCodecs.STRING_UTF8.decode(buf);
+                int energy = buf.readInt();
+                int processingTime = buf.readInt();
+                Optional<Ingredient> input = ByteBufCodecs.optional(Ingredient.CONTENTS_STREAM_CODEC).decode(buf);
+                Optional<ItemStack> result = ByteBufCodecs.optional(ItemStack.STREAM_CODEC).decode(buf);
+                int inputCount = buf.readInt();
+                int outputCount = buf.readInt();
+                return new EnchanterRecipe(catalyst, enchantMode, energy, processingTime, input, result, inputCount, outputCount);
+            }
+
+            @Override
+            public void encode(RegistryFriendlyByteBuf buf, EnchanterRecipe recipe) {
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.catalyst());
+                ByteBufCodecs.STRING_UTF8.encode(buf, recipe.enchantMode());
+                buf.writeInt(recipe.energy());
+                buf.writeInt(recipe.processingTime());
+                ByteBufCodecs.optional(Ingredient.CONTENTS_STREAM_CODEC).encode(buf, recipe.input());
+                ByteBufCodecs.optional(ItemStack.STREAM_CODEC).encode(buf, recipe.result());
+                buf.writeInt(recipe.inputCount());
+                buf.writeInt(recipe.outputCount());
+            }
+        };
 
         @Override
         public MapCodec<EnchanterRecipe> codec() {
