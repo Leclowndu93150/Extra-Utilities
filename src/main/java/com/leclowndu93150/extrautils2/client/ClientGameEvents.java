@@ -6,6 +6,7 @@ import com.leclowndu93150.extrautils2.block.DecorativeGlassBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.GeneratorType;
 import com.leclowndu93150.extrautils2.client.power.ClientGpData;
+import com.leclowndu93150.extrautils2.item.DestructionWandItem;
 import com.leclowndu93150.extrautils2.mixin.LevelRendererAccessor;
 import com.leclowndu93150.extrautils2.network.power.GpBlockInfoRequestPacket;
 import net.minecraft.ChatFormatting;
@@ -110,6 +111,9 @@ public class ClientGameEvents {
 
     @SubscribeEvent
     public static void renderOutline(RenderHighlightEvent.Block event) {
+        WandRenderer.onBlockHighlight(event);
+        if (event.isCanceled()) return;
+
         if (event.getCamera().getEntity() instanceof LivingEntity living) {
             Level world = living.level();
             BlockHitResult rtr = event.getTarget();

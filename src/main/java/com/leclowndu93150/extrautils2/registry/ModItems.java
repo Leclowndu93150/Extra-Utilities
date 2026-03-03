@@ -2,7 +2,9 @@ package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.item.AngelBlockItem;
 import com.leclowndu93150.extrautils2.item.AngelRingItem;
+import com.leclowndu93150.extrautils2.item.BuildersWandItem;
 import com.leclowndu93150.extrautils2.item.ChickenRingItem;
+import com.leclowndu93150.extrautils2.item.DestructionWandItem;
 import com.leclowndu93150.extrautils2.item.GoldenBagItem;
 import com.leclowndu93150.extrautils2.item.GoldenLassoItem;
 import com.leclowndu93150.extrautils2.item.KikokuItem;
@@ -62,10 +64,14 @@ public class ModItems {
     public static final DeferredItem<Item> DYE_POWDER_BLUE = registerSimple("dye_powder_blue");
 
     // --- Tools ---
-    public static final DeferredItem<Item> BUILDERS_WAND = registerSimple("builders_wand");
-    public static final DeferredItem<Item> CREATIVE_BUILDERS_WAND = registerSimple("creative_builders_wand");
-    public static final DeferredItem<Item> DESTRUCTION_WAND = registerSimple("destruction_wand");
-    public static final DeferredItem<Item> CREATIVE_DESTRUCTION_WAND = registerSimple("creative_destruction_wand");
+    public static final DeferredItem<BuildersWandItem> BUILDERS_WAND = ModRegistries.registerItem(
+            "builders_wand", () -> new BuildersWandItem(9));
+    public static final DeferredItem<BuildersWandItem> CREATIVE_BUILDERS_WAND = ModRegistries.registerItem(
+            "creative_builders_wand", () -> new BuildersWandItem(49));
+    public static final DeferredItem<DestructionWandItem> DESTRUCTION_WAND = ModRegistries.registerItem(
+            "destruction_wand", () -> new DestructionWandItem(9));
+    public static final DeferredItem<DestructionWandItem> CREATIVE_DESTRUCTION_WAND = ModRegistries.registerItem(
+            "creative_destruction_wand", () -> new DestructionWandItem(49));
     public static final DeferredItem<Item> WRENCH = registerSimple("wrench");
     public static final DeferredItem<Item> GLASS_CUTTER = registerSimple("glass_cutter");
     public static final DeferredItem<Item> TROWEL = registerSimple("trowel");
