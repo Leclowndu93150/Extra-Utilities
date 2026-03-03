@@ -122,6 +122,7 @@ public class XURecipeProvider extends RecipeProvider {
         crusherRecipes(output);
         enchanterRecipes(output);
         generatorFuelRecipes(output);
+        xpCraftingRecipes(output);
     }
 
     private void lassoRecipes(RecipeOutput output) {
@@ -319,6 +320,13 @@ public class XURecipeProvider extends RecipeProvider {
         GeneratorFuelRecipeBuilder.dualFuel("slime", Ingredient.of(Items.SLIME_BALL), 4,
                         Ingredient.of(Items.MILK_BUCKET), 1, 192000, 400)
                 .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "generator/slime/slimeball_milk"));
+    }
+
+    private void xpCraftingRecipes(RecipeOutput output) {
+        XPCraftingRecipeBuilder.shapeless(ModBlocks.MAGICAL_WOOD.get(), 4)
+                .requires(Blocks.BOOKSHELF)
+                .requires(Items.GOLD_INGOT)
+                .save(output, ResourceLocation.fromNamespaceAndPath("extrautils2", "magical_wood"));
     }
 
     private void compressedRecipe(RecipeOutput output, Block result, Item ingredient) {

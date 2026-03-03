@@ -86,7 +86,8 @@ public class XUBlockTagProvider extends BlockTagsProvider {
 
         tag(BlockTags.MINEABLE_WITH_AXE)
                 .add(ModBlocks.SPIKE_WOOD.get())
-                .add(ModBlocks.DECORATIVE_SOLID_WOOD.get());
+                .add(ModBlocks.DECORATIVE_SOLID_WOOD.get())
+                .add(ModBlocks.MAGICAL_WOOD.get());
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(ModBlocks.CURSED_EARTH.get())

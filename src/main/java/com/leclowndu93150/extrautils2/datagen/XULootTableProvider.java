@@ -35,6 +35,7 @@ public class XULootTableProvider extends LootTableProvider {
             dropSelf(ModBlocks.MOON_STONE.get());
             dropSelf(ModBlocks.DECORATIVE_SOLID.get());
             dropSelf(ModBlocks.DECORATIVE_SOLID_WOOD.get());
+            dropSelf(ModBlocks.MAGICAL_WOOD.get());
             dropSelf(ModBlocks.DECORATIVE_BEDROCK.get());
             dropSelf(ModBlocks.OPINIUM_BLOCK.get());
             dropSelf(ModBlocks.REDSTONE_LANTERN.get());

@@ -20,6 +20,7 @@ public class XULanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.MOON_STONE, "Moon Stone");
         addBlock(ModBlocks.DECORATIVE_SOLID, "Decorative Stone");
         addBlock(ModBlocks.DECORATIVE_SOLID_WOOD, "Decorative Wood");
+        addBlock(ModBlocks.MAGICAL_WOOD, "Magical Wood");
         addBlock(ModBlocks.DECORATIVE_BEDROCK, "Bedrock Bricks");
         addBlock(ModBlocks.OPINIUM_BLOCK, "Opinium Block");
         addBlock(ModBlocks.REDSTONE_LANTERN, "Redstone Lantern");

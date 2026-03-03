@@ -13,22 +13,28 @@ import com.leclowndu93150.extrautils2.recipe.CrusherRecipe;
 import com.leclowndu93150.extrautils2.recipe.EnchanterRecipe;
 import com.leclowndu93150.extrautils2.recipe.GeneratorFuelRecipe;
 import com.leclowndu93150.extrautils2.recipe.ResonatorRecipe;
+import com.leclowndu93150.extrautils2.recipe.XPCraftingRecipe;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModItems;
 import com.leclowndu93150.extrautils2.registry.ModRecipeTypes;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.category.extensions.IRecipeCategoryDecorator;
 import mezz.jei.api.runtime.IRecipesGui;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
+import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -226,6 +232,21 @@ public class XUJEIPlugin implements IModPlugin {
                     }
                 }
                 return List.of();
+            }
+        });
+    }
+
+    @Override
+    public void registerAdvanced(IAdvancedRegistration registration) {
+        registration.addRecipeCategoryDecorator(RecipeTypes.CRAFTING, new IRecipeCategoryDecorator<>() {
+            @Override
+            public void draw(RecipeHolder<CraftingRecipe> recipe, mezz.jei.api.recipe.category.IRecipeCategory<RecipeHolder<CraftingRecipe>> recipeCategory,
+                             mezz.jei.api.gui.ingredient.IRecipeSlotsView recipeSlotsView, net.minecraft.client.gui.GuiGraphics guiGraphics, double mouseX, double mouseY) {
+                if (recipe.value() instanceof XPCraftingRecipe xpRecipe) {
+                    var font = Minecraft.getInstance().font;
+                    String text = xpRecipe.getXpCost() + " Levels";
+                    guiGraphics.drawString(font, text, 60, 46, 0x80FF20, false);
+                }
             }
         });
     }

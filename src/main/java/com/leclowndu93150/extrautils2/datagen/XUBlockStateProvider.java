@@ -44,6 +44,7 @@ public class XUBlockStateProvider extends BlockStateProvider {
         simpleBlock(ModBlocks.MOON_STONE.get(), cubeAll(ModBlocks.MOON_STONE.get(), "moon_stone"));
         simpleBlock(ModBlocks.DECORATIVE_SOLID.get(), cubeAll(ModBlocks.DECORATIVE_SOLID.get(), "connected/borderstone"));
         simpleBlock(ModBlocks.DECORATIVE_SOLID_WOOD.get(), cubeAll(ModBlocks.DECORATIVE_SOLID_WOOD.get(), "connected/diagonalwood"));
+        simpleBlock(ModBlocks.MAGICAL_WOOD.get(), cubeAll(ModBlocks.MAGICAL_WOOD.get(), "connected/magical_wood"));
         simpleBlock(ModBlocks.DECORATIVE_BEDROCK.get(), cubeAll(ModBlocks.DECORATIVE_BEDROCK.get(), "bedrock_bricks"));
         simpleBlock(ModBlocks.OPINIUM_BLOCK.get(), cubeAll(ModBlocks.OPINIUM_BLOCK.get(), "demon_block"));
         simpleBlock(ModBlocks.REDSTONE_LANTERN.get(), cubeAll(ModBlocks.REDSTONE_LANTERN.get(), "redstone_lantern"));

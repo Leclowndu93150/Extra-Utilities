@@ -105,6 +105,8 @@ public class ModBlocks {
             "cursed_earth", () -> new XUBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)));
     public static final DeferredBlock<XUBlock> DECORATIVE_SOLID_WOOD = ModRegistries.registerBlock(
             "decorative_solid_wood", () -> new XUBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)));
+    public static final DeferredBlock<XUBlock> MAGICAL_WOOD = ModRegistries.registerBlock(
+            "magical_wood", () -> new XUBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)));
     public static final DeferredBlock<XUBlock> DECORATIVE_SOLID = ModRegistries.registerBlock(
             "decorative_solid", () -> new XUBlock(XUBlock.defaultProps()));
     public static final DeferredBlock<XUBlock> DECORATIVE_BEDROCK = ModRegistries.registerBlock(

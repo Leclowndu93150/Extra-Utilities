@@ -35,6 +35,7 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.MOON_STONE.get());
         blockItem(ModBlocks.DECORATIVE_SOLID.get());
         blockItem(ModBlocks.DECORATIVE_SOLID_WOOD.get());
+        blockItem(ModBlocks.MAGICAL_WOOD.get());
         blockItem(ModBlocks.DECORATIVE_BEDROCK.get());
         blockItem(ModBlocks.OPINIUM_BLOCK.get());
         blockItem(ModBlocks.REDSTONE_LANTERN.get());
