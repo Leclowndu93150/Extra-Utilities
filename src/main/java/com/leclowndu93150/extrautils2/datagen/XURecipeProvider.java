@@ -39,6 +39,26 @@ public class XURecipeProvider extends RecipeProvider {
                 .unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FILTER_ITEM.get())
+                .pattern("RSR")
+                .pattern("SWS")
+                .pattern("RSR")
+                .define('R', Items.REDSTONE)
+                .define('S', Items.STICK)
+                .define('W', Items.STRING)
+                .unlockedBy("has_redstone", has(Items.REDSTONE))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FILTER_FLUID.get())
+                .pattern("LSL")
+                .pattern("SWS")
+                .pattern("LSL")
+                .define('L', Items.LAPIS_LAZULI)
+                .define('S', Items.STICK)
+                .define('W', Items.STRING)
+                .unlockedBy("has_lapis", has(Items.LAPIS_LAZULI))
+                .save(output);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModBlocks.SPIKE_WOOD.get(), 4)
                 .pattern(" S ")
                 .pattern("SIS")

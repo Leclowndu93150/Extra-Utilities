@@ -14,6 +14,8 @@ import com.leclowndu93150.extrautils2.blockentity.machine.CrafterBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.CrusherBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.EnchanterBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.FurnaceBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.transfer.FluidTransferNodeBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.transfer.ItemTransferNodeBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -146,6 +148,26 @@ public class ModBlockEntities {
                     BlockEntityType.Builder.<AnalogCrafterBlockEntity>of(
                             AnalogCrafterBlockEntity::new,
                             ModBlocks.ANALOG_CRAFTER.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemTransferNodeBlockEntity>> ITEM_TRANSFER_NODE =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("item_transfer_node", () -> {
+                Block[] blocks = {
+                        ModBlocks.TRANSFER_NODE_ITEMS.get(),
+                        ModBlocks.RETRIEVAL_NODE_ITEMS.get()
+                };
+                return BlockEntityType.Builder.<ItemTransferNodeBlockEntity>of(
+                        ItemTransferNodeBlockEntity::new, blocks).build(null);
+            });
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTransferNodeBlockEntity>> FLUID_TRANSFER_NODE =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("fluid_transfer_node", () -> {
+                Block[] blocks = {
+                        ModBlocks.TRANSFER_NODE_FLUIDS.get(),
+                        ModBlocks.RETRIEVAL_NODE_FLUIDS.get()
+                };
+                return BlockEntityType.Builder.<FluidTransferNodeBlockEntity>of(
+                        FluidTransferNodeBlockEntity::new, blocks).build(null);
+            });
 
     public static void init() {}
 }

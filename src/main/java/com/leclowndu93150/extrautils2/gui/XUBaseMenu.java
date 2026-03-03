@@ -15,6 +15,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import com.leclowndu93150.extrautils2.upgrade.UpgradeStackHandler;
 
+import java.util.function.IntUnaryOperator;
+
 public abstract class XUBaseMenu extends AbstractContainerMenu {
     public static final int INV_SLOT_X_OFFSET = 1;
     public static final int INV_SLOT_Y_OFFSET = 1;
@@ -46,6 +48,18 @@ public abstract class XUBaseMenu extends AbstractContainerMenu {
         int index = slots.size();
         addUpgradeSlot(upgrades, x, y);
         return index;
+    }
+
+    protected int addUpgradeSlotsAndGetIndex(UpgradeStackHandler upgrades, IntUnaryOperator xGetter, IntUnaryOperator yGetter) {
+        int index = slots.size();
+        for (int i = 0; i < upgrades.getSlots(); i++) {
+            addSlot(new UpgradeSlot(upgrades, i, menuSlotX(xGetter.applyAsInt(i)), menuSlotY(yGetter.applyAsInt(i))));
+        }
+        return index;
+    }
+
+    protected static int getCenteredUpgradeX(int centerX, int slotCount, int index) {
+        return centerX + index * 18 - 9 * slotCount;
     }
 
     protected int menuSlotX(int x) {

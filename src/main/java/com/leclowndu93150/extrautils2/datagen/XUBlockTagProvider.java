@@ -82,7 +82,12 @@ public class XUBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.TERRAFORMER.get())
                 .add(ModBlocks.POWER_OVERLOAD.get())
                 .add(ModBlocks.RAINBOW_GENERATOR.get())
-                .add(ModBlocks.SYNERGY_UNIT.get());
+                .add(ModBlocks.SYNERGY_UNIT.get())
+                .add(ModBlocks.TRANSFER_PIPE.get())
+                .add(ModBlocks.TRANSFER_NODE_ITEMS.get())
+                .add(ModBlocks.RETRIEVAL_NODE_ITEMS.get())
+                .add(ModBlocks.TRANSFER_NODE_FLUIDS.get())
+                .add(ModBlocks.RETRIEVAL_NODE_FLUIDS.get());
 
         tag(BlockTags.MINEABLE_WITH_AXE)
                 .add(ModBlocks.SPIKE_WOOD.get())

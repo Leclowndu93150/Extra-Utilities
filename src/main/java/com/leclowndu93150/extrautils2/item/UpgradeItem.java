@@ -36,6 +36,13 @@ public class UpgradeItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext ctx, List<Component> tooltip, TooltipFlag flag) {
+        switch (type) {
+            case STACK_SIZE -> tooltip.add(Component.translatable("tooltip.extrautils2.upgrade.stack_size").withStyle(ChatFormatting.GRAY));
+            case MINING -> tooltip.add(Component.translatable("tooltip.extrautils2.upgrade.mining").withStyle(ChatFormatting.GRAY));
+            default -> {
+            }
+        }
+
         int maxLevel = maxStack;
         tooltip.add(Component.translatable("tooltip.extrautils2.upgrade.max", maxLevel).withStyle(ChatFormatting.GRAY));
         if (type.power > 0.0f) {

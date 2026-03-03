@@ -138,6 +138,12 @@ public class XULanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.TRASH_CHEST, "Trash Chest");
         addBlock(ModBlocks.KLEIN_BOTTLE, "Klein Flask");
 
+        addBlock(ModBlocks.TRANSFER_PIPE, "Transfer Pipe");
+        addBlock(ModBlocks.TRANSFER_NODE_ITEMS, "Transfer Node (Items)");
+        addBlock(ModBlocks.RETRIEVAL_NODE_ITEMS, "Retrieval Node (Items)");
+        addBlock(ModBlocks.TRANSFER_NODE_FLUIDS, "Transfer Node (Fluids)");
+        addBlock(ModBlocks.RETRIEVAL_NODE_FLUIDS, "Retrieval Node (Fluids)");
+
         addItem(ModItems.GOLDEN_BAG, "Golden Bag");
 
         addItem(ModItems.ANGEL_RING_BASE, "Angel Ring");
@@ -207,10 +213,25 @@ public class XULanguageProvider extends LanguageProvider {
         addItem(ModItems.FILTER_FLUID, "Fluid Filter");
         addItem(ModItems.SNOW_GLOBE, "Magical Snow Globe");
 
+        add("filter.extrautils2.item.inverted.off", "Normal");
+        add("filter.extrautils2.item.inverted.on", "Inverted");
+        add("filter.extrautils2.item.ignore_nbt.off", "Match NBT");
+        add("filter.extrautils2.item.ignore_nbt.on", "Ignore NBT");
+        add("filter.extrautils2.item.ignore_metadata.off", "Match Damage");
+        add("filter.extrautils2.item.ignore_metadata.on", "Ignore Damage");
+        add("filter.extrautils2.item.use_tags.off", "Exact Item");
+        add("filter.extrautils2.item.use_tags.on", "Use Tags");
+        add("filter.extrautils2.fluid.inverted.off", "Normal");
+        add("filter.extrautils2.fluid.inverted.on", "Inverted");
+        add("filter.extrautils2.fluid.ignore_nbt.off", "Match Components");
+        add("filter.extrautils2.fluid.ignore_nbt.on", "Ignore Components");
+
         add("tooltip.extrautils2.compressed", "%s Blocks");
         add("tooltip.extrautils2.drum.empty", "Drum: Empty");
         add("tooltip.extrautils2.drum", "Drum: %s (%s / %s)");
         add("tooltip.extrautils2.gp.status", "GP: %s / %s");
+        add("tooltip.extrautils2.upgrade.stack_size", "Increase the number of items pulled to a stack");
+        add("tooltip.extrautils2.upgrade.mining", "Allows mining of cobblestone and pumping of water");
         add("tooltip.extrautils2.upgrade.max", "Max Upgrades: %s");
         add("tooltip.extrautils2.upgrade.power.single", "Power Penalty: +%s GP");
         add("tooltip.extrautils2.upgrade.power.level1", "Power Penalty (level 1): +%s GP");

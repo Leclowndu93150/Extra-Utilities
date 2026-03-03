@@ -122,7 +122,9 @@ public abstract class XUBaseScreen<T extends AbstractContainerMenu> extends Abst
 
     protected void drawUpgradeSlotBackgroundIfPresent(GuiGraphics graphics, ResourceLocation widgetsTexture) {
         if (menu instanceof com.leclowndu93150.extrautils2.gui.HasUpgradeSlot upgrade) {
-            drawUpgradeSlotBackground(graphics, widgetsTexture, upgrade.getUpgradeX(), upgrade.getUpgradeY());
+            for (int i = 0; i < upgrade.getUpgradeSlotCount(); i++) {
+                drawUpgradeSlotBackground(graphics, widgetsTexture, upgrade.getUpgradeX(i), upgrade.getUpgradeY(i));
+            }
         }
     }
 

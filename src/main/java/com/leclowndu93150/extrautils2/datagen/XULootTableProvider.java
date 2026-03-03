@@ -133,6 +133,12 @@ public class XULootTableProvider extends LootTableProvider {
             dropSelf(ModBlocks.MACHINE_CRUSHER.get());
             dropSelf(ModBlocks.MACHINE_ENCHANTER.get());
 
+            dropSelf(ModBlocks.TRANSFER_PIPE.get());
+            dropSelf(ModBlocks.TRANSFER_NODE_ITEMS.get());
+            dropSelf(ModBlocks.RETRIEVAL_NODE_ITEMS.get());
+            dropSelf(ModBlocks.TRANSFER_NODE_FLUIDS.get());
+            dropSelf(ModBlocks.RETRIEVAL_NODE_FLUIDS.get());
+
             dropWhenSilkTouch(ModBlocks.DECORATIVE_GLASS.get());
             dropWhenSilkTouch(ModBlocks.DECORATIVE_GLASS_BORDERED.get());
             dropWhenSilkTouch(ModBlocks.DECORATIVE_GLASS_DIAMONDS.get());

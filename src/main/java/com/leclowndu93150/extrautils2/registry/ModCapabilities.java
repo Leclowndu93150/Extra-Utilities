@@ -13,6 +13,8 @@ import com.leclowndu93150.extrautils2.blockentity.machine.CrafterBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.CrusherBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.EnchanterBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.machine.FurnaceBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.transfer.FluidTransferNodeBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.transfer.ItemTransferNodeBlockEntity;
 import com.leclowndu93150.extrautils2.util.MachineItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.minecraft.core.Direction;
@@ -79,5 +81,11 @@ public final class ModCapabilities {
 
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.ANALOG_CRAFTER.get(),
                 (AnalogCrafterBlockEntity be, Direction side) -> side != null ? be.getSidedHandler(side) : be.getSidedHandler(Direction.NORTH));
+
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.ITEM_TRANSFER_NODE.get(),
+                (ItemTransferNodeBlockEntity be, Direction side) -> be.getBuffer());
+
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntities.FLUID_TRANSFER_NODE.get(),
+                (FluidTransferNodeBlockEntity be, Direction side) -> be.getBuffer());
     }
 }

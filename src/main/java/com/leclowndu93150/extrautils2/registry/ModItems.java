@@ -7,6 +7,8 @@ import com.leclowndu93150.extrautils2.item.ChickenRingItem;
 import com.leclowndu93150.extrautils2.item.DestructionWandItem;
 import com.leclowndu93150.extrautils2.item.GoldenBagItem;
 import com.leclowndu93150.extrautils2.item.GoldenLassoItem;
+import com.leclowndu93150.extrautils2.item.ItemFilterFluids;
+import com.leclowndu93150.extrautils2.item.ItemFilterItems;
 import com.leclowndu93150.extrautils2.item.KikokuItem;
 import com.leclowndu93150.extrautils2.item.SquidRingItem;
 import com.leclowndu93150.extrautils2.item.UpgradeItem;
@@ -100,8 +102,10 @@ public class ModItems {
     public static final DeferredItem<Item> UNSTABLE_INGOT = registerSimple("unstable_ingot");
     public static final DeferredItem<Item> CONTRACT = registerSimple("contract");
     public static final DeferredItem<Item> MAGIC_APPLE = registerSimple("magic_apple");
-    public static final DeferredItem<Item> FILTER_ITEM = registerSimple("filter_item");
-    public static final DeferredItem<Item> FILTER_FLUID = registerSimple("filter_fluid");
+    public static final DeferredItem<ItemFilterItems> FILTER_ITEM = ModRegistries.registerItem(
+            "filter_item", ItemFilterItems::new);
+    public static final DeferredItem<ItemFilterFluids> FILTER_FLUID = ModRegistries.registerItem(
+            "filter_fluid", ItemFilterFluids::new);
     public static final DeferredItem<Item> SNOW_GLOBE = registerSimple("snow_globe");
 
     public static final DeferredItem<Item> OPINIUM_CORE_0 = registerOpinium(0);

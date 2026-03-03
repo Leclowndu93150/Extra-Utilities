@@ -118,6 +118,12 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.RAINBOW_GENERATOR.get());
         blockItem(ModBlocks.SYNERGY_UNIT.get());
 
+        withExistingParent("transfer_pipe", modLoc("block/transfer/pipe_item"));
+        nodeItem("transfer_node_items", tex("transfernodes/transfernode_front"), tex("transfernodes/transfernode_back"), tex("transfernodes/pipes"));
+        nodeItem("retrieval_node_items", tex("transfernodes/transfernode_front_blue"), tex("transfernodes/transfernode_back"), tex("transfernodes/pipes"));
+        nodeItem("transfer_node_fluids", tex("transfernodes/transfernode_front_cyan"), tex("transfernodes/transfernode_back"), tex("transfernodes/pipes"));
+        nodeItem("retrieval_node_fluids", tex("transfernodes/transfernode_front_green"), tex("transfernodes/transfernode_back"), tex("transfernodes/pipes"));
+
         blockItem(ModBlocks.DECORATIVE_GLASS.get());
         blockItem(ModBlocks.DECORATIVE_GLASS_BORDERED.get());
         blockItem(ModBlocks.DECORATIVE_GLASS_DIAMONDS.get());
@@ -312,6 +318,13 @@ public class XUItemModelProvider extends ItemModelProvider {
     private void handheld(String name, ResourceLocation texture) {
         withExistingParent(name, ResourceLocation.withDefaultNamespace("item/handheld"))
                 .texture("layer0", texture);
+    }
+
+    private void nodeItem(String name, ResourceLocation nodeTex, ResourceLocation backTex, ResourceLocation pipeTex) {
+        withExistingParent(name, modLoc("block/transfer/node_item_template"))
+                .texture("node", nodeTex)
+                .texture("back", backTex)
+                .texture("pipe", pipeTex);
     }
 
     private void lassoItem(String name, ResourceLocation baseTexture) {

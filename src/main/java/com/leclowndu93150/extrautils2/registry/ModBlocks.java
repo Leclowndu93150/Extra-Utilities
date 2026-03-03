@@ -22,6 +22,9 @@ import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.block.machine.CrusherBlock;
 import com.leclowndu93150.extrautils2.block.machine.EnchanterBlock;
 import com.leclowndu93150.extrautils2.block.machine.FurnaceBlock;
+import com.leclowndu93150.extrautils2.block.transfer.NodeType;
+import com.leclowndu93150.extrautils2.block.transfer.TransferNodeBlock;
+import com.leclowndu93150.extrautils2.block.transfer.TransferPipeBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -235,6 +238,18 @@ public class ModBlocks {
     // --- Misc ---
     public static final DeferredBlock<Block> KLEIN_BOTTLE = ModRegistries.registerBlock(
             "klein_bottle", () -> new XUBlock(BlockBehaviour.Properties.of().strength(0.3f).noOcclusion().noCollission()));
+
+    // --- Transfer Nodes & Pipes ---
+    public static final DeferredBlock<TransferPipeBlock> TRANSFER_PIPE = ModRegistries.registerBlock(
+            "transfer_pipe", () -> new TransferPipeBlock(BlockBehaviour.Properties.of().strength(0.5f).noOcclusion()));
+    public static final DeferredBlock<TransferNodeBlock> TRANSFER_NODE_ITEMS = ModRegistries.registerBlock(
+            "transfer_node_items", () -> new TransferNodeBlock(XUBlock.defaultProps().noOcclusion(), NodeType.ITEMS, false));
+    public static final DeferredBlock<TransferNodeBlock> RETRIEVAL_NODE_ITEMS = ModRegistries.registerBlock(
+            "retrieval_node_items", () -> new TransferNodeBlock(XUBlock.defaultProps().noOcclusion(), NodeType.ITEMS, true));
+    public static final DeferredBlock<TransferNodeBlock> TRANSFER_NODE_FLUIDS = ModRegistries.registerBlock(
+            "transfer_node_fluids", () -> new TransferNodeBlock(XUBlock.defaultProps().noOcclusion(), NodeType.FLUIDS, false));
+    public static final DeferredBlock<TransferNodeBlock> RETRIEVAL_NODE_FLUIDS = ModRegistries.registerBlock(
+            "retrieval_node_fluids", () -> new TransferNodeBlock(XUBlock.defaultProps().noOcclusion(), NodeType.FLUIDS, true));
 
     // --- Helpers ---
     private static DeferredBlock<MachineGeneratorBlock> registerMachineGenerator(MachineGeneratorType type) {

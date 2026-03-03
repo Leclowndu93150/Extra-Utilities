@@ -11,7 +11,11 @@ public class UpgradeStackHandler extends ItemStackHandler {
     private final EnumSet<UpgradeType> allowed;
 
     public UpgradeStackHandler(EnumSet<UpgradeType> allowed, Runnable onChange) {
-        super(1);
+        this(1, allowed, onChange);
+    }
+
+    public UpgradeStackHandler(int slots, EnumSet<UpgradeType> allowed, Runnable onChange) {
+        super(slots);
         this.allowed = allowed;
         this.onChange = onChange;
     }
@@ -24,7 +28,18 @@ public class UpgradeStackHandler extends ItemStackHandler {
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         if (!(stack.getItem() instanceof UpgradeItem item)) return false;
-        return allowed.contains(item.getType());
+        if (!allowed.contains(item.getType())) return false;
+
+        for (int i = 0; i < getSlots(); i++) {
+            if (i == slot) continue;
+            ItemStack existing = getStackInSlot(i);
+            if (existing.isEmpty()) continue;
+            if (existing.getItem() instanceof UpgradeItem other && other.getType() == item.getType()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -33,9 +48,13 @@ public class UpgradeStackHandler extends ItemStackHandler {
     }
 
     public int getLevel(UpgradeType type) {
-        ItemStack stack = getStackInSlot(0);
-        if (stack.isEmpty() || !(stack.getItem() instanceof UpgradeItem item)) return 0;
-        if (item.getType() != type) return 0;
-        return Math.min(stack.getCount(), stack.getMaxStackSize());
+        int level = 0;
+        for (int i = 0; i < getSlots(); i++) {
+            ItemStack stack = getStackInSlot(i);
+            if (stack.isEmpty() || !(stack.getItem() instanceof UpgradeItem item)) continue;
+            if (item.getType() != type) continue;
+            level += Math.min(stack.getCount(), stack.getMaxStackSize());
+        }
+        return Math.min(level, type.maxLevel);
     }
 }

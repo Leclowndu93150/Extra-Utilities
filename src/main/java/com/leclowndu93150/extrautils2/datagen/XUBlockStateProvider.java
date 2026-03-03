@@ -7,7 +7,10 @@ import com.leclowndu93150.extrautils2.block.SpikeBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
 import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.block.machine.MachineBlock;
+import com.leclowndu93150.extrautils2.block.transfer.TransferNodeBlock;
+import com.leclowndu93150.extrautils2.block.transfer.TransferPipeBlock;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -63,6 +66,7 @@ public class XUBlockStateProvider extends BlockStateProvider {
         compressedBlocks();
         generators();
         machines();
+        transferPipes();
     }
 
     private void spikes() {
@@ -464,6 +468,58 @@ public class XUBlockStateProvider extends BlockStateProvider {
     private void drumBlock(Block block, String texture) {
         ModelFile model = models().getExistingFile(modLoc("block/drum_" + texture));
         simpleBlock(block, model);
+    }
+
+    private void transferPipes() {
+        ModelFile pipeCore = models().getExistingFile(modLoc("block/transfer/pipe_core"));
+        ModelFile pipeArm = models().getExistingFile(modLoc("block/transfer/pipe_arm"));
+
+        var builder = getMultipartBuilder(ModBlocks.TRANSFER_PIPE.get());
+        builder.part().modelFile(pipeCore).addModel().end();
+        addPipeArms(builder, pipeArm, TransferPipeBlock.NORTH, TransferPipeBlock.EAST,
+                TransferPipeBlock.SOUTH, TransferPipeBlock.WEST, TransferPipeBlock.UP, TransferPipeBlock.DOWN);
+
+        transferNodeBlock(ModBlocks.TRANSFER_NODE_ITEMS.get(), "transfer_node_items",
+                tex("transfernodes/transfernode_front"), tex("transfernodes/transfernode_back"), tex("transfernodes/pipes"));
+        transferNodeBlock(ModBlocks.RETRIEVAL_NODE_ITEMS.get(), "retrieval_node_items",
+                tex("transfernodes/transfernode_front_blue"), tex("transfernodes/transfernode_back"), tex("transfernodes/pipes"));
+        transferNodeBlock(ModBlocks.TRANSFER_NODE_FLUIDS.get(), "transfer_node_fluids",
+                tex("transfernodes/transfernode_front_cyan"), tex("transfernodes/transfernode_back"), tex("transfernodes/pipes"));
+        transferNodeBlock(ModBlocks.RETRIEVAL_NODE_FLUIDS.get(), "retrieval_node_fluids",
+                tex("transfernodes/transfernode_front_green"), tex("transfernodes/transfernode_back"), tex("transfernodes/pipes"));
+    }
+
+    private void addPipeArms(net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder builder,
+                             ModelFile arm, BooleanProperty north, BooleanProperty east,
+                             BooleanProperty south, BooleanProperty west, BooleanProperty up, BooleanProperty down) {
+        builder.part().modelFile(arm).addModel().condition(north, true).end();
+        builder.part().modelFile(arm).rotationY(90).addModel().condition(east, true).end();
+        builder.part().modelFile(arm).rotationX(180).addModel().condition(south, true).end();
+        builder.part().modelFile(arm).rotationY(270).addModel().condition(west, true).end();
+        builder.part().modelFile(arm).rotationX(270).addModel().condition(up, true).end();
+        builder.part().modelFile(arm).rotationX(90).addModel().condition(down, true).end();
+    }
+
+    private void transferNodeBlock(Block block, String name, ResourceLocation nodeTex, ResourceLocation backTex, ResourceLocation pipeTex) {
+        ModelFile nodeModel = models().getBuilder(name)
+                .parent(new ModelFile.UncheckedModelFile(modLoc("block/transfer/node_template")))
+                .texture("node", nodeTex)
+                .texture("back", backTex)
+                .texture("pipe", pipeTex);
+
+        ModelFile pipeArm = models().getExistingFile(modLoc("block/transfer/pipe_arm"));
+
+        var builder = getMultipartBuilder(block);
+
+        builder.part().modelFile(nodeModel).addModel().condition(TransferNodeBlock.FACING, Direction.NORTH).end();
+        builder.part().modelFile(nodeModel).rotationY(90).addModel().condition(TransferNodeBlock.FACING, Direction.EAST).end();
+        builder.part().modelFile(nodeModel).rotationY(180).addModel().condition(TransferNodeBlock.FACING, Direction.SOUTH).end();
+        builder.part().modelFile(nodeModel).rotationY(270).addModel().condition(TransferNodeBlock.FACING, Direction.WEST).end();
+        builder.part().modelFile(nodeModel).rotationX(270).addModel().condition(TransferNodeBlock.FACING, Direction.UP).end();
+        builder.part().modelFile(nodeModel).rotationX(90).addModel().condition(TransferNodeBlock.FACING, Direction.DOWN).end();
+
+        addPipeArms(builder, pipeArm, TransferNodeBlock.NORTH, TransferNodeBlock.EAST,
+                TransferNodeBlock.SOUTH, TransferNodeBlock.WEST, TransferNodeBlock.UP, TransferNodeBlock.DOWN);
     }
 
     private String name(Block block) {
