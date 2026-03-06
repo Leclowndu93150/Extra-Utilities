@@ -146,9 +146,9 @@ public class MachineGeneratorMenu extends XUBaseMenu implements HasUpgradeSlot, 
     @Override
     public String getPreviewFrontTexture() {
         MachineGeneratorType type = tile.getGeneratorType();
-        if (type == null) return "machine/generator_off";
+        if (type == null) return "machines/furnace_generator/front";
         boolean powered = tile.getBlockState().getValue(MachineGeneratorBlock.POWERED);
-        return powered ? type.getOnFrontTexture() : "machine/generator_off";
+        return powered ? type.getOnFrontTexture() : type.getFrontTexture();
     }
 
     @Override

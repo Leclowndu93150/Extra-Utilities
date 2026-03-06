@@ -73,6 +73,10 @@ public class ModBlocks {
             "spike_gold", () -> new SpikeBlock(SpikeBlock.Type.GOLD, XUBlock.defaultProps()));
     public static final DeferredBlock<SpikeBlock> SPIKE_DIAMOND = ModRegistries.registerBlock(
             "spike_diamond", () -> new SpikeBlock(SpikeBlock.Type.DIAMOND, XUBlock.defaultProps()));
+    public static final DeferredBlock<SpikeBlock> SPIKE_COPPER = ModRegistries.registerBlock(
+            "copper_spikes", () -> new SpikeBlock(SpikeBlock.Type.COPPER, BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).strength(3f, 6f)));
+    public static final DeferredBlock<SpikeBlock> SPIKE_NETHERITE = ModRegistries.registerBlock(
+            "netherite_spikes", () -> new SpikeBlock(SpikeBlock.Type.NETHERITE, BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK).strength(5f, 1200f)));
     public static final DeferredBlock<SpikeBlock> SPIKE_CREATIVE = ModRegistries.registerBlock(
             "spike_creative", () -> new SpikeBlock(SpikeBlock.Type.CREATIVE,
                     BlockBehaviour.Properties.of().strength(-1f, Float.MAX_VALUE).requiresCorrectToolForDrops()));

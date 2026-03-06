@@ -30,6 +30,8 @@ public class XUBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.SPIKE_IRON.get())
                 .add(ModBlocks.SPIKE_GOLD.get())
                 .add(ModBlocks.SPIKE_DIAMOND.get())
+                .add(ModBlocks.SPIKE_COPPER.get())
+                .add(ModBlocks.SPIKE_NETHERITE.get())
                 .add(ModBlocks.SPIKE_CREATIVE.get())
                 .add(ModBlocks.COMPRESSED_COBBLESTONE_1.get())
                 .add(ModBlocks.COMPRESSED_COBBLESTONE_2.get())
@@ -106,6 +108,7 @@ public class XUBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.COMPRESSED_GRAVEL_2.get());
 
         tag(BlockTags.NEEDS_STONE_TOOL)
+                .add(ModBlocks.SPIKE_COPPER.get())
                 .add(ModBlocks.SPIKE_IRON.get())
                 .add(ModBlocks.SPIKE_GOLD.get())
                 .add(ModBlocks.RESONATOR.get())
@@ -113,6 +116,7 @@ public class XUBlockTagProvider extends BlockTagsProvider {
 
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.SPIKE_DIAMOND.get())
+                .add(ModBlocks.SPIKE_NETHERITE.get())
                 .add(ModBlocks.GENERATOR_SOLAR.get())
                 .add(ModBlocks.GENERATOR_LUNAR.get())
                 .add(ModBlocks.GENERATOR_LAVA.get())

@@ -1,8 +1,6 @@
 package com.leclowndu93150.extrautils2.client;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
-import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
-import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.client.gui.CreativeChestScreen;
 import com.leclowndu93150.extrautils2.client.gui.MachineGeneratorScreen;
 import com.leclowndu93150.extrautils2.client.gui.ResonatorScreen;
@@ -29,7 +27,6 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
@@ -124,21 +121,6 @@ public final class ClientModEvents {
             return IClientFluidTypeExtensions.of(fluid.getFluidType()).getTintColor(fluid);
         }, ModBlocks.DRUM_16.get(), ModBlocks.DRUM_256.get(), ModBlocks.DRUM_4096.get(), ModBlocks.DRUM_65536.get(), ModBlocks.DRUM_CREATIVE.get());
 
-        Block[] machineGenerators = {
-            ModBlocks.MACHINE_GENERATOR_FURNACE.get(), ModBlocks.MACHINE_GENERATOR_SURVIVALIST.get(),
-            ModBlocks.MACHINE_GENERATOR_CULINARY.get(), ModBlocks.MACHINE_GENERATOR_POTION.get(),
-            ModBlocks.MACHINE_GENERATOR_TNT.get(), ModBlocks.MACHINE_GENERATOR_LAVA.get(),
-            ModBlocks.MACHINE_GENERATOR_PINK.get(), ModBlocks.MACHINE_GENERATOR_NETHERSTAR.get(),
-            ModBlocks.MACHINE_GENERATOR_ENDER.get(), ModBlocks.MACHINE_GENERATOR_REDSTONE.get(),
-            ModBlocks.MACHINE_GENERATOR_OVERCLOCK.get(), ModBlocks.MACHINE_GENERATOR_DRAGON.get(),
-            ModBlocks.MACHINE_GENERATOR_ICE.get(), ModBlocks.MACHINE_GENERATOR_DEATH.get(),
-            ModBlocks.MACHINE_GENERATOR_ENCHANT.get(), ModBlocks.MACHINE_GENERATOR_SLIME.get()
-        };
-        event.register((state, level, pos, tintIndex) -> {
-            if (tintIndex != 0 && tintIndex != 1) return -1;
-            if (!(state.getBlock() instanceof MachineGeneratorBlock mgb)) return -1;
-            return mgb.generatorType.color | 0xFF000000;
-        }, machineGenerators);
     }
 
     @SubscribeEvent
@@ -177,18 +159,5 @@ public final class ClientModEvents {
             return IClientFluidTypeExtensions.of(fluid.getFluidType()).getTintColor(fluid);
         }, ModBlocks.DRUM_16.get(), ModBlocks.DRUM_256.get(), ModBlocks.DRUM_4096.get(), ModBlocks.DRUM_65536.get(), ModBlocks.DRUM_CREATIVE.get());
 
-        event.register((stack, tintIndex) -> {
-            if (tintIndex != 1) return -1;
-            if (!(stack.getItem() instanceof net.minecraft.world.item.BlockItem bi)) return -1;
-            if (!(bi.getBlock() instanceof MachineGeneratorBlock mgb)) return -1;
-            return mgb.generatorType.color | 0xFF000000;
-        }, ModBlocks.MACHINE_GENERATOR_FURNACE.get(), ModBlocks.MACHINE_GENERATOR_SURVIVALIST.get(),
-            ModBlocks.MACHINE_GENERATOR_CULINARY.get(), ModBlocks.MACHINE_GENERATOR_POTION.get(),
-            ModBlocks.MACHINE_GENERATOR_TNT.get(), ModBlocks.MACHINE_GENERATOR_LAVA.get(),
-            ModBlocks.MACHINE_GENERATOR_PINK.get(), ModBlocks.MACHINE_GENERATOR_NETHERSTAR.get(),
-            ModBlocks.MACHINE_GENERATOR_ENDER.get(), ModBlocks.MACHINE_GENERATOR_REDSTONE.get(),
-            ModBlocks.MACHINE_GENERATOR_OVERCLOCK.get(), ModBlocks.MACHINE_GENERATOR_DRAGON.get(),
-            ModBlocks.MACHINE_GENERATOR_ICE.get(), ModBlocks.MACHINE_GENERATOR_DEATH.get(),
-            ModBlocks.MACHINE_GENERATOR_ENCHANT.get(), ModBlocks.MACHINE_GENERATOR_SLIME.get());
     }
 }

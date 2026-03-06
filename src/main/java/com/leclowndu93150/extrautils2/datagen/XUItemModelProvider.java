@@ -1,8 +1,6 @@
 package com.leclowndu93150.extrautils2.datagen;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
-import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorBlock;
-import com.leclowndu93150.extrautils2.block.generator.MachineGeneratorType;
 import com.leclowndu93150.extrautils2.item.AngelRingItem;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModItems;
@@ -215,57 +213,8 @@ public class XUItemModelProvider extends ItemModelProvider {
     }
 
     private void machineGeneratorItem(Block block) {
-        MachineGeneratorType type = ((MachineGeneratorBlock) block).generatorType;
         String path = block.builtInRegistryHolder().key().location().getPath();
-        boolean vanilla = type == MachineGeneratorType.SURVIVALIST;
-        ResourceLocation sideLoc = vanilla ? ResourceLocation.withDefaultNamespace("block/furnace_side")
-                : tex(type.sideTex != null ? type.sideTex : "machine/machine_base_white_side");
-        ResourceLocation bottomLoc = vanilla ? ResourceLocation.withDefaultNamespace("block/furnace_top")
-                : tex(type.bottomTex != null ? type.bottomTex : "machine/machine_base_white_bottom");
-
-        var builder = getBuilder(path)
-                .parent(new ModelFile.UncheckedModelFile("minecraft:block/block"))
-                .texture("bottom", bottomLoc)
-                .texture("side", sideLoc)
-                .texture("front", tex("machine/generator_off"))
-                .renderType("minecraft:cutout");
-
-        var element = builder.element()
-                .from(0, 0, 0).to(16, 16, 16);
-        if (vanilla) {
-            element
-                    .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).end()
-                    .face(Direction.UP).texture("#bottom").cullface(Direction.UP).end()
-                    .face(Direction.NORTH).texture("#bottom").cullface(Direction.NORTH).end()
-                    .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).end()
-                    .face(Direction.WEST).texture("#side").cullface(Direction.WEST).end()
-                    .face(Direction.EAST).texture("#side").cullface(Direction.EAST).end();
-        } else {
-            element
-                    .face(Direction.DOWN).texture("#bottom").cullface(Direction.DOWN).tintindex(1).end()
-                    .face(Direction.UP).texture("#bottom").cullface(Direction.UP).tintindex(1).end()
-                    .face(Direction.NORTH).texture("#bottom").cullface(Direction.NORTH).tintindex(1).end()
-                    .face(Direction.SOUTH).texture("#side").cullface(Direction.SOUTH).tintindex(1).end()
-                    .face(Direction.WEST).texture("#side").cullface(Direction.WEST).tintindex(1).end()
-                    .face(Direction.EAST).texture("#side").cullface(Direction.EAST).tintindex(1).end();
-        }
-        element.end();
-
-        // Slightly in front of the north face to avoid z-fighting in item renders.
-        builder.element()
-                .from(0, 0, -0.01f).to(16, 16, 0)
-                .face(Direction.NORTH).texture("#front").end()
-                .end();
-
-        if (type.overlayTexture == null) {
-            return;
-        }
-
-        builder.texture("overlay", tex(type.overlayTexture));
-        builder.element()
-                .from(0, 16, 0).to(16, 16.01f, 16)
-                .face(Direction.UP).texture("#overlay").end()
-                .end();
+        withExistingParent(path, ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "block/" + path + "_off"));
     }
 
     private void machineItem(Block block, String front, String side, String top, String bottom) {

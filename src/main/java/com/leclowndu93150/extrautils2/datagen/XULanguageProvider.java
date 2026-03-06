@@ -32,6 +32,8 @@ public class XULanguageProvider extends LanguageProvider {
         addBlock(ModBlocks.SPIKE_IRON, "Iron Spikes");
         addBlock(ModBlocks.SPIKE_GOLD, "Golden Spikes");
         addBlock(ModBlocks.SPIKE_DIAMOND, "Diamond Spikes");
+        addBlock(ModBlocks.SPIKE_COPPER, "Copper Spikes");
+        addBlock(ModBlocks.SPIKE_NETHERITE, "Netherite Spikes");
         addBlock(ModBlocks.SPIKE_CREATIVE, "Creative Spikes");
 
         addBlock(ModBlocks.COMPRESSED_COBBLESTONE_1, "Compressed Cobblestone");
@@ -255,8 +257,10 @@ public class XULanguageProvider extends LanguageProvider {
         add("tooltip.extrautils2.generator.dragon_egg", "Operates when a Dragon Egg is placed on top.");
         add("tooltip.extrautils2.generator.creative", "Creative-only item.");
         add("tooltip.extrautils2.spike.wood", "Reduces health to half a heart, but doesn't kill");
+        add("tooltip.extrautils2.spike.copper", "Poisons mobs on contact");
         add("tooltip.extrautils2.spike.gold", "Mobs drop experience");
         add("tooltip.extrautils2.spike.diamond", "Mobs drop 'Player-kill only' items");
+        add("tooltip.extrautils2.spike.netherite", "Sets mobs on fire, causing cooked drops");
         add("tooltip.extrautils2.grid_overloaded", "Grid is overloaded");
         add("tooltip.extrautils2.enchanter.bookshelves", "Bookshelves: %s / %s");
         add("tooltip.extrautils2.redstone.always_on", "Always On");

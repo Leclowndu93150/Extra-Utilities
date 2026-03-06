@@ -109,6 +109,26 @@ public class XURecipeProvider extends RecipeProvider {
                 .unlockedBy("has_diamond", has(Items.DIAMOND))
                 .save(output);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModBlocks.SPIKE_COPPER.get(), 4)
+                .pattern(" S ")
+                .pattern("SIS")
+                .pattern("IBI")
+                .define('S', Items.STONE_SWORD)
+                .define('I', Items.COPPER_INGOT)
+                .define('B', Items.COPPER_BLOCK)
+                .unlockedBy("has_copper_ingot", has(Items.COPPER_INGOT))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ModBlocks.SPIKE_NETHERITE.get(), 4)
+                .pattern(" S ")
+                .pattern("SIS")
+                .pattern("IBI")
+                .define('S', Items.NETHERITE_SWORD)
+                .define('I', Items.NETHERITE_INGOT)
+                .define('B', Items.NETHERITE_BLOCK)
+                .unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT))
+                .save(output);
+
         compressedRecipe(output, ModBlocks.COMPRESSED_COBBLESTONE_1.get(), Items.COBBLESTONE);
         compressedRecipe(output, ModBlocks.COMPRESSED_COBBLESTONE_2.get(), ModBlocks.COMPRESSED_COBBLESTONE_1.get().asItem());
         compressedRecipe(output, ModBlocks.COMPRESSED_COBBLESTONE_3.get(), ModBlocks.COMPRESSED_COBBLESTONE_2.get().asItem());

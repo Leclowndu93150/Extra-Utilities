@@ -33,9 +33,11 @@ public class SpikeBlock extends XUBlock {
     public enum Type {
         WOOD(1.0f),
         STONE(2.0f),
+        COPPER(3.0f),
         IRON(4.0f),
         GOLD(2.0f),
         DIAMOND(8.0f),
+        NETHERITE(10.0f),
         CREATIVE(8000.0f);
 
         public final float damage;
@@ -49,6 +51,14 @@ public class SpikeBlock extends XUBlock {
                 case WOOD -> {
                     if (living.getHealth() <= damage) return false;
                     return living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), Math.min(damage, living.getHealth() - 0.5f));
+                }
+                case COPPER -> {
+                    boolean did = living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), damage);
+                    if (did) {
+                        living.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.POISON, 100, 0));
+                    }
+                    return did;
                 }
                 case GOLD -> {
                     boolean did = living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), damage);
@@ -66,6 +76,10 @@ public class SpikeBlock extends XUBlock {
                         did |= living.hurt(level.damageSources().playerAttack(fake), damage * 1000.0f);
                     }
                     return did;
+                }
+                case NETHERITE -> {
+                    living.setRemainingFireTicks(100);
+                    return living.hurt(ModDamageTypes.source(level, ModDamageTypes.SPIKE), damage);
                 }
                 case CREATIVE -> {
                     living.skipDropExperience();
@@ -86,8 +100,10 @@ public class SpikeBlock extends XUBlock {
         public void addTooltip(ItemStack stack, Item.TooltipContext ctx, java.util.List<Component> tooltip, TooltipFlag flag) {
             switch (this) {
                 case WOOD -> tooltip.add(Component.translatable("tooltip.extrautils2.spike.wood").withStyle(ChatFormatting.GRAY));
+                case COPPER -> tooltip.add(Component.translatable("tooltip.extrautils2.spike.copper").withStyle(ChatFormatting.GRAY));
                 case GOLD -> tooltip.add(Component.translatable("tooltip.extrautils2.spike.gold").withStyle(ChatFormatting.GRAY));
                 case DIAMOND -> tooltip.add(Component.translatable("tooltip.extrautils2.spike.diamond").withStyle(ChatFormatting.GRAY));
+                case NETHERITE -> tooltip.add(Component.translatable("tooltip.extrautils2.spike.netherite").withStyle(ChatFormatting.GRAY));
             }
         }
     }

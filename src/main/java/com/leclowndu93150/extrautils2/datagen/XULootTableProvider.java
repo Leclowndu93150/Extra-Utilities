@@ -47,6 +47,8 @@ public class XULootTableProvider extends LootTableProvider {
             dropSelf(ModBlocks.SPIKE_IRON.get());
             dropSelf(ModBlocks.SPIKE_GOLD.get());
             dropSelf(ModBlocks.SPIKE_DIAMOND.get());
+            dropSelf(ModBlocks.SPIKE_COPPER.get());
+            dropSelf(ModBlocks.SPIKE_NETHERITE.get());
             dropSelf(ModBlocks.SPIKE_CREATIVE.get());
 
             dropSelf(ModBlocks.COMPRESSED_COBBLESTONE_1.get());
