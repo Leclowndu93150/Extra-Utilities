@@ -2,7 +2,9 @@ package com.leclowndu93150.extrautils2.client;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.client.gui.CreativeChestScreen;
+import com.leclowndu93150.extrautils2.client.gui.LargishChestScreen;
 import com.leclowndu93150.extrautils2.client.gui.MachineGeneratorScreen;
+import com.leclowndu93150.extrautils2.client.gui.MiniChestScreen;
 import com.leclowndu93150.extrautils2.client.gui.ResonatorScreen;
 import com.leclowndu93150.extrautils2.client.gui.TrashCanScreen;
 import com.leclowndu93150.extrautils2.client.gui.filter.FluidFilterScreen;
@@ -73,6 +75,8 @@ public final class ClientModEvents {
         event.register(ModMenus.TRASH_CAN.get(), TrashCanScreen::new);
         event.register(ModMenus.RESONATOR.get(), ResonatorScreen::new);
         event.register(ModMenus.CREATIVE_CHEST.get(), CreativeChestScreen::new);
+        event.register(ModMenus.LARGISH_CHEST.get(), LargishChestScreen::new);
+        event.register(ModMenus.MINI_CHEST.get(), MiniChestScreen::new);
         event.register(ModMenus.MACHINE_FURNACE.get(), FurnaceScreen::new);
         event.register(ModMenus.MACHINE_CRUSHER.get(), CrusherScreen::new);
         event.register(ModMenus.MACHINE_ENCHANTER.get(), EnchanterScreen::new);
@@ -98,6 +102,7 @@ public final class ClientModEvents {
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.HAND_CRANK.get(), HandCrankRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.CREATIVE_CHEST.get(), CreativeChestRenderer::new);
     }
 
     @SubscribeEvent
@@ -140,6 +145,18 @@ public final class ClientModEvents {
                 return renderer;
             }
         }, opiniumCores);
+
+        event.registerItem(new IClientItemExtensions() {
+            private CreativeChestItemRenderer renderer;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (renderer == null) {
+                    renderer = new CreativeChestItemRenderer();
+                }
+                return renderer;
+            }
+        }, ModBlocks.CREATIVE_CHEST.get().asItem());
     }
 
     @SubscribeEvent

@@ -7,6 +7,8 @@ import com.leclowndu93150.extrautils2.block.CreativeEnergyBlock;
 import com.leclowndu93150.extrautils2.block.CreativeHarvestBlock;
 import com.leclowndu93150.extrautils2.block.DecorativeGlassBlock;
 import com.leclowndu93150.extrautils2.block.DrumBlock;
+import com.leclowndu93150.extrautils2.block.LargishChestBlock;
+import com.leclowndu93150.extrautils2.block.MiniChestBlock;
 import com.leclowndu93150.extrautils2.block.RedstoneClockBlock;
 import com.leclowndu93150.extrautils2.block.ResonatorBlock;
 import com.leclowndu93150.extrautils2.block.SoundMufflerBlock;
@@ -232,10 +234,10 @@ public class ModBlocks {
             "evil_infused_ingot_block", () -> new XUBlock(XUBlock.defaultProps()));
 
     // --- Storage Blocks ---
-    public static final DeferredBlock<Block> LARGISH_CHEST = ModRegistries.registerBlock(
-            "largish_chest", () -> new XUBlock.Facing(XUBlock.defaultProps()));
-    public static final DeferredBlock<Block> MINI_CHEST = ModRegistries.registerBlock(
-            "mini_chest", () -> new XUBlock.Facing(XUBlock.defaultProps()));
+    public static final DeferredBlock<LargishChestBlock> LARGISH_CHEST = ModRegistries.registerBlock(
+            "largish_chest", () -> new LargishChestBlock(BlockBehaviour.Properties.of().strength(2.5F).sound(SoundType.WOOD)));
+    public static final DeferredBlock<MiniChestBlock> MINI_CHEST = ModRegistries.registerBlock(
+            "mini_chest", () -> new MiniChestBlock(BlockBehaviour.Properties.of().strength(2.5F).sound(SoundType.WOOD).noOcclusion()));
     public static final DeferredBlock<Block> TRASH_CHEST = ModRegistries.registerBlock(
             "trash_chest", () -> new XUBlock.Facing(XUBlock.defaultProps()));
 

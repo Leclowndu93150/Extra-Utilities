@@ -23,6 +23,9 @@ public class CreativeChestMenu extends XUBaseMenu implements HasProgressArrow {
     public CreativeChestMenu(int id, Inventory playerInv, CreativeChestBlockEntity tile) {
         super(ModMenus.CREATIVE_CHEST.get(), id);
         this.tile = tile;
+        if (!playerInv.player.level().isClientSide) {
+            tile.startOpen(playerInv.player);
+        }
 
         addSlot(new Slot(new SimpleItemContainer(tile), 0, menuSlotX(INPUT_X), menuSlotY(SLOT_Y)) {
             @Override
@@ -89,6 +92,14 @@ public class CreativeChestMenu extends XUBaseMenu implements HasProgressArrow {
     @Override
     public boolean stillValid(Player player) {
         return tile.stillValid(player);
+    }
+
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        if (!player.level().isClientSide) {
+            tile.stopOpen(player);
+        }
     }
 
     private static class SimpleItemContainer implements net.minecraft.world.Container {

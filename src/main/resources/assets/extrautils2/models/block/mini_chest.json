@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "down": "extrautils2:block/minichest_bottom",
+    "east": "extrautils2:block/minichest_side",
+    "north": "extrautils2:block/minichest_front",
+    "particle": "extrautils2:block/minichest_side",
+    "south": "extrautils2:block/minichest_side",
+    "up": "extrautils2:block/minichest_top",
+    "west": "extrautils2:block/minichest_side"
+  },
+  "elements": [
+    {
+      "from": [5, 0, 5],
+      "to": [11, 6, 11],
+      "faces": {
+        "down": { "texture": "#down" },
+        "up": { "texture": "#up" },
+        "north": { "texture": "#north" },
+        "south": { "texture": "#south" },
+        "west": { "texture": "#west" },
+        "east": { "texture": "#east" }
+      }
+    }
+  ]
+}

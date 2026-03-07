@@ -3,6 +3,8 @@ package com.leclowndu93150.extrautils2.registry;
 import com.leclowndu93150.extrautils2.blockentity.CreativeChestBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.CreativeHarvestBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.LargishChestBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.MiniChestBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.ResonatorBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.SoundMufflerBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
@@ -106,6 +108,18 @@ public class ModBlockEntities {
                     BlockEntityType.Builder.<CreativeChestBlockEntity>of(
                             CreativeChestBlockEntity::new,
                             ModBlocks.CREATIVE_CHEST.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LargishChestBlockEntity>> LARGISH_CHEST =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("largish_chest", () ->
+                    BlockEntityType.Builder.<LargishChestBlockEntity>of(
+                            LargishChestBlockEntity::new,
+                            ModBlocks.LARGISH_CHEST.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MiniChestBlockEntity>> MINI_CHEST =
+            ModRegistries.BLOCK_ENTITY_TYPES.register("mini_chest", () ->
+                    BlockEntityType.Builder.<MiniChestBlockEntity>of(
+                            MiniChestBlockEntity::new,
+                            ModBlocks.MINI_CHEST.get()).build(null));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CreativeHarvestBlockEntity>> CREATIVE_HARVEST =
             ModRegistries.BLOCK_ENTITY_TYPES.register("creative_harvest", () ->

@@ -5,6 +5,8 @@ import com.leclowndu93150.extrautils2.block.TrashCanBlock;
 import com.leclowndu93150.extrautils2.blockentity.CreativeChestBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.CreativeEnergyBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.DrumBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.LargishChestBlockEntity;
+import com.leclowndu93150.extrautils2.blockentity.MiniChestBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.ResonatorBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.TrashCanBlockEntity;
 import com.leclowndu93150.extrautils2.blockentity.generator.MachineGeneratorTile;
@@ -40,6 +42,12 @@ public final class ModCapabilities {
 
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.CREATIVE_CHEST.get(),
                 (CreativeChestBlockEntity be, Direction side) -> be.getHandler());
+
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.LARGISH_CHEST.get(),
+                (LargishChestBlockEntity be, Direction side) -> be.getInventory());
+
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntities.MINI_CHEST.get(),
+                (MiniChestBlockEntity be, Direction side) -> be.getInventory());
 
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ModBlockEntities.CREATIVE_ENERGY.get(),
                 (CreativeEnergyBlockEntity be, Direction side) -> CreativeEnergyBlockEntity.INFINITE_ENERGY);

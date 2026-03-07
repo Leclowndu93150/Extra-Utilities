@@ -7,6 +7,7 @@ import com.leclowndu93150.extrautils2.registry.ModItems;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -102,7 +103,16 @@ public class XUItemModelProvider extends ItemModelProvider {
         blockItem(ModBlocks.POWER_BATTERY.get());
         blockItem(ModBlocks.INDEXER.get());
         blockItem(ModBlocks.PLAYER_CHEST.get());
-        blockItem(ModBlocks.CREATIVE_CHEST.get());
+        getBuilder("creative_chest")
+                .parent(new ModelFile.UncheckedModelFile("builtin/entity"))
+                .texture("particle", tex("chest_creative_side"))
+                .transforms()
+                .transform(ItemDisplayContext.GUI).rotation(30.0F, 45.0F, 0.0F).translation(0.0F, 0.0F, 0.0F).scale(0.625F, 0.625F, 0.625F).end()
+                .transform(ItemDisplayContext.GROUND).rotation(0.0F, 0.0F, 0.0F).translation(0.0F, 3.0F, 0.0F).scale(0.25F, 0.25F, 0.25F).end()
+                .transform(ItemDisplayContext.HEAD).rotation(0.0F, 180.0F, 0.0F).translation(0.0F, 0.0F, 0.0F).scale(1.0F, 1.0F, 1.0F).end()
+                .transform(ItemDisplayContext.FIXED).rotation(0.0F, 180.0F, 0.0F).translation(0.0F, 0.0F, 0.0F).scale(0.5F, 0.5F, 0.5F).end()
+                .transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).rotation(75.0F, 315.0F, 0.0F).translation(0.0F, 2.5F, 0.0F).scale(0.375F, 0.375F, 0.375F).end()
+                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(0.0F, 315.0F, 0.0F).translation(0.0F, 0.0F, 0.0F).scale(0.4F, 0.4F, 0.4F).end();
         blockItem(ModBlocks.CREATIVE_HARVEST.get());
         blockItem(ModBlocks.CREATIVE_ENERGY.get());
         blockItem(ModBlocks.MINER.get());

@@ -2,7 +2,9 @@ package com.leclowndu93150.extrautils2.registry;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.gui.CreativeChestMenu;
+import com.leclowndu93150.extrautils2.gui.LargishChestMenu;
 import com.leclowndu93150.extrautils2.gui.MachineGeneratorMenu;
+import com.leclowndu93150.extrautils2.gui.MiniChestMenu;
 import com.leclowndu93150.extrautils2.gui.ResonatorMenu;
 import com.leclowndu93150.extrautils2.gui.TrashCanMenu;
 import com.leclowndu93150.extrautils2.gui.filter.FluidFilterMenu;
@@ -35,6 +37,12 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<CreativeChestMenu>> CREATIVE_CHEST =
             MENUS.register("creative_chest", () -> IMenuTypeExtension.create(CreativeChestMenu::fromNetwork));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<LargishChestMenu>> LARGISH_CHEST =
+            MENUS.register("largish_chest", () -> IMenuTypeExtension.create(LargishChestMenu::fromNetwork));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<MiniChestMenu>> MINI_CHEST =
+            MENUS.register("mini_chest", () -> IMenuTypeExtension.create(MiniChestMenu::fromNetwork));
 
     public static final DeferredHolder<MenuType<?>, MenuType<FurnaceMenu>> MACHINE_FURNACE =
             MENUS.register("machine_furnace", () -> IMenuTypeExtension.create(FurnaceMenu::fromNetwork));

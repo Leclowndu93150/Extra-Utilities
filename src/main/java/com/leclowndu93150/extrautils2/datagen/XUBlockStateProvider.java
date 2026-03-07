@@ -272,7 +272,7 @@ public class XUBlockStateProvider extends BlockStateProvider {
 
     private void storageBlocks() {
         orientedBlock(ModBlocks.LARGISH_CHEST.get(), "large_chest_front", "large_chest_side", "large_chest");
-        orientedBlock(ModBlocks.MINI_CHEST.get(), "minichest_front", "minichest_side", "minichest_top", "minichest_bottom");
+        orientedBlockExistingModel(ModBlocks.MINI_CHEST.get(), modLoc("block/mini_chest"));
         orientedBlock(ModBlocks.TRASH_CHEST.get(), "trashchest_front", "trashchest_side", "trashchest_top", "trashchest_bottom");
     }
 
@@ -284,6 +284,14 @@ public class XUBlockStateProvider extends BlockStateProvider {
         String n = name(block);
         ModelFile model = models().cube(n, tex(bottom), tex(top), tex(front), tex(side), tex(side), tex(side))
                 .texture("particle", tex(side));
+        orientedBlockWithModel(block, model);
+    }
+
+    private void orientedBlockExistingModel(Block block, ResourceLocation modelLocation) {
+        orientedBlockWithModel(block, models().getExistingFile(modelLocation));
+    }
+
+    private void orientedBlockWithModel(Block block, ModelFile model) {
         getVariantBuilder(block).forAllStates(state -> {
             int yRot = switch (state.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
                 case SOUTH -> 180;
