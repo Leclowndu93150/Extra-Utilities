@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "extrautils2:block/panel_lava",
+    "east": "extrautils2:block/stoneburnt",
+    "north": "extrautils2:block/stoneburnt",
+    "particle": "extrautils2:block/panel_lava",
+    "south": "extrautils2:block/stoneburnt",
+    "up": "extrautils2:block/panel_lava",
+    "west": "extrautils2:block/stoneburnt"
+  }
+}

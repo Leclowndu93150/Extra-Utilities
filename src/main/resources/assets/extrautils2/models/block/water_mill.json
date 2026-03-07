@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "extrautils2:block/stoneburnt",
+    "east": "extrautils2:block/fan_spinning_small",
+    "north": "extrautils2:block/fan_spinning_small",
+    "particle": "extrautils2:block/panel_water",
+    "south": "extrautils2:block/fan_spinning_small",
+    "up": "extrautils2:block/panel_water",
+    "west": "extrautils2:block/fan_spinning_small"
+  }
+}

@@ -1,0 +1,5 @@
+newmtl base
+map_Kd extrautils2:block/spikes/netherite_spikes_base
+
+newmtl side
+map_Kd extrautils2:block/spikes/netherite_spikes_side

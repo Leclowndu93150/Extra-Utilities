@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "extrautils2:block/stripped_raw_ferrous_juniper_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "extrautils2:block/stripped_raw_ferrous_juniper_wood"
+    },
+    "axis=z": {
+      "model": "extrautils2:block/stripped_raw_ferrous_juniper_wood",
+      "x": 90
+    }
+  }
+}

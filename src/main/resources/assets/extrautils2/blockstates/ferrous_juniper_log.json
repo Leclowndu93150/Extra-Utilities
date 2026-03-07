@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "extrautils2:block/ferrous_juniper_log_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "extrautils2:block/ferrous_juniper_log"
+    },
+    "axis=z": {
+      "model": "extrautils2:block/ferrous_juniper_log_horizontal",
+      "x": 90
+    }
+  }
+}
