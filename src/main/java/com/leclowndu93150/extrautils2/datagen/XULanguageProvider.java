@@ -1,6 +1,7 @@
 package com.leclowndu93150.extrautils2.datagen;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
+import com.leclowndu93150.extrautils2.item.LuxSaberColor;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModItems;
 import net.minecraft.data.PackOutput;
@@ -199,7 +200,9 @@ public class XULanguageProvider extends LanguageProvider {
         addItem(ModItems.FIRE_AXE, "Fire Axe");
         addItem(ModItems.FIRE_EXTINGUISHER, "Fire Extinguisher");
         addItem(ModItems.COMPOUND_BOW, "Compound Bow");
-        addItem(ModItems.LUX_SABER, "Lux Saber");
+        for (LuxSaberColor color : LuxSaberColor.values()) {
+            addItem(ModItems.getLuxSaber(color), color.displayName());
+        }
         addItem(ModItems.BIOME_MARKER, "Biome Marker");
         addItem(ModItems.INDEXER_REMOTE, "Indexer Remote");
         addItem(ModItems.POWER_MANAGER, "Power Manager");

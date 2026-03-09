@@ -2,19 +2,35 @@ package com.leclowndu93150.extrautils2.datagen;
 
 import com.leclowndu93150.extrautils2.ExtraUtilities;
 import com.leclowndu93150.extrautils2.item.AngelRingItem;
+import com.leclowndu93150.extrautils2.item.LuxSaberColor;
 import com.leclowndu93150.extrautils2.registry.ModBlocks;
 import com.leclowndu93150.extrautils2.registry.ModItems;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class XUItemModelProvider extends ItemModelProvider {
+    private static final ResourceLocation LUX_SABER_PROPERTY =
+            ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "lux_saber_extended");
+    private static final ResourceLocation LUX_SABER_BLADE_ONLY_PROPERTY =
+            ResourceLocation.fromNamespaceAndPath(ExtraUtilities.MODID, "lux_saber_blade_only");
+    private static final int LUX_SABER_STAGES = 20;
+    private static final float LUX_SABER_MAX_MODEL_Y = 32.0F;
+    private static final float[] LUX_SABER_HILT_BOTTOM = new float[]{12.0F, 13.5F, 14.0F, 15.5F};
+    private static final float[] LUX_SABER_HILT_TOP = new float[]{14.0F, 13.5F, 16.0F, 15.5F};
+    private static final float[] LUX_SABER_HILT_A = new float[]{12.0F, 3.5F, 14.0F, 7.5F};
+    private static final float[] LUX_SABER_HILT_B = new float[]{12.5F, 1.5F, 14.0F, 3.5F};
+    private static final float[] LUX_SABER_HILT_C = new float[]{12.0F, 0.0F, 14.0F, 1.5F};
+    private static final float[] LUX_SABER_HILT_C_LIT = new float[]{12.0F, 0.5F, 14.0F, 1.5F};
+
     public XUItemModelProvider(PackOutput output, ExistingFileHelper efh) {
         super(output, ExtraUtilities.MODID, efh);
     }
@@ -200,7 +216,9 @@ public class XUItemModelProvider extends ItemModelProvider {
         handheld("fire_axe", tex("fire_axe"));
         handheld("fire_extinguisher", tex("fire_extinguisher"));
         handheld("compound_bow", tex("compound_bow"));
-        handheld("lux_saber", tex("luxsaber"));
+        for (LuxSaberColor color : LuxSaberColor.values()) {
+            luxSaberItem(color);
+        }
         handheld("biome_marker", tex("biome_marker"));
         handheld("indexer_remote", tex("indexer_remote"));
         handheld("power_manager", tex("power_scanner"));
@@ -277,6 +295,137 @@ public class XUItemModelProvider extends ItemModelProvider {
     private void handheld(String name, ResourceLocation texture) {
         withExistingParent(name, ResourceLocation.withDefaultNamespace("item/handheld"))
                 .texture("layer0", texture);
+    }
+
+    private void luxSaberItem(LuxSaberColor color) {
+        String itemId = color.itemId();
+        ItemModelBuilder builder = getBuilder(itemId)
+                .parent(new ModelFile.UncheckedModelFile("minecraft:item/handheld"))
+                .texture("layer0", tex("luxsaber"))
+                .texture("particle", tex("luxsaber"))
+                .guiLight(BlockModel.GuiLight.FRONT)
+                .renderType("minecraft:translucent");
+
+        addLuxSaberHilt(builder, false, color);
+
+        for (int stage = 1; stage <= LUX_SABER_STAGES; stage++) {
+            float extension = stage / (float) LUX_SABER_STAGES;
+            ItemModelBuilder stageModel = getBuilder(itemId + "_stage_" + "%02d".formatted(stage))
+                    .parent(new ModelFile.UncheckedModelFile("minecraft:item/handheld"))
+                    .texture("layer0", tex("luxsaber"))
+                    .texture("particle", tex("luxsaber"))
+                    .guiLight(BlockModel.GuiLight.FRONT)
+                    .renderType("minecraft:translucent");
+
+            addLuxSaberHilt(stageModel, true, color);
+            addLuxSaberBlade(stageModel, color, extension);
+
+            ItemModelBuilder bladeStageModel = getBuilder(itemId + "_blade_stage_" + "%02d".formatted(stage))
+                    .parent(new ModelFile.UncheckedModelFile("minecraft:item/handheld"))
+                    .texture("layer0", tex("luxsaber"))
+                    .texture("particle", tex("luxsaber"))
+                    .guiLight(BlockModel.GuiLight.FRONT)
+                    .renderType("minecraft:translucent");
+
+            addLuxSaberBlade(bladeStageModel, color, extension);
+
+            builder.override()
+                    .predicate(LUX_SABER_PROPERTY, extension)
+                    .model(stageModel)
+                    .end();
+            builder.override()
+                    .predicate(LUX_SABER_BLADE_ONLY_PROPERTY, extension)
+                    .model(bladeStageModel)
+                    .end();
+        }
+    }
+
+    private void addLuxSaberHilt(ItemModelBuilder builder, boolean lit, LuxSaberColor color) {
+        addLuxSaberBox(builder, 6.0F, 0.0F, 6.0F, 10.0F, 8.0F, 10.0F, LUX_SABER_HILT_BOTTOM, LUX_SABER_HILT_TOP, LUX_SABER_HILT_A, false);
+        addLuxSaberBox(builder, 6.5F, 8.0F, 6.5F, 9.5F, 12.0F, 9.5F, LUX_SABER_HILT_BOTTOM, LUX_SABER_HILT_TOP, LUX_SABER_HILT_B, false);
+        if (lit) {
+            addLuxSaberBox(builder, 6.0F, 12.0F, 6.0F, 10.0F, 14.0F, 10.0F, LUX_SABER_HILT_BOTTOM, LUX_SABER_HILT_TOP, LUX_SABER_HILT_C_LIT, false);
+            addLuxSaberBox(builder, 6.0F, 14.0F, 6.0F, 10.0F, 15.0F, 10.0F, luxSaberGlowTop(color), luxSaberGlowTop(color), luxSaberGlowSide(color), true);
+        } else {
+            addLuxSaberBox(builder, 6.0F, 12.0F, 6.0F, 10.0F, 15.0F, 10.0F, LUX_SABER_HILT_BOTTOM, LUX_SABER_HILT_TOP, LUX_SABER_HILT_C, false);
+        }
+    }
+
+    private void addLuxSaberBlade(ItemModelBuilder builder, LuxSaberColor color, float extension) {
+        float bladeScale = Math.min(extension * 1.2F, 1.0F);
+        float innerHalfWidth = bladeScale * 0.75F;
+        float outerHalfWidth = bladeScale * 1.5F;
+        float innerTopY = Math.min(LUX_SABER_MAX_MODEL_Y, 15.0F + 48.0F * extension);
+        float outerTopY = Math.min(LUX_SABER_MAX_MODEL_Y, 15.0F + 49.6F * extension);
+
+        addLuxSaberBox(
+                builder,
+                8.0F - innerHalfWidth, 15.0F, 8.0F - innerHalfWidth,
+                8.0F + innerHalfWidth, innerTopY, 8.0F + innerHalfWidth,
+                luxSaberBladeTop(color), luxSaberBladeTop(color), luxSaberBladeSide(color, extension),
+                true
+        );
+        addLuxSaberBox(
+                builder,
+                8.0F - outerHalfWidth, 15.0F, 8.0F - outerHalfWidth,
+                8.0F + outerHalfWidth, outerTopY, 8.0F + outerHalfWidth,
+                luxSaberBladeTop(color), luxSaberBladeTop(color), luxSaberBladeSide(color, extension),
+                true
+        );
+    }
+
+    private void addLuxSaberBox(
+            ItemModelBuilder builder,
+            float fromX, float fromY, float fromZ,
+            float toX, float toY, float toZ,
+            float[] bottomUv, float[] topUv, float[] sideUv,
+            boolean emissive
+    ) {
+        var element = builder.element()
+                .from(fromX, fromY, fromZ)
+                .to(toX, toY, toZ);
+        if (emissive) {
+            element.shade(false);
+        }
+        var down = element.face(Direction.DOWN).texture("#layer0").uvs(bottomUv[0], bottomUv[1], bottomUv[2], bottomUv[3]);
+        if (emissive) down.emissivity(15, 15);
+        down.end();
+        var up = element.face(Direction.UP).texture("#layer0").uvs(topUv[0], topUv[1], topUv[2], topUv[3]);
+        if (emissive) up.emissivity(15, 15);
+        up.end();
+        var north = element.face(Direction.NORTH).texture("#layer0").uvs(sideUv[0], sideUv[1], sideUv[2], sideUv[3]);
+        if (emissive) north.emissivity(15, 15);
+        north.end();
+        var south = element.face(Direction.SOUTH).texture("#layer0").uvs(sideUv[0], sideUv[1], sideUv[2], sideUv[3]);
+        if (emissive) south.emissivity(15, 15);
+        south.end();
+        var west = element.face(Direction.WEST).texture("#layer0").uvs(sideUv[0], sideUv[1], sideUv[2], sideUv[3]);
+        if (emissive) west.emissivity(15, 15);
+        west.end();
+        var east = element.face(Direction.EAST).texture("#layer0").uvs(sideUv[0], sideUv[1], sideUv[2], sideUv[3]);
+        if (emissive) east.emissivity(15, 15);
+        east.end();
+        element.end();
+    }
+
+    private float[] luxSaberGlowSide(LuxSaberColor color) {
+        float minU = color.ordinal() * 2.0F;
+        return new float[]{minU, 15.5F, minU + 2.0F, 16.0F};
+    }
+
+    private float[] luxSaberGlowTop(LuxSaberColor color) {
+        float minU = color.ordinal() * 2.0F;
+        return new float[]{minU, 13.5F, minU + 2.0F, 15.5F};
+    }
+
+    private float[] luxSaberBladeSide(LuxSaberColor color, float extension) {
+        float minU = color.ordinal() * 1.5F;
+        return new float[]{minU, (1.0F - extension) * 12.0F, minU + 1.5F, 12.0F};
+    }
+
+    private float[] luxSaberBladeTop(LuxSaberColor color) {
+        float minU = color.ordinal() * 1.5F;
+        return new float[]{minU, 12.0F, minU + 1.5F, 13.5F};
     }
 
     private void nodeItem(String name, ResourceLocation nodeTex, ResourceLocation backTex, ResourceLocation pipeTex) {

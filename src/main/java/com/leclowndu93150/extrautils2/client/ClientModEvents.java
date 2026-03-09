@@ -66,6 +66,7 @@ public final class ClientModEvents {
                         CustomData data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
                         return data.contains(GoldenLassoItem.TAG_ENTITY) ? 1.0F : 0.0F;
                     });
+            LuxSaberClientState.registerProperties();
         });
     }
 

@@ -10,6 +10,8 @@ import com.leclowndu93150.extrautils2.item.GoldenLassoItem;
 import com.leclowndu93150.extrautils2.item.ItemFilterFluids;
 import com.leclowndu93150.extrautils2.item.ItemFilterItems;
 import com.leclowndu93150.extrautils2.item.KikokuItem;
+import com.leclowndu93150.extrautils2.item.LuxSaberColor;
+import com.leclowndu93150.extrautils2.item.LuxSaberItem;
 import com.leclowndu93150.extrautils2.item.SquidRingItem;
 import com.leclowndu93150.extrautils2.item.UpgradeItem;
 import net.minecraft.world.item.Item;
@@ -86,7 +88,14 @@ public class ModItems {
     public static final DeferredItem<Item> FIRE_AXE = registerSimple("fire_axe");
     public static final DeferredItem<Item> FIRE_EXTINGUISHER = registerSimple("fire_extinguisher");
     public static final DeferredItem<Item> COMPOUND_BOW = registerSimple("compound_bow");
-    public static final DeferredItem<Item> LUX_SABER = registerSimple("lux_saber");
+    public static final DeferredItem<LuxSaberItem> LUX_SABER = registerLuxSaber(LuxSaberColor.BLUE);
+    public static final DeferredItem<LuxSaberItem> LUX_SABER_PINK = registerLuxSaber(LuxSaberColor.PINK);
+    public static final DeferredItem<LuxSaberItem> LUX_SABER_RED = registerLuxSaber(LuxSaberColor.RED);
+    public static final DeferredItem<LuxSaberItem> LUX_SABER_YELLOW = registerLuxSaber(LuxSaberColor.YELLOW);
+    public static final DeferredItem<LuxSaberItem> LUX_SABER_GREEN = registerLuxSaber(LuxSaberColor.GREEN);
+    public static final DeferredItem<LuxSaberItem> LUX_SABER_CYAN = registerLuxSaber(LuxSaberColor.CYAN);
+    public static final DeferredItem<LuxSaberItem> LUX_SABER_WHITE = registerLuxSaber(LuxSaberColor.WHITE);
+    public static final DeferredItem<LuxSaberItem> LUX_SABER_BLACK = registerLuxSaber(LuxSaberColor.BLACK);
     public static final DeferredItem<Item> BIOME_MARKER = registerSimple("biome_marker");
     public static final DeferredItem<Item> INDEXER_REMOTE = registerSimple("indexer_remote");
     public static final DeferredItem<Item> POWER_MANAGER = registerSimple("power_manager");
@@ -122,8 +131,34 @@ public class ModItems {
         return ModRegistries.registerItem(name, () -> new Item(new Item.Properties()));
     }
 
+    private static DeferredItem<LuxSaberItem> registerLuxSaber(LuxSaberColor color) {
+        return ModRegistries.registerItem(color.itemId(), () -> new LuxSaberItem(color));
+    }
+
     private static DeferredItem<Item> registerOpinium(int tier) {
         return ModRegistries.registerItem("opinium_core_" + tier, () -> new Item(new Item.Properties()));
+    }
+
+    public static DeferredItem<LuxSaberItem> getLuxSaber(LuxSaberColor color) {
+        return switch (color) {
+            case BLUE -> LUX_SABER;
+            case PINK -> LUX_SABER_PINK;
+            case RED -> LUX_SABER_RED;
+            case YELLOW -> LUX_SABER_YELLOW;
+            case GREEN -> LUX_SABER_GREEN;
+            case CYAN -> LUX_SABER_CYAN;
+            case WHITE -> LUX_SABER_WHITE;
+            case BLACK -> LUX_SABER_BLACK;
+        };
+    }
+
+    public static Item[] getLuxSabers() {
+        LuxSaberColor[] colors = LuxSaberColor.values();
+        Item[] items = new Item[colors.length];
+        for (int i = 0; i < colors.length; i++) {
+            items[i] = getLuxSaber(colors[i]).get();
+        }
+        return items;
     }
 
     public static DeferredItem<Item> getOpiniumCore(int tier) {

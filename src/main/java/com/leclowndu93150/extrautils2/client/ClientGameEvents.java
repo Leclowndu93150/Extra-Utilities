@@ -43,6 +43,7 @@ public class ClientGameEvents {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
+        LuxSaberClientState.tick(mc);
         if (mc.level == null || mc.player == null) {
             lookingAtGpBlock = false;
             lookedAtPos = null;
